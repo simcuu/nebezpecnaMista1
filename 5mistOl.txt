@@ -1,4 +1,5 @@
 hlavni_nadrazi= 49.5920467, 17.2778131 #vyskyt bezdomovcu
 ustajeni_rakety= 49.6020331, 17.2496403 #vyskyt rychlych aut
 veznice= 49.5920275, 17.2483156 #vyskyt veznu
-hospoda= 49.6043722N, 17.2522578E #vyskyt zajimavych podnapilych lidi
+hospoda= 49.6043722, 17.2522578 #vyskyt zajimavych podnapilych lidi
+pan= 49.6120267, 17.2575600 #hruzostrasny pan
