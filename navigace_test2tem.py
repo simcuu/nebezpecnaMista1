@@ -4,7 +4,7 @@ import folium
 from streamlit_folium import st_folium
 from openrouteservice import convert
 
-st.title("Navigace: Hejčín → hlavní nádraží")
+st.title("Navigace: Hejčín → Hlavní nádraží")
 
 # OpenRouteService očekává souřadnice ve formátu [lon, lat], ne [lat, lon]
 start = (17.237912, 49.602605)
