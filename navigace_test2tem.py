@@ -62,3 +62,5 @@ if route is not None:
     # Původní JSON výpis schováme do rozbalovacího menu, ať nepřekáží
     with st.expander("Zobrazit surová JSON data trasy"):
         st.json(route)
+
+# python -m streamlit run navigace_test2tem.py
