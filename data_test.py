@@ -1,15 +1,23 @@
+import json
 import streamlit as st
 
-def uloz_data(nazev, problem):
-    with open("data.txt", "a") as f:
-        f.write(f"Název: {nazev}\n")
-        f.write(f"Problém: {problem}\n")
+def uloz_data(misto, problem, denni_doba):
+    zaznam = {
+        "properties": {
+            "misto": misto,
+            "problem": problem,
+            "denni_doba": denni_doba,
+        }
+    }
+    with open("data.txt", "a", encoding="utf-8") as f:
+        json.dump(zaznam, f, ensure_ascii=False)
         f.write("\n")
 
 with st.form (key="my_form"):
-    nazev = st.text_input("Napište název")
-    problem = st.text_input("Svěřte se s problémem")
-    submit_button = st.form_submit_button(label="Ano bohužel mám tento problém :/")
+    misto = st.text_input("Napište místo, se kterým máte problém.")
+    problem = st.text_input("Popište problém, se kterým se na tomto místě potýkáte.")
+    denni_doba = st.selectbox("Vyberte denní dobu, kdy se problém vyskytuje.", ["Den","Noc"])
+    submit_button = st.form_submit_button(label="Přidejte toto misto na mapu prosím")
     if submit_button:
-        uloz_data(nazev, problem)
+        uloz_data(misto, problem, denni_doba)
         st.success("Děkujeme za sdílení vašeho problému!")
