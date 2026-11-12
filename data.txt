@@ -4,3 +4,4 @@ Problém: aaaaa
 Název: aa
 Problém: aaaaa
 
+{"properties": {"misto": "Olomouc hlavní nádraží", "problem": "moc divnych lid"}}
