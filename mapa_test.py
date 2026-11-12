@@ -14,6 +14,17 @@ st.set_page_config(
 
 st.write("Testovací mapa nebezpečných míst.")
 
+# Inicializace vlastních bodů
+if "moje_body" not in st.session_state:
+    st.session_state.moje_body = []
+
+if "cekajici_bod" not in st.session_state:
+    st.session_state.cekajici_bod = None
+
+if "posledni_klik" not in st.session_state:
+    st.session_state.posledni_klik = None
+
+
 # Testovací místa
 nebezpecna_mista = [
     {
@@ -43,9 +54,6 @@ nebezpecna_mista = [
     }
 ]
 
-# Uložení vlastních bodů
-if "moje_body" not in st.session_state:
-    st.session_state.moje_body = []
 
 # Načtení GeoJSON souboru
 with open(
@@ -53,6 +61,7 @@ with open(
     encoding="utf-8"
 ) as f:
     geojson = json.load(f)
+
 
 # Získání souřadnic jednotlivých bodů
 rows = []
@@ -70,8 +79,10 @@ for feature in geojson["features"]:
                 "typ_ident": feature["properties"].get("typ_ident")
             })
 
+
 # Převod dat na tabulku
 df = pd.DataFrame(rows)
+
 
 # Barvy podle kategorie
 barvy = {
@@ -81,6 +92,7 @@ barvy = {
 
 df["barva"] = df["typ_ident"].map(barvy)
 
+
 # Boční panel – filtrování
 st.sidebar.title("Nastavení mapy")
 
@@ -88,6 +100,7 @@ vyber = st.sidebar.selectbox(
     "Zobrazit místa:",
     ["Vše", "Noc", "Den"]
 )
+
 
 # Výběr bodů podle filtru
 if vyber == "Noc":
@@ -99,12 +112,58 @@ elif vyber == "Den":
 else:
     df_mapa = df
 
+
 # Uložení vybraného bodu
 if "vybrany_bod" not in st.session_state:
     st.session_state.vybrany_bod = None
 
+
+# Vyskakovací okénko pro nový bod
+@st.dialog("Označit nové místo")
+def okno_pro_bod():
+
+    souradnice = st.session_state.cekajici_bod
+
+    st.write("Proč toto místo označujete?")
+
+    st.caption(
+        f"Souřadnice: {souradnice[0]:.6f}, "
+        f"{souradnice[1]:.6f}"
+    )
+
+    duvod = st.text_area(
+        "Důvod označení",
+        placeholder="Popište, proč se zde necítíte bezpečně..."
+    )
+
+    if st.button("Uložit bod"):
+
+        if duvod.strip():
+
+            st.session_state.moje_body.append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        souradnice[1],
+                        souradnice[0]
+                    ]
+                },
+                "properties": {
+                    "duvod": duvod
+                }
+            })
+
+            st.session_state.cekajici_bod = None
+            st.rerun()
+
+        else:
+            st.warning("Nejdříve napište důvod označení.")
+
+
 # Rozdělení obrazovky
 levy_sloupec, pravy_sloupec = st.columns([2, 1])
+
 
 # Levý sloupec – mapa
 with levy_sloupec:
@@ -115,6 +174,7 @@ with levy_sloupec:
         location=[49.5938, 17.2509],
         zoom_start=12
     )
+
 
     # Vykreslení GeoJSON bodů
     for index, misto in df_mapa.iterrows():
@@ -138,6 +198,7 @@ with levy_sloupec:
             popup=f"Typ identifikace: {misto['typ_ident']}"
         ).add_to(mapa)
 
+
     # Vykreslení testovacích bodů
     for index, misto in enumerate(nebezpecna_mista):
 
@@ -154,10 +215,12 @@ with levy_sloupec:
             )
         ).add_to(mapa)
 
+
     # Skupina pro vlastní body uživatelů
     uzivatelske_body = folium.FeatureGroup(
         name="Vlastní body"
     )
+
 
     # Vykreslení již vytvořených vlastních bodů
     for index, bod in enumerate(st.session_state.moje_body):
@@ -167,16 +230,23 @@ with levy_sloupec:
         lon = souradnice[0]
         lat = souradnice[1]
 
+        duvod = bod.get("properties", {}).get(
+            "duvod",
+            "Vlastní označené místo"
+        )
+
         folium.Marker(
             location=[lat, lon],
             tooltip=f"Vlastní bod {index + 1}",
-            popup=f"Vlastní bod {index + 1}",
+            popup=duvod,
             icon=folium.Icon(color="green")
         ).add_to(uzivatelske_body)
 
+
     uzivatelske_body.add_to(mapa)
 
-    # Nástroj pro vytváření, přesouvání a mazání bodů
+
+    # Nástroj pro přesouvání a mazání bodů
     Draw(
         feature_group=uzivatelske_body,
         export=False,
@@ -187,7 +257,7 @@ with levy_sloupec:
             "rectangle": False,
             "circle": False,
             "circlemarker": False,
-            "marker": True
+            "marker": False
         },
         edit_options={
             "edit": True,
@@ -195,16 +265,38 @@ with levy_sloupec:
         }
     ).add_to(mapa)
 
-    # Zobrazení mapy
+
+    # Zobrazení mapy a získání kliknutí
     output = st_folium(
         mapa,
         width=None,
         height=600,
-        returned_objects=["all_drawings"],
+        returned_objects=["all_drawings", "last_clicked"],
         key="mapa"
     )
 
-    # Uložení vytvořených a upravených bodů
+
+    # Zpracování kliknutí na mapu
+    kliknuti = output.get("last_clicked")
+
+    if kliknuti:
+
+        podpis = (
+            round(kliknuti["lat"], 6),
+            round(kliknuti["lng"], 6)
+        )
+
+        if podpis != st.session_state.posledni_klik:
+
+            st.session_state.posledni_klik = podpis
+
+            st.session_state.cekajici_bod = [
+                kliknuti["lat"],
+                kliknuti["lng"]
+            ]
+
+
+    # Uložení upravených a přesunutých bodů
     nove_body = output.get("all_drawings")
 
     if nove_body is not None:
@@ -214,7 +306,6 @@ with levy_sloupec:
 
         if nove_body != st.session_state.moje_body:
             st.session_state.moje_body = nove_body
-            st.rerun()
 
 
 # Pravý sloupec – informace
@@ -269,7 +360,13 @@ with pravy_sloupec:
 
         souradnice = bod["geometry"]["coordinates"]
 
+        duvod = bod.get("properties", {}).get(
+            "duvod",
+            "Bez popisu"
+        )
+
         st.write(f"**Vlastní bod {index + 1}**")
+        st.write(f"Důvod: {duvod}")
 
         st.caption(
             f"Zeměpisná šířka: {souradnice[1]:.6f}, "
@@ -278,3 +375,8 @@ with pravy_sloupec:
 
     if len(st.session_state.moje_body) == 0:
         st.info("Zatím nebyl vytvořen žádný vlastní bod.")
+
+
+# Otevření okénka po kliknutí na mapu
+if st.session_state.cekajici_bod is not None:
+    okno_pro_bod()
