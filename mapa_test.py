@@ -4,18 +4,47 @@ from streamlit_folium import st_folium
 import json
 import pandas as pd
 from folium.plugins import Draw
+from supabase import create_client
 
 # Nastavení stránky
 st.set_page_config(
     page_title="Nebezpečná místa – Olomouc",
     layout="wide"
 )
+supabase = create_client(
+    st.secrets["SUPABASE_URL"],
+    st.secrets["SUPABASE_KEY"]
+)
 
 st.write("Testovací mapa nebezpečných míst.")
 
+def nacti_body():
+    radky = (
+        supabase.table("vlastni_body")
+        .select("id,nazev,duvod,lat,lon")
+        .execute()
+        .data
+    ) or []
+
+    return [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [radek["lon"], radek["lat"]]
+            },
+            "properties": {
+                "id": radek["id"],
+                "nazev": radek["nazev"],
+                "duvod": radek["duvod"]
+            }
+        }
+        for radek in radky
+    ]
+
 # Inicializace vlastních bodů
 if "moje_body" not in st.session_state:
-    st.session_state.moje_body = []
+    st.session_state.moje_body = nacti_body()
 
 if "cekajici_bod" not in st.session_state:
     st.session_state.cekajici_bod = None
@@ -163,20 +192,14 @@ def okno_pro_bod(lat, lon):
 
         if nazev.strip() and duvod.strip():
 
-            st.session_state.moje_body.append({
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        lon,
-                        lat
-                    ]
-                },
-                "properties": {
-                    "nazev": nazev,
-                    "duvod": duvod
-                }
-            })
+            supabase.table("vlastni_body").insert({
+                "nazev": nazev.strip(),
+                "duvod": duvod.strip(),
+                "lat": lat,
+                "lon": lon
+            }).execute()
+
+            st.session_state.moje_body = nacti_body()
 
             # Po uložení se režim přidávání vypne
             st.session_state.rezim_pridani = False
