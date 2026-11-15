@@ -79,7 +79,8 @@ for feature in geojson["features"]:
             rows.append({
                 "latitude": lat,
                 "longitude": lon,
-                "typ_ident": feature["properties"].get("typ_ident")
+                "typ_ident": feature["properties"].get("typ_ident"),
+                "typ_nazev": feature["properties"].get("typ_nazev")
             })
 
 
@@ -219,7 +220,8 @@ with levy_sloupec:
             fill=True,
             fill_color=barva_bodu,
             fill_opacity=0.8,
-            popup=f"Typ identifikace: {misto['typ_ident']}"
+            popup=f"Typ nazev: {misto['typ_nazev']}",
+            tooltip=misto["typ_nazev"]
         ).add_to(mapa)
 
 
