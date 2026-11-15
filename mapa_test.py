@@ -1,4 +1,3 @@
-
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
@@ -23,6 +22,10 @@ if "cekajici_bod" not in st.session_state:
 
 if "posledni_klik" not in st.session_state:
     st.session_state.posledni_klik = None
+
+# Režim přidávání bodu (zapíná se tlačítkem v bočním panelu)
+if "rezim_pridani" not in st.session_state:
+    st.session_state.rezim_pridani = False
 
 
 # Testovací místa
@@ -93,9 +96,27 @@ barvy = {
 df["barva"] = df["typ_ident"].map(barvy)
 
 
-# Boční panel – filtrování
+# Boční panel – nastavení mapy
 st.sidebar.title("Nastavení mapy")
 
+
+# Tlačítko pro zapnutí / vypnutí režimu přidávání bodu
+if not st.session_state.rezim_pridani:
+
+    if st.sidebar.button("📍 Přidat nový bod", use_container_width=True):
+        st.session_state.rezim_pridani = True
+        st.rerun()
+
+else:
+
+    st.sidebar.info("Režim přidávání je zapnutý. Klikněte do mapy.")
+
+    if st.sidebar.button("❌ Zrušit přidávání", use_container_width=True):
+        st.session_state.rezim_pridani = False
+        st.rerun()
+
+
+# Boční panel – filtrování
 vyber = st.sidebar.selectbox(
     "Zobrazit místa:",
     ["Vše", "Noc", "Den"]
@@ -120,45 +141,48 @@ if "vybrany_bod" not in st.session_state:
 
 # Vyskakovací okénko pro nový bod
 @st.dialog("Označit nové místo")
-def okno_pro_bod():
-
-    souradnice = st.session_state.cekajici_bod
-
-    st.write("Proč toto místo označujete?")
+def okno_pro_bod(lat, lon):
 
     st.caption(
-        f"Souřadnice: {souradnice[0]:.6f}, "
-        f"{souradnice[1]:.6f}"
+        f"Souřadnice: {lat:.6f}, "
+        f"{lon:.6f}"
+    )
+
+    nazev = st.text_input(
+        "Název problému",
+        placeholder="Např. Tmavý podchod"
     )
 
     duvod = st.text_area(
-        "Důvod označení",
+        "Popis problému",
         placeholder="Popište, proč se zde necítíte bezpečně..."
     )
 
     if st.button("Uložit bod"):
 
-        if duvod.strip():
+        if nazev.strip() and duvod.strip():
 
             st.session_state.moje_body.append({
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
                     "coordinates": [
-                        souradnice[1],
-                        souradnice[0]
+                        lon,
+                        lat
                     ]
                 },
                 "properties": {
+                    "nazev": nazev,
                     "duvod": duvod
                 }
             })
 
-            st.session_state.cekajici_bod = None
+            # Po uložení se režim přidávání vypne
+            st.session_state.rezim_pridani = False
             st.rerun()
 
         else:
-            st.warning("Nejdříve napište důvod označení.")
+            st.warning("Vyplňte název i popis problému.")
 
 
 # Rozdělení obrazovky
@@ -230,14 +254,22 @@ with levy_sloupec:
         lon = souradnice[0]
         lat = souradnice[1]
 
-        duvod = bod.get("properties", {}).get(
+        vlastnosti = bod.get("properties", {})
+
+        nazev = vlastnosti.get(
+            "nazev",
+            f"Vlastní bod {index + 1}"
+        )
+
+        duvod = vlastnosti.get(
             "duvod",
             "Vlastní označené místo"
         )
 
+        # Stejně jako u testovacích bodů: název v tooltipu, popis v popupu
         folium.Marker(
             location=[lat, lon],
-            tooltip=f"Vlastní bod {index + 1}",
+            tooltip=nazev,
             popup=duvod,
             icon=folium.Icon(color="green")
         ).add_to(uzivatelske_body)
@@ -276,10 +308,10 @@ with levy_sloupec:
     )
 
 
-    # Zpracování kliknutí na mapu
+    # Zpracování kliknutí na mapu – jen v režimu přidávání
     kliknuti = output.get("last_clicked")
 
-    if kliknuti:
+    if kliknuti and st.session_state.rezim_pridani:
 
         podpis = (
             round(kliknuti["lat"], 6),
@@ -360,13 +392,20 @@ with pravy_sloupec:
 
         souradnice = bod["geometry"]["coordinates"]
 
-        duvod = bod.get("properties", {}).get(
+        vlastnosti = bod.get("properties", {})
+
+        nazev = vlastnosti.get(
+            "nazev",
+            f"Vlastní bod {index + 1}"
+        )
+
+        duvod = vlastnosti.get(
             "duvod",
             "Bez popisu"
         )
 
-        st.write(f"**Vlastní bod {index + 1}**")
-        st.write(f"Důvod: {duvod}")
+        st.write(f"**{nazev}**")
+        st.write(f"Popis: {duvod}")
 
         st.caption(
             f"Zeměpisná šířka: {souradnice[1]:.6f}, "
@@ -379,4 +418,10 @@ with pravy_sloupec:
 
 # Otevření okénka po kliknutí na mapu
 if st.session_state.cekajici_bod is not None:
-    okno_pro_bod()
+
+    lat_bodu, lon_bodu = st.session_state.cekajici_bod
+
+    # Vynulujeme hned, aby se okno znovu neotevřelo po zavření křížkem
+    st.session_state.cekajici_bod = None
+
+    okno_pro_bod(lat_bodu, lon_bodu)
