@@ -1,15 +1,15 @@
 import json
 import math
-from pathlib import Path
-
 import folium
 import openrouteservice
 import streamlit as st
+
+from pathlib import Path
 from openrouteservice import convert, exceptions
 from folium.plugins import FastMarkerCluster
 from streamlit_folium import st_folium
 
-
+# nastavení klíče OpenRouteService z .env souboru
 def najdi_trasu(client, start, end, avoid_polygons):
     if not avoid_polygons["coordinates"]:
         return client.directions([start, end], profile="foot-walking")
@@ -101,6 +101,7 @@ for feature in geojson["features"]:
         "souradnice": [lat, lon],
     })
 
+# Nastavení souřadnic startu a cíle
 # OpenRouteService očekává souřadnice ve formátu [lon, lat], ne [lat, lon]
 start = (17.237912, 49.602605)
 end = (17.276758, 49.592780)
@@ -114,6 +115,7 @@ client = openrouteservice.Client(
     key="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
 )
 
+# Najdi trasu po kliknutí na tlačítko, vyhni se nebezpečným místům, pokud jsou k dispozici
 if st.button("Najdi trasu"):
     st.session_state["route"] = najdi_trasu(
         client,
@@ -199,5 +201,5 @@ if route is not None:
     with st.expander("Zobrazit surová JSON data trasy"):
         st.json(route)
 
-
+# Pokud chcete spustit aplikaci, použijte následující příkaz v terminálu:
 # python -m streamlit run navigace_test4.py
