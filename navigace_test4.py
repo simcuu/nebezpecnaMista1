@@ -198,8 +198,6 @@ if route is not None:
 
     st_folium(mapa, width=700, height=500)
 
-    with st.expander("Zobrazit surová JSON data trasy"):
-        st.json(route)
 
 # Pokud chcete spustit aplikaci, použijte následující příkaz v terminálu:
 # python -m streamlit run navigace_test4.py
