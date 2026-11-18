@@ -5,6 +5,7 @@ import json
 import pandas as pd
 from folium.plugins import Draw
 from supabase import create_client
+from navigace_test4 import zobraz_navigaci
 
 # Nastavení stránky
 st.set_page_config(
@@ -109,12 +110,15 @@ for feature in geojson["features"]:
                 "latitude": lat,
                 "longitude": lon,
                 "typ_ident": feature["properties"].get("typ_ident"),
-                "typ_nazev": feature["properties"].get("typ_nazev")
+                "desc_detail_duvod": (
+                    feature["properties"].get("desc_detail_duvod") or ""
+                )
             })
 
 
 # Převod dat na tabulku
 df = pd.DataFrame(rows)
+df["desc_detail_duvod"] = df["desc_detail_duvod"].fillna("")
 
 
 # Barvy podle kategorie
@@ -232,6 +236,7 @@ with levy_sloupec:
         vybran = st.session_state.vybrany_bod == bod_id
 
         barva_bodu = "green" if vybran else misto["barva"]
+        duvod = misto["desc_detail_duvod"]
 
         folium.CircleMarker(
             location=[
@@ -243,8 +248,8 @@ with levy_sloupec:
             fill=True,
             fill_color=barva_bodu,
             fill_opacity=0.8,
-            popup=f"Typ nazev: {misto['typ_nazev']}",
-            tooltip=misto["typ_nazev"]
+            popup=duvod or None,
+            tooltip=duvod or None
         ).add_to(mapa)
 
 
@@ -450,3 +455,12 @@ if st.session_state.cekajici_bod is not None:
     st.session_state.cekajici_bod = None
 
     okno_pro_bod(lat_bodu, lon_bodu)
+
+if "zobrazit_navigaci" not in st.session_state:
+    st.session_state.zobrazit_navigaci = False
+
+if st.button("🧭 Zobrazit navigaci"):
+    st.session_state.zobrazit_navigaci = True
+
+if st.session_state.zobrazit_navigaci:
+    zobraz_navigaci()
