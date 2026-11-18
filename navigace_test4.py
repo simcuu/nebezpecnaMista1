@@ -108,7 +108,7 @@ end = (17.276758, 49.592780)
 avoid_polygons = vytvor_avoid_polygony(
     nebezpecna_mista,
     [start, end],
-    radius_metres=20,
+    radius_metres=15,
 )
 
 client = openrouteservice.Client(
