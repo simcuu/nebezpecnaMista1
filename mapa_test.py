@@ -5,6 +5,7 @@ import json
 import pandas as pd
 from folium.plugins import Draw
 from supabase import create_client
+from navigace_test4 import zobraz_navigaci
 
 # Nastavení stránky
 st.set_page_config(
@@ -454,3 +455,12 @@ if st.session_state.cekajici_bod is not None:
     st.session_state.cekajici_bod = None
 
     okno_pro_bod(lat_bodu, lon_bodu)
+
+if "zobrazit_navigaci" not in st.session_state:
+    st.session_state.zobrazit_navigaci = False
+
+if st.button("🧭 Zobrazit navigaci"):
+    st.session_state.zobrazit_navigaci = True
+
+if st.session_state.zobrazit_navigaci:
+    zobraz_navigaci()
