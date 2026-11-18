@@ -136,6 +136,23 @@ def zobraz_navigaci():
         key="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
     )
 
+    aktualni_filtr = (
+        zobrazit_den,
+        zobrazit_noc,
+    )
+    predchozi_filtr = st.session_state.get("navigace_filtr")
+
+    if predchozi_filtr is not None and predchozi_filtr != aktualni_filtr:
+        if "route" in st.session_state:
+            st.session_state["route"] = najdi_trasu(
+                client,
+                start,
+                end,
+                avoid_polygons,
+            )
+
+    st.session_state["navigace_filtr"] = aktualni_filtr
+
     with pravy_sloupec:
         st.metric("Zobrazeno míst", len(nebezpecna_mista))
 
