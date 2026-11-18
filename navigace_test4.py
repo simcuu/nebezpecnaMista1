@@ -72,35 +72,46 @@ def vytvor_avoid_polygony(mista, koncove_body, radius_metres=80):
     return {"type": "MultiPolygon", "coordinates": polygons}
 
 
-def zobraz_navigaci():
+def zobraz_navigaci(mista_filtr=None):
     st.title("Navigace: Hejčín → Hlavní nádraží")
 
-    # Načtení GeoJSON souboru
-    geojson_path = Path(__file__).with_name("pocit-nebezpeci-olomouc-2.geojson")
-    with geojson_path.open(encoding="utf-8") as f:
-        geojson = json.load(f)
+    if mista_filtr is None:
+        geojson_path = Path(__file__).with_name(
+            "pocit-nebezpeci-olomouc-2.geojson"
+        )
+        with geojson_path.open(encoding="utf-8") as f:
+            geojson = json.load(f)
 
-    # Převod bodů do formátu používaného navigací
-    nebezpecna_mista = []
-    for feature in geojson["features"]:
-        geometry = feature.get("geometry")
-        if not geometry or geometry.get("type") != "Point":
-            continue
+        nebezpecna_mista = []
+        for feature in geojson["features"]:
+            geometry = feature.get("geometry")
+            if not geometry or geometry.get("type") != "Point":
+                continue
 
-        coordinates = geometry.get("coordinates", [])
-        if len(coordinates) < 2:
-            continue
+            coordinates = geometry.get("coordinates", [])
+            if len(coordinates) < 2:
+                continue
 
-        lon, lat = coordinates[:2]
-        if not (16.8 <= lon <= 17.7 and 49.3 <= lat <= 49.9):
-            continue
+            lon, lat = coordinates[:2]
+            if not (16.8 <= lon <= 17.7 and 49.3 <= lat <= 49.9):
+                continue
 
-        properties = feature.get("properties") or {}
-        nebezpecna_mista.append({
-            "nazev mista": properties.get("typ_nazev", "Nebezpečné místo"),
-            "problem mista": properties.get("desc_detail_duvod", ""),
-            "souradnice": [lat, lon],
-        })
+            properties = feature.get("properties") or {}
+            duvod = properties.get("desc_detail_duvod") or ""
+            nebezpecna_mista.append({
+                "nazev mista": duvod,
+                "problem mista": duvod,
+                "souradnice": [lat, lon],
+            })
+    else:
+        nebezpecna_mista = [
+            {
+                "nazev mista": misto["desc_detail_duvod"],
+                "problem mista": misto["desc_detail_duvod"],
+                "souradnice": [misto["latitude"], misto["longitude"]],
+            }
+            for misto in mista_filtr
+        ]
 
     # Nastavení souřadnic startu a cíle
     # OpenRouteService očekává souřadnice ve formátu [lon, lat], ne [lat, lon]
@@ -111,6 +122,18 @@ def zobraz_navigaci():
         [start, end],
         radius_metres=15,
     )
+
+    podpis_filtru = tuple(
+        (
+            misto["souradnice"][0],
+            misto["souradnice"][1],
+            misto["problem mista"],
+        )
+        for misto in nebezpecna_mista
+    )
+    if st.session_state.get("route_filter_signature") != podpis_filtru:
+        st.session_state.pop("route", None)
+        st.session_state["route_filter_signature"] = podpis_filtru
 
     client = openrouteservice.Client(
         key="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
@@ -170,9 +193,11 @@ def zobraz_navigaci():
                     iconAnchor: [6, 6]
                 });
                 var marker = L.marker(new L.LatLng(row[0], row[1]), {icon: icon});
-                var tooltip = document.createElement("div");
-                tooltip.textContent = row[2];
-                marker.bindTooltip(tooltip);
+                if (row[2]) {
+                    var tooltip = document.createElement("div");
+                    tooltip.textContent = row[2];
+                    marker.bindTooltip(tooltip);
+                }
                 if (row[3]) {
                     var popup = document.createElement("div");
                     popup.textContent = row[3];

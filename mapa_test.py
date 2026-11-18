@@ -112,13 +112,44 @@ for feature in geojson["features"]:
                 "typ_ident": feature["properties"].get("typ_ident"),
                 "desc_detail_duvod": (
                     feature["properties"].get("desc_detail_duvod") or ""
-                )
+                ),
             })
 
 
 # Převod dat na tabulku
 df = pd.DataFrame(rows)
-df["desc_detail_duvod"] = df["desc_detail_duvod"].fillna("")
+df["desc_detail_duvod"] = (
+    df["desc_detail_duvod"].fillna("").astype(str).str.strip()
+)
+
+kategorie_slov = {
+    "Lidé a chování": (
+        "bezdomov", "opil", "lidé", "lidi", "lidí", "lidem",
+        "lidech", "ľud", "člověk", "osob", "agres", "podezř",
+        "narkom"
+    ),
+    "Doprava a provoz": (
+        "doprav", "provoz", "auto", "autobus", "silnic", "křižovat",
+        "přechod", "chodník", "tramvaj", "vlak", "cykl"
+    ),
+    "Tma a osvětlení": ("tma", "tmav", "svět", "sviet", "osvět"),
+}
+
+
+def zarad_kategorie(duvod):
+    text = duvod.casefold()
+    if not text:
+        return []
+
+    kategorie = [
+        kategorie
+        for kategorie, slova in kategorie_slov.items()
+        if any(slovo in text for slovo in slova)
+    ]
+    return kategorie or ["Ostatní"]
+
+
+df["kategorie_duvodu"] = df["desc_detail_duvod"].apply(zarad_kategorie)
 
 
 # Barvy podle kategorie
@@ -156,6 +187,11 @@ vyber = st.sidebar.selectbox(
     ["Vše", "Noc", "Den"]
 )
 
+vybrane_kategorie = st.sidebar.multiselect(
+    "Kategorie důvodu:",
+    [*kategorie_slov, "Ostatní"]
+)
+
 
 # Výběr bodů podle filtru
 if vyber == "Noc":
@@ -166,6 +202,16 @@ elif vyber == "Den":
 
 else:
     df_mapa = df
+
+if vybrane_kategorie:
+    df_mapa = df_mapa[
+        df_mapa["kategorie_duvodu"].apply(
+            lambda kategorie: any(
+                vybrana in kategorie
+                for vybrana in vybrane_kategorie
+            )
+        )
+    ]
 
 
 # Uložení vybraného bodu
@@ -459,8 +505,8 @@ if st.session_state.cekajici_bod is not None:
 if "zobrazit_navigaci" not in st.session_state:
     st.session_state.zobrazit_navigaci = False
 
-if st.button("🧭 Zobrazit navigaci"):
+if st.button("🧭 Zobrazit navigaci", width=280):
     st.session_state.zobrazit_navigaci = True
 
 if st.session_state.zobrazit_navigaci:
-    zobraz_navigaci()
+    zobraz_navigaci(df_mapa.to_dict("records"))
