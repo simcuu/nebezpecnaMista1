@@ -100,7 +100,6 @@ def zobraz_navigaci():
             "nazev mista": properties.get("typ_nazev", "Nebezpečné místo"),
             "problem mista": properties.get("desc_detail_duvod", ""),
             "souradnice": [lat, lon],
-            "typ_ident": properties.get("typ_ident"),
         })
 
     if "navigace_start" not in st.session_state:
@@ -119,7 +118,7 @@ def zobraz_navigaci():
             ["Start", "Cíl"],
             key="navigace_bod_k_nastaveni",
         )
-        st.caption("Vyberte Start nebo Cíl a potom klikněte na požadované místo v mapě.")
+        st.caption("Vyberte Start a Cíl a potom klikněte na požadované místo v mapě.")
         start = st.session_state["navigace_start"]
         end = st.session_state["navigace_cil"]
         st.write(
@@ -131,29 +130,7 @@ def zobraz_navigaci():
             + (f"{end[1]:.5f}, {end[0]:.5f}" if end else "nevybrán")
         )
 
-        st.subheader("Filtrovat místa")
-        zobrazit_den = st.checkbox("Den", value=True, key="navigace_den")
-        zobrazit_noc = st.checkbox("Noc", value=True, key="navigace_noc")
-
-        vybrana_kategorie = set()
-        if zobrazit_den:
-            vybrana_kategorie.add("b")
-        if zobrazit_noc:
-            vybrana_kategorie.add("a")
-
-        st.metric(
-            "Zobrazeno míst",
-            sum(
-                1
-                for bod in nebezpecna_mista
-                if bod["typ_ident"] in vybrana_kategorie
-            ),
-        )
-
-    nebezpecna_mista = [
-        bod for bod in nebezpecna_mista
-        if bod["typ_ident"] in vybrana_kategorie
-    ]
+        st.metric("Nebezpečných míst", len(nebezpecna_mista))
 
     client = openrouteservice.Client(
         key="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
@@ -161,7 +138,7 @@ def zobraz_navigaci():
 
     start = st.session_state["navigace_start"]
     end = st.session_state["navigace_cil"]
-    parametry_trasy = (start, end, zobrazit_den, zobrazit_noc)
+    parametry_trasy = (start, end)
     route = st.session_state.get("route")
 
     def prepocitej_trasu():
