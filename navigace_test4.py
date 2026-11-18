@@ -100,12 +100,32 @@ def zobraz_navigaci():
             "nazev mista": properties.get("typ_nazev", "Nebezpečné místo"),
             "problem mista": properties.get("desc_detail_duvod", ""),
             "souradnice": [lat, lon],
+            "typ_ident": properties.get("typ_ident"),
         })
 
     # Nastavení souřadnic startu a cíle
     # OpenRouteService očekává souřadnice ve formátu [lon, lat], ne [lat, lon]
     start = (17.237912, 49.602605)
     end = (17.276758, 49.592780)
+
+    levy_sloupec, pravy_sloupec = st.columns([3, 1])
+
+    with pravy_sloupec:
+        st.subheader("Filtrovat místa")
+        zobrazit_den = st.checkbox("Den", value=True, key="navigace_den")
+        zobrazit_noc = st.checkbox("Noc", value=True, key="navigace_noc")
+
+        vybrana_kategorie = set()
+        if zobrazit_den:
+            vybrana_kategorie.add("b")
+        if zobrazit_noc:
+            vybrana_kategorie.add("a")
+
+    nebezpecna_mista = [
+        bod for bod in nebezpecna_mista
+        if bod["typ_ident"] in vybrana_kategorie
+    ]
+
     avoid_polygons = vytvor_avoid_polygony(
         nebezpecna_mista,
         [start, end],
@@ -116,88 +136,92 @@ def zobraz_navigaci():
         key="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
     )
 
-    # Najdi trasu po kliknutí na tlačítko, vyhni se nebezpečným místům, pokud jsou k dispozici
-    if st.button("Najdi trasu"):
-        st.session_state["route"] = najdi_trasu(
-            client,
-            start,
-            end,
-            avoid_polygons,
-        )
+    with pravy_sloupec:
+        st.metric("Zobrazeno míst", len(nebezpecna_mista))
 
-    route = st.session_state.get("route")
-    if route is not None:
-        summary = route["routes"][0]["summary"]
+    with levy_sloupec:
+        # Najdi trasu po kliknutí na tlačítko, vyhni se nebezpečným místům, pokud jsou k dispozici
+        if st.button("Najdi trasu"):
+            st.session_state["route"] = najdi_trasu(
+                client,
+                start,
+                end,
+                avoid_polygons,
+            )
 
-        st.write("Délka trasy:", summary["distance"], "m")
-        st.write("Doba chůze:", round(summary["duration"] / 60, 1), "minut")
+        route = st.session_state.get("route")
+        if route is not None:
+            summary = route["routes"][0]["summary"]
 
-        geometry_coords = route["routes"][0]["geometry"]
-        decoded = convert.decode_polyline(geometry_coords)
-        folium_coords = [[point[1], point[0]] for point in decoded["coordinates"]]
+            st.write("Délka trasy:", summary["distance"], "m")
+            st.write("Doba chůze:", round(summary["duration"] / 60, 1), "minut")
 
-        mapa = folium.Map(location=[start[1], start[0]], zoom_start=14)
+            geometry_coords = route["routes"][0]["geometry"]
+            decoded = convert.decode_polyline(geometry_coords)
+            folium_coords = [[point[1], point[0]] for point in decoded["coordinates"]]
 
-        folium.Marker(
-            location=[start[1], start[0]],
-            popup="Start: Hejčín",
-            icon=folium.Icon(color="green", icon="play"),
-        ).add_to(mapa)
+            mapa = folium.Map(location=[start[1], start[0]], zoom_start=14)
 
-        folium.Marker(
-            location=[end[1], end[0]],
-            popup="Cíl: Hlavní nádraží",
-            icon=folium.Icon(color="red", icon="stop"),
-        ).add_to(mapa)
+            folium.Marker(
+                location=[start[1], start[0]],
+                popup="Start: Hejčín",
+                icon=folium.Icon(color="green", icon="play"),
+            ).add_to(mapa)
 
-        body_nebezpecnych_mist = [
-            [
-                misto["souradnice"][0],
-                misto["souradnice"][1],
-                misto["nazev mista"],
-                misto["problem mista"],
+            folium.Marker(
+                location=[end[1], end[0]],
+                popup="Cíl: Hlavní nádraží",
+                icon=folium.Icon(color="red", icon="stop"),
+            ).add_to(mapa)
+
+            body_nebezpecnych_mist = [
+                [
+                    misto["souradnice"][0],
+                    misto["souradnice"][1],
+                    misto["nazev mista"],
+                    misto["problem mista"],
+                ]
+                for misto in nebezpecna_mista
             ]
-            for misto in nebezpecna_mista
-        ]
-        FastMarkerCluster(
-            data=body_nebezpecnych_mist,
-            callback="""
-            function (row) {
-                var icon = L.divIcon({
-                    className: "",
-                    html: '<div style="width:10px;height:10px;border-radius:50%;background:#d62728;border:1px solid white;"></div>',
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6]
-                });
-                var marker = L.marker(new L.LatLng(row[0], row[1]), {icon: icon});
-                var tooltip = document.createElement("div");
-                tooltip.textContent = row[2];
-                marker.bindTooltip(tooltip);
-                if (row[3]) {
-                    var popup = document.createElement("div");
-                    popup.textContent = row[3];
-                    marker.bindPopup(popup);
+            FastMarkerCluster(
+                data=body_nebezpecnych_mist,
+                callback="""
+                function (row) {
+                    var icon = L.divIcon({
+                        className: "",
+                        html: '<div style="width:10px;height:10px;border-radius:50%;background:#d62728;border:1px solid white;"></div>',
+                        iconSize: [12, 12],
+                        iconAnchor: [6, 6]
+                    });
+                    var marker = L.marker(new L.LatLng(row[0], row[1]), {icon: icon});
+                    var tooltip = document.createElement("div");
+                    tooltip.textContent = row[2];
+                    marker.bindTooltip(tooltip);
+                    if (row[3]) {
+                        var popup = document.createElement("div");
+                        popup.textContent = row[3];
+                        marker.bindPopup(popup);
+                    }
+                    return marker;
                 }
-                return marker;
-            }
-            """,
-            name="Nebezpečná místa",
-            options={
-                "maxClusterRadius": 60,
-                "animate": False,
-                "spiderfyOnMaxZoom": False,
-                "showCoverageOnHover": False,
-            },
-        ).add_to(mapa)
+                """,
+                name="Nebezpečná místa",
+                options={
+                    "maxClusterRadius": 60,
+                    "animate": False,
+                    "spiderfyOnMaxZoom": False,
+                    "showCoverageOnHover": False,
+                },
+            ).add_to(mapa)
 
-        folium.PolyLine(
-            locations=folium_coords,
-            color="blue",
-            weight=5,
-            opacity=0.7,
-        ).add_to(mapa)
+            folium.PolyLine(
+                locations=folium_coords,
+                color="blue",
+                weight=5,
+                opacity=0.7,
+            ).add_to(mapa)
 
-        st_folium(mapa, width=700, height=500, key="navigace")
+            st_folium(mapa, width=None, height=500, key="navigace")
 
 
     # Pokud chcete spustit aplikaci, použijte následující příkaz v terminálu:
