@@ -97,21 +97,35 @@ def zobraz_navigaci(mista_filtr=None):
                 continue
 
             properties = feature.get("properties") or {}
-            duvod = properties.get("desc_detail_duvod") or ""
+            duvod = (properties.get("desc_detail_duvod") or "").strip()
+            if not duvod:
+                continue
+
             nebezpecna_mista.append({
-                "nazev mista": duvod,
+                "nazev mista": (
+                    properties.get("typ_nazev")
+                    or duvod
+                    or "Nebezpečné místo"
+                ),
                 "problem mista": duvod,
                 "souradnice": [lat, lon],
             })
     else:
-        nebezpecna_mista = [
-            {
-                "nazev mista": misto["desc_detail_duvod"],
-                "problem mista": misto["desc_detail_duvod"],
+        nebezpecna_mista = []
+        for misto in mista_filtr:
+            duvod = (misto.get("desc_detail_duvod") or "").strip()
+            if not duvod:
+                continue
+
+            nebezpecna_mista.append({
+                "nazev mista": (
+                    misto.get("typ_nazev")
+                    or duvod
+                    or "Nebezpečné místo"
+                ),
+                "problem mista": duvod,
                 "souradnice": [misto["latitude"], misto["longitude"]],
-            }
-            for misto in mista_filtr
-        ]
+            })
 
     if "navigace_start" not in st.session_state:
         st.session_state["navigace_start"] = None
