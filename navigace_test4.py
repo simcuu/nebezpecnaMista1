@@ -9,7 +9,9 @@ from openrouteservice import convert, exceptions
 from folium.plugins import FastMarkerCluster
 from streamlit_folium import st_folium
 
-# nastavení klíče OpenRouteService z .env souboru
+ORS_KLIC = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
+
+
 def najdi_trasu(client, start, end, avoid_polygons):
     if not avoid_polygons["coordinates"]:
         return client.directions([start, end], profile="foot-walking")
@@ -72,171 +74,204 @@ def vytvor_avoid_polygony(mista, koncove_body, radius_metres=80):
     return {"type": "MultiPolygon", "coordinates": polygons}
 
 
-def zobraz_navigaci(mista_filtr=None):
-    st.title("Navigace")
+def nacti_mista_z_geojsonu():
+    geojson_path = Path(__file__).with_name("pocit-nebezpeci-olomouc-2.geojson")
+    with geojson_path.open(encoding="utf-8") as f:
+        geojson = json.load(f)
 
-    if mista_filtr is None:
-        geojson_path = Path(__file__).with_name(
-            "pocit-nebezpeci-olomouc-2.geojson"
-        )
-        with geojson_path.open(encoding="utf-8") as f:
-            geojson = json.load(f)
+    mista = []
+    for feature in geojson["features"]:
+        geometry = feature.get("geometry")
+        if not geometry or geometry.get("type") != "Point":
+            continue
 
-        nebezpecna_mista = []
-        for feature in geojson["features"]:
-            geometry = feature.get("geometry")
-            if not geometry or geometry.get("type") != "Point":
-                continue
+        coordinates = geometry.get("coordinates", [])
+        if len(coordinates) < 2:
+            continue
 
-            coordinates = geometry.get("coordinates", [])
-            if len(coordinates) < 2:
-                continue
+        lon, lat = coordinates[:2]
+        if not (16.8 <= lon <= 17.7 and 49.3 <= lat <= 49.9):
+            continue
 
-            lon, lat = coordinates[:2]
-            if not (16.8 <= lon <= 17.7 and 49.3 <= lat <= 49.9):
-                continue
+        properties = feature.get("properties") or {}
+        mista.append({
+            "desc_detail_duvod": properties.get("desc_detail_duvod") or "",
+            "latitude": lat,
+            "longitude": lon,
+        })
+    return mista
 
-            properties = feature.get("properties") or {}
-            duvod = properties.get("desc_detail_duvod") or ""
-            nebezpecna_mista.append({
-                "nazev mista": duvod,
-                "problem mista": duvod,
-                "souradnice": [lat, lon],
-            })
-    else:
-        nebezpecna_mista = [
-            {
-                "nazev mista": misto["desc_detail_duvod"],
-                "problem mista": misto["desc_detail_duvod"],
-                "souradnice": [misto["latitude"], misto["longitude"]],
-            }
-            for misto in mista_filtr
-        ]
 
-    if "navigace_start" not in st.session_state:
-        st.session_state["navigace_start"] = None
-    if "navigace_cil" not in st.session_state:
-        st.session_state["navigace_cil"] = None
-    if "navigace_posledni_klik" not in st.session_state:
-        st.session_state["navigace_posledni_klik"] = None
-    if "navigace_vybirany_bod" not in st.session_state:
-        st.session_state["navigace_vybirany_bod"] = None
+def priprav_mista(mista_filtr):
+    """Převede záznamy z mapy (latitude, longitude, desc_detail_duvod) na formát navigace."""
+    return [
+        {
+            "nazev mista": misto["desc_detail_duvod"],
+            "problem mista": misto["desc_detail_duvod"],
+            "souradnice": [misto["latitude"], misto["longitude"]],
+        }
+        for misto in mista_filtr
+    ]
 
-    levy_sloupec, pravy_sloupec = st.columns([3, 1])
 
-    with pravy_sloupec:
-        st.subheader("Body trasy")
-        if st.button("Zvolit start a cíl", use_container_width=True):
-            st.session_state["navigace_start"] = None
-            st.session_state["navigace_cil"] = None
-            st.session_state["navigace_vybirany_bod"] = "start"
-            st.session_state.pop("route", None)
-            st.session_state.pop("navigace_parametry_trasy", None)
+def inicializuj_stav():
+    for klic in ("navigace_start", "navigace_cil", "navigace_vybirany_bod"):
+        if klic not in st.session_state:
+            st.session_state[klic] = None
 
-        if st.session_state["navigace_vybirany_bod"] == "start":
-            st.info("Klikněte do mapy a vyberte start.")
-        elif st.session_state["navigace_vybirany_bod"] == "cil":
-            st.info("Start je vybrán. Klikněte do mapy a vyberte cíl.")
-        elif (
-            st.session_state["navigace_start"] is not None
-            and st.session_state["navigace_cil"] is not None
-        ):
-            st.success("Start i cíl jsou vybrané. Teď můžete najít trasu.")
 
-        start = st.session_state["navigace_start"]
-        end = st.session_state["navigace_cil"]
-        st.write(
-            "Start: "
-            + (f"{start[1]:.5f}, {start[0]:.5f}" if start else "nevybrán")
-        )
-        st.write(
-            "Cíl: "
-            + (f"{end[1]:.5f}, {end[0]:.5f}" if end else "nevybrán")
-        )
+def zrus_navigaci():
+    st.session_state["navigace_start"] = None
+    st.session_state["navigace_cil"] = None
+    st.session_state["navigace_vybirany_bod"] = None
+    st.session_state.pop("route", None)
+    st.session_state.pop("navigace_parametry_trasy", None)
 
-        st.metric("Nebezpečných míst", len(nebezpecna_mista))
 
-    podpis_filtru = tuple(
-        (
-            misto["souradnice"][0],
-            misto["souradnice"][1],
-            misto["problem mista"],
-        )
-        for misto in nebezpecna_mista
-    )
-    if st.session_state.get("route_filter_signature") != podpis_filtru:
-        st.session_state.pop("route", None)
-        st.session_state["route_filter_signature"] = podpis_filtru
+def ovladani_navigace(nebezpecna_mista):
+    """Vykreslí ovládání navigace do aktuálního kontejneru a vrátí nalezenou trasu (nebo None)."""
+    inicializuj_stav()
 
-    client = openrouteservice.Client(
-        key="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
-    )
+    if st.button("🧭 Zvolit start a cíl", use_container_width=True):
+        zrus_navigaci()
+        st.session_state["navigace_vybirany_bod"] = "start"
 
     start = st.session_state["navigace_start"]
     end = st.session_state["navigace_cil"]
+
+    if st.session_state["navigace_vybirany_bod"] == "start":
+        st.info("Klikněte do mapy a vyberte start.")
+    elif st.session_state["navigace_vybirany_bod"] == "cil":
+        st.info("Start je vybrán. Klikněte do mapy a vyberte cíl.")
+    elif start is not None and end is not None and "route" not in st.session_state:
+        st.success("Start i cíl jsou vybrané. Teď můžete najít trasu.")
+
+    st.caption(
+        "Start: "
+        + (f"{start[1]:.5f}, {start[0]:.5f}" if start else "nevybrán")
+        + "  \nCíl: "
+        + (f"{end[1]:.5f}, {end[0]:.5f}" if end else "nevybrán")
+    )
+
+    # Při změně filtru se trasa přepočítá s novými nebezpečnými místy
+    podpis_filtru = tuple(
+        (m["souradnice"][0], m["souradnice"][1], m["problem mista"])
+        for m in nebezpecna_mista
+    )
+    zmena_filtru = st.session_state.get("route_filter_signature") != podpis_filtru
+    st.session_state["route_filter_signature"] = podpis_filtru
+
     parametry_trasy = (start, end)
     route = st.session_state.get("route")
 
     def prepocitej_trasu():
+        client = openrouteservice.Client(key=ORS_KLIC)
         avoid_polygons = vytvor_avoid_polygony(
             nebezpecna_mista,
             [start, end],
             radius_metres=15,
         )
-        st.session_state["route"] = najdi_trasu(
-            client,
-            start,
-            end,
-            avoid_polygons,
-        )
+        st.session_state["route"] = najdi_trasu(client, start, end, avoid_polygons)
         st.session_state["navigace_parametry_trasy"] = parametry_trasy
+        return st.session_state["route"]
 
-    with pravy_sloupec:
-        if st.button(
+    sloupec_najit, sloupec_zrusit = st.columns(2)
+    with sloupec_najit:
+        najit = st.button(
             "Najít trasu",
             disabled=start is None or end is None,
             use_container_width=True,
-        ):
-            prepocitej_trasu()
-            route = st.session_state["route"]
+        )
+    with sloupec_zrusit:
+        zrusit = st.button(
+            "Zrušit",
+            disabled=start is None and end is None and route is None
+            and st.session_state["navigace_vybirany_bod"] is None,
+            use_container_width=True,
+        )
 
-    if (
-        route is not None
-        and start is not None
-        and end is not None
-        and st.session_state.get("navigace_parametry_trasy") != parametry_trasy
+    if zrusit:
+        zrus_navigaci()
+        st.rerun()
+
+    if najit:
+        route = prepocitej_trasu()
+    elif route is not None and start is not None and end is not None and (
+        zmena_filtru
+        or st.session_state.get("navigace_parametry_trasy") != parametry_trasy
     ):
-        prepocitej_trasu()
-        route = st.session_state["route"]
+        route = prepocitej_trasu()
+
+    return route
+
+
+def vykresli_navigaci(mapa, route):
+    """Přidá do mapy start, cíl a trasu."""
+    start = st.session_state.get("navigace_start")
+    end = st.session_state.get("navigace_cil")
+
+    if start is not None:
+        folium.Marker(
+            location=[start[1], start[0]],
+            popup="Start",
+            icon=folium.Icon(color="green", icon="play"),
+        ).add_to(mapa)
+
+    if end is not None:
+        folium.Marker(
+            location=[end[1], end[0]],
+            popup="Cíl",
+            icon=folium.Icon(color="blue", icon="flag"),
+        ).add_to(mapa)
+
+    if route is not None:
+        decoded = convert.decode_polyline(route["routes"][0]["geometry"])
+        folium.PolyLine(
+            locations=[[bod[1], bod[0]] for bod in decoded["coordinates"]],
+            color="blue",
+            weight=5,
+            opacity=0.7,
+        ).add_to(mapa)
+
+
+def zpracuj_klik_navigace(kliknuti):
+    """Zpracuje kliknutí do mapy při výběru startu/cíle. Vrací True, pokud klik použila navigace."""
+    rezim = st.session_state.get("navigace_vybirany_bod")
+    if rezim is None:
+        return False
+
+    souradnice = (kliknuti["lng"], kliknuti["lat"])
+    if rezim == "start":
+        st.session_state["navigace_start"] = souradnice
+        st.session_state["navigace_vybirany_bod"] = "cil"
+    else:
+        st.session_state["navigace_cil"] = souradnice
+        st.session_state["navigace_vybirany_bod"] = None
+    return True
+
+
+def zobraz_navigaci(mista_filtr=None):
+    """Samostatná stránka navigace (pro testování: python -m streamlit run navigace_test4.py)."""
+    st.title("Navigace")
+
+    if mista_filtr is None:
+        mista_filtr = nacti_mista_z_geojsonu()
+    nebezpecna_mista = priprav_mista(mista_filtr)
+
+    levy_sloupec, pravy_sloupec = st.columns([3, 1])
+
+    with pravy_sloupec:
+        st.subheader("Body trasy")
+        route = ovladani_navigace(nebezpecna_mista)
+        st.metric("Nebezpečných míst", len(nebezpecna_mista))
 
     with levy_sloupec:
         mapa = folium.Map(location=[49.5938, 17.2509], zoom_start=13)
-
-        if start is not None:
-            folium.Marker(
-                location=[start[1], start[0]],
-                popup="Start",
-                icon=folium.Icon(color="green", icon="play"),
-            ).add_to(mapa)
-
-        if end is not None:
-            folium.Marker(
-                location=[end[1], end[0]],
-                popup="Cíl",
-                icon=folium.Icon(color="blue", icon="flag"),
-            ).add_to(mapa)
-
-        body_nebezpecnych_mist = [
-            [
-                misto["souradnice"][0],
-                misto["souradnice"][1],
-                misto["nazev mista"],
-                misto["problem mista"],
-            ]
-            for misto in nebezpecna_mista
-        ]
         FastMarkerCluster(
-            data=body_nebezpecnych_mist,
+            data=[
+                [m["souradnice"][0], m["souradnice"][1], m["nazev mista"], m["problem mista"]]
+                for m in nebezpecna_mista
+            ],
             callback="""
             function (row) {
                 var icon = L.divIcon({
@@ -267,18 +302,10 @@ def zobraz_navigaci(mista_filtr=None):
                 "showCoverageOnHover": False,
             },
         ).add_to(mapa)
+        vykresli_navigaci(mapa, route)
 
         if route is not None:
             summary = route["routes"][0]["summary"]
-            geometry_coords = route["routes"][0]["geometry"]
-            decoded = convert.decode_polyline(geometry_coords)
-            folium_coords = [[point[1], point[0]] for point in decoded["coordinates"]]
-            folium.PolyLine(
-                locations=folium_coords,
-                color="blue",
-                weight=5,
-                opacity=0.7,
-            ).add_to(mapa)
             st.write("Délka trasy:", summary["distance"], "m")
             st.write("Doba chůze:", round(summary["duration"] / 60, 1), "minut")
 
@@ -292,24 +319,12 @@ def zobraz_navigaci(mista_filtr=None):
 
         kliknuti = output.get("last_clicked")
         if kliknuti:
-            podpis_kliku = (
-                round(kliknuti["lat"], 6),
-                round(kliknuti["lng"], 6),
-            )
-            if podpis_kliku != st.session_state["navigace_posledni_klik"]:
+            podpis_kliku = (round(kliknuti["lat"], 6), round(kliknuti["lng"], 6))
+            if podpis_kliku != st.session_state.get("navigace_posledni_klik"):
                 st.session_state["navigace_posledni_klik"] = podpis_kliku
-                souradnice = (kliknuti["lng"], kliknuti["lat"])
-                if st.session_state["navigace_vybirany_bod"] == "start":
-                    st.session_state["navigace_start"] = souradnice
-                    st.session_state["navigace_vybirany_bod"] = "cil"
-                elif st.session_state["navigace_vybirany_bod"] == "cil":
-                    st.session_state["navigace_cil"] = souradnice
-                    st.session_state["navigace_vybirany_bod"] = None
-                st.rerun()
+                if zpracuj_klik_navigace(kliknuti):
+                    st.rerun()
 
-
-    # Pokud chcete spustit aplikaci, použijte následující příkaz v terminálu:
-    # python -m streamlit run navigace_test4.py
 
 if __name__ == "__main__":
     zobraz_navigaci()

@@ -5,7 +5,12 @@ import json
 import pandas as pd
 from folium.plugins import Draw
 from supabase import create_client
-from navigace_test4 import zobraz_navigaci
+from navigace_test4 import (
+    ovladani_navigace,
+    priprav_mista,
+    vykresli_navigaci,
+    zpracuj_klik_navigace,
+)
 
 # Nastavení stránky
 st.set_page_config(
@@ -17,7 +22,56 @@ supabase = create_client(
     st.secrets["SUPABASE_KEY"]
 )
 
-st.write("Testovací mapa nebezpečných míst.")
+# Vzhled legendy a řádku se statistikami
+st.markdown(
+    """
+    <style>
+    /* Menší horní odsazení stránky, aby nadpis byl výš */
+    .block-container,
+    [data-testid="stMainBlockContainer"] {
+        padding-top: 2rem !important;
+    }
+    .legenda {
+        background: #3b2a5c;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin: 4px 0 12px 0;
+    }
+    .legenda-nadpis {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .legenda-polozka {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 6px 0;
+    }
+    .legenda-tecka {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        flex-shrink: 0;
+    }
+    .statistiky {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 28px;
+        background: #1b1726;
+        border: 1px solid #3b2a5c;
+        border-radius: 8px;
+        padding: 8px 16px;
+        margin-top: 8px;
+        font-size: 0.9rem;
+    }
+    .statistiky span b {
+        color: #c9b6f0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 def nacti_body():
     radky = (
@@ -140,6 +194,8 @@ if not st.session_state.rezim_pridani:
 
     if st.sidebar.button("📍 Přidat nový bod", use_container_width=True):
         st.session_state.rezim_pridani = True
+        # Výběr startu/cíle navigace se tím ukončí, aby klik do mapy nebyl dvojznačný
+        st.session_state["navigace_vybirany_bod"] = None
         st.rerun()
 
 else:
@@ -163,6 +219,26 @@ vybrane_kategorie = st.sidebar.multiselect(
 )
 
 
+# Boční panel – legenda
+st.sidebar.markdown(
+    """
+    <div class="legenda">
+        <div class="legenda-nadpis">Legenda</div>
+        <div class="legenda-polozka">
+            <span class="legenda-tecka" style="background:#7B61A8;"></span> Noc
+        </div>
+        <div class="legenda-polozka">
+            <span class="legenda-tecka" style="background:#E5A000;"></span> Den
+        </div>
+        <div class="legenda-polozka">
+            <span class="legenda-tecka" style="background:green;"></span> Vlastní body
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # Výběr bodů podle filtru
 if vyber == "Noc":
     df_mapa = df[df["typ_ident"] == "a"]
@@ -182,6 +258,18 @@ if vybrane_kategorie:
             )
         )
     ]
+
+
+# Boční panel – navigace (pracuje přímo v hlavní mapě)
+with st.sidebar:
+    st.divider()
+    st.subheader("Navigace")
+    route = ovladani_navigace(priprav_mista(df_mapa.to_dict("records")))
+
+# Výběr startu/cíle a přidávání bodu se navzájem vylučují
+if st.session_state.get("navigace_vybirany_bod") and st.session_state.rezim_pridani:
+    st.session_state.rezim_pridani = False
+    st.rerun()
 
 
 # Uložení vybraného bodu
@@ -229,193 +317,179 @@ def okno_pro_bod(lat, lon):
             st.warning("Vyplňte název i popis problému.")
 
 
-# Rozdělení obrazovky
-levy_sloupec, pravy_sloupec = st.columns([2, 1])
+# Mapa přes celou šířku
+st.markdown(
+    '<h1 style="white-space:nowrap; font-size:clamp(1.4rem, 3.2vw, 2.6rem); '
+    'line-height:1.4; overflow:visible; '
+    'margin:0 0 0.4rem 0; padding:0.25em 0 0 0;">NEBEZPEČNÁ MÍSTA V OLOMOUCI</h1>',
+    unsafe_allow_html=True
+)
+
+mapa = folium.Map(
+    location=[49.5938, 17.2509],
+    zoom_start=12
+)
 
 
-# Levý sloupec – mapa
-with levy_sloupec:
+# Vykreslení GeoJSON bodů
+for index, misto in df_mapa.iterrows():
 
-    st.subheader("Mapa Olomouce")
+    bod_id = f"geo_{index}"
 
-    mapa = folium.Map(
-        location=[49.5938, 17.2509],
-        zoom_start=12
-    )
+    vybran = st.session_state.vybrany_bod == bod_id
 
+    barva_bodu = "green" if vybran else misto["barva"]
+    duvod = misto["desc_detail_duvod"]
 
-    # Vykreslení GeoJSON bodů
-    for index, misto in df_mapa.iterrows():
-
-        bod_id = f"geo_{index}"
-
-        vybran = st.session_state.vybrany_bod == bod_id
-
-        barva_bodu = "green" if vybran else misto["barva"]
-        duvod = misto["desc_detail_duvod"]
-
-        folium.CircleMarker(
-            location=[
-                misto["latitude"],
-                misto["longitude"]
-            ],
-            radius=8 if vybran else 5,
-            color=barva_bodu,
-            fill=True,
-            fill_color=barva_bodu,
-            fill_opacity=0.8,
-            popup=duvod or None,
-            tooltip=duvod or None
-        ).add_to(mapa)
-
-
-    # Skupina pro vlastní body uživatelů
-    uzivatelske_body = folium.FeatureGroup(
-        name="Vlastní body"
-    )
-
-
-    # Vykreslení již vytvořených vlastních bodů
-    for index, bod in enumerate(st.session_state.moje_body):
-
-        souradnice = bod["geometry"]["coordinates"]
-
-        lon = souradnice[0]
-        lat = souradnice[1]
-
-        vlastnosti = bod.get("properties", {})
-
-        nazev = vlastnosti.get(
-            "nazev",
-            f"Vlastní bod {index + 1}"
-        )
-
-        duvod = vlastnosti.get(
-            "duvod",
-            "Vlastní označené místo"
-        )
-
-        folium.CircleMarker(
-            location=[lat, lon],
-            radius=5,
-            color="green",
-            fill=True,
-            fill_color="green",
-            fill_opacity=0.8,
-            tooltip=nazev,
-            popup=duvod
-        ).add_to(uzivatelske_body)
-
-
-    uzivatelske_body.add_to(mapa)
-
-
-    # Nástroj pro přesouvání a mazání bodů
-    Draw(
-        feature_group=uzivatelske_body,
-        export=False,
-        position="topleft",
-        draw_options={
-            "polyline": False,
-            "polygon": False,
-            "rectangle": False,
-            "circle": False,
-            "circlemarker": False,
-            "marker": False
-        },
-        edit_options={
-            "edit": True,
-            "remove": True
-        }
+    folium.CircleMarker(
+        location=[
+            misto["latitude"],
+            misto["longitude"]
+        ],
+        radius=8 if vybran else 5,
+        color=barva_bodu,
+        fill=True,
+        fill_color=barva_bodu,
+        fill_opacity=0.8,
+        popup=duvod or None,
+        tooltip=duvod or None
     ).add_to(mapa)
 
 
-    # Zobrazení mapy a získání kliknutí
-    output = st_folium(
-        mapa,
-        width=None,
-        height=600,
-        returned_objects=["all_drawings", "last_clicked"],
-        key="mapa"
+# Skupina pro vlastní body uživatelů
+uzivatelske_body = folium.FeatureGroup(
+    name="Vlastní body"
+)
+
+
+# Vykreslení již vytvořených vlastních bodů
+for index, bod in enumerate(st.session_state.moje_body):
+
+    souradnice = bod["geometry"]["coordinates"]
+
+    lon = souradnice[0]
+    lat = souradnice[1]
+
+    vlastnosti = bod.get("properties", {})
+
+    nazev = vlastnosti.get(
+        "nazev",
+        f"Vlastní bod {index + 1}"
     )
 
+    duvod = vlastnosti.get(
+        "duvod",
+        "Vlastní označené místo"
+    )
 
-    # Zpracování kliknutí na mapu – jen v režimu přidávání
-    kliknuti = output.get("last_clicked")
+    folium.CircleMarker(
+        location=[lat, lon],
+        radius=5,
+        color="green",
+        fill=True,
+        fill_color="green",
+        fill_opacity=0.8,
+        tooltip=nazev,
+        popup=duvod
+    ).add_to(uzivatelske_body)
 
-    if kliknuti and st.session_state.rezim_pridani:
 
-        podpis = (
-            round(kliknuti["lat"], 6),
-            round(kliknuti["lng"], 6)
-        )
+uzivatelske_body.add_to(mapa)
 
-        if podpis != st.session_state.posledni_klik:
 
-            st.session_state.posledni_klik = podpis
+# Start, cíl a trasa navigace
+vykresli_navigaci(mapa, route)
 
+
+# Nástroj pro přesouvání a mazání bodů
+Draw(
+    feature_group=uzivatelske_body,
+    export=False,
+    position="topleft",
+    draw_options={
+        "polyline": False,
+        "polygon": False,
+        "rectangle": False,
+        "circle": False,
+        "circlemarker": False,
+        "marker": False
+    },
+    edit_options={
+        "edit": True,
+        "remove": True
+    }
+).add_to(mapa)
+
+
+# Zobrazení mapy a získání kliknutí
+output = st_folium(
+    mapa,
+    width=None,
+    height=650,
+    use_container_width=True,
+    returned_objects=["all_drawings", "last_clicked"],
+    key="mapa"
+)
+
+
+# Zpracování kliknutí na mapu – výběr startu/cíle nebo přidání bodu
+kliknuti = output.get("last_clicked")
+
+if kliknuti:
+
+    podpis = (
+        round(kliknuti["lat"], 6),
+        round(kliknuti["lng"], 6)
+    )
+
+    if podpis != st.session_state.posledni_klik:
+
+        st.session_state.posledni_klik = podpis
+
+        if zpracuj_klik_navigace(kliknuti):
+            st.rerun()
+
+        elif st.session_state.rezim_pridani:
             st.session_state.cekajici_bod = [
                 kliknuti["lat"],
                 kliknuti["lng"]
             ]
 
 
-    # Uložení upravených a přesunutých bodů
-    nove_body = output.get("all_drawings")
+# Uložení upravených a přesunutých bodů
+nove_body = output.get("all_drawings")
 
-    if nove_body is not None:
+if nove_body is not None:
 
-        if isinstance(nove_body, dict):
-            nove_body = nove_body.get("features", [])
+    if isinstance(nove_body, dict):
+        nove_body = nove_body.get("features", [])
 
-        if nove_body != st.session_state.moje_body:
-            st.session_state.moje_body = nove_body
-
-
-# Pravý sloupec – informace
-with pravy_sloupec:
-
-    st.subheader("Informace o datech")
-
-    st.metric(
-        "Počet zobrazených míst",
-        len(df_mapa)
-    )
-
-    st.metric(
-        "Celkový počet míst",
-        len(df)
-    )
-
-    st.metric(
-        "Počet vlastních bodů",
-        len(st.session_state.moje_body)
-    )
-
-    st.write("Legenda:")
-
-    st.markdown(
-        '<span style="color:#7B61A8;">●</span> Noc',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<span style="color:#E5A000;">●</span> Den',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<span style="color:green;">●</span> Vlastní body',
-        unsafe_allow_html=True
-    )
+    if nove_body != st.session_state.moje_body:
+        st.session_state.moje_body = nove_body
 
 
+# Řádek se statistikami pod mapou
+statistiky = [
+    f"Zobrazená místa: <b>{len(df_mapa)}</b>",
+    f"Celkem míst: <b>{len(df)}</b>",
+    f"Vlastní body: <b>{len(st.session_state.moje_body)}</b>",
+]
 
-    st.divider()
+if route is not None:
+    souhrn = route["routes"][0]["summary"]
+    statistiky.append(f"Délka trasy: <b>{souhrn['distance'] / 1000:.2f} km</b>")
+    statistiky.append(f"Doba chůze: <b>{round(souhrn['duration'] / 60)} min</b>")
 
-    st.subheader("Vlastní body")
+st.markdown(
+    '<div class="statistiky">'
+    + "".join(f"<span>{polozka}</span>" for polozka in statistiky)
+    + "</div>",
+    unsafe_allow_html=True
+)
 
-    st.write("Body, které vytvořil uživatel:")
+
+# Seznam vlastních bodů (sbalitelný, aby nezabíral místo)
+with st.expander(f"Vlastní body ({len(st.session_state.moje_body)})"):
 
     for index, bod in enumerate(st.session_state.moje_body):
 
@@ -433,8 +507,7 @@ with pravy_sloupec:
             "Bez popisu"
         )
 
-        st.write(f"**{nazev}**")
-        st.write(f"Popis: {duvod}")
+        st.write(f"**{nazev}** – {duvod}")
 
         st.caption(
             f"Zeměpisná šířka: {souradnice[1]:.6f}, "
@@ -450,17 +523,7 @@ if st.session_state.cekajici_bod is not None:
 
     lat_bodu, lon_bodu = st.session_state.cekajici_bod
 
-# Vynulujeme hned, aby se okno znovu neotevřelo po zavření křížkem
+    # Vynulujeme hned, aby se okno znovu neotevřelo po zavření křížkem
     st.session_state.cekajici_bod = None
 
     okno_pro_bod(lat_bodu, lon_bodu)
-
-if "zobrazit_navigaci" not in st.session_state:
-    st.session_state.zobrazit_navigaci = False
-
-if st.button("🧭 Zobrazit navigaci", width=280):
-    st.session_state.zobrazit_navigaci = True
-
-if st.session_state.zobrazit_navigaci:
-    zobraz_navigaci(df_mapa.to_dict("records"))
-
