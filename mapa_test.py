@@ -112,41 +112,6 @@ if "rezim_pridani" not in st.session_state:
     st.session_state.rezim_pridani = False
 
 
-# Načtení GeoJSON souboru
-with open(
-    "pocit-nebezpeci-olomouc-2.geojson",
-    encoding="utf-8"
-) as f:
-    geojson = json.load(f)
-
-
-# Získání souřadnic jednotlivých bodů
-rows = []
-
-for feature in geojson["features"]:
-    geometry = feature.get("geometry")
-
-    if geometry and geometry["type"] == "Point":
-        lon, lat = geometry["coordinates"][:2]
-
-        if 16.8 <= lon <= 17.7 and 49.3 <= lat <= 49.9:
-            rows.append({
-                "latitude": lat,
-                "longitude": lon,
-                "typ_ident": feature["properties"].get("typ_ident"),
-                "typ_nazev": feature["properties"].get("typ_nazev") or "",
-                "desc_detail_duvod": (
-                    feature["properties"].get("desc_detail_duvod") or ""
-                ),
-            })
-
-
-# Převod dat na tabulku
-df = pd.DataFrame(rows)
-df["desc_detail_duvod"] = (
-    df["desc_detail_duvod"].fillna("").astype(str).str.strip()
-)
-
 kategorie_slov = {
     "Lidé a chování": (
         "bezdomov", "opil", "lidé", "lidi", "lidí", "lidem",
@@ -174,16 +139,52 @@ def zarad_kategorie(duvod):
     return kategorie or ["Ostatní"]
 
 
-df["kategorie_duvodu"] = df["desc_detail_duvod"].apply(zarad_kategorie)
-
-
 # Barvy podle kategorie
 barvy = {
     "a": "#7B61A8",
     "b": "#E5A000",
 }
 
-df["barva"] = df["typ_ident"].map(barvy)
+
+# Načtení a zpracování GeoJSON souboru.
+# @st.cache_data: soubor se přečte jen jednou, při dalších klicích se vezme hotová tabulka z paměti.
+@st.cache_data
+def nacti_data():
+    with open(
+        "pocit-nebezpeci-olomouc-2.geojson",
+        encoding="utf-8"
+    ) as f:
+        geojson = json.load(f)
+
+    rows = []
+
+    for feature in geojson["features"]:
+        geometry = feature.get("geometry")
+
+        if geometry and geometry["type"] == "Point":
+            lon, lat = geometry["coordinates"][:2]
+
+            if 16.8 <= lon <= 17.7 and 49.3 <= lat <= 49.9:
+                rows.append({
+                    "latitude": lat,
+                    "longitude": lon,
+                    "typ_ident": feature["properties"].get("typ_ident"),
+                    "typ_nazev": feature["properties"].get("typ_nazev") or "",
+                    "desc_detail_duvod": (
+                        feature["properties"].get("desc_detail_duvod") or ""
+                    ),
+                })
+
+    df = pd.DataFrame(rows)
+    df["desc_detail_duvod"] = (
+        df["desc_detail_duvod"].fillna("").astype(str).str.strip()
+    )
+    df["kategorie_duvodu"] = df["desc_detail_duvod"].apply(zarad_kategorie)
+    df["barva"] = df["typ_ident"].map(barvy).fillna("#888888")
+    return df
+
+
+df = nacti_data()
 
 
 # Boční panel – nastavení mapy
@@ -273,11 +274,6 @@ if st.session_state.get("navigace_vybirany_bod") and st.session_state.rezim_prid
     st.rerun()
 
 
-# Uložení vybraného bodu
-if "vybrany_bod" not in st.session_state:
-    st.session_state.vybrany_bod = None
-
-
 # Vyskakovací okénko pro nový bod
 @st.dialog("Označit nové místo")
 def okno_pro_bod(lat, lon):
@@ -332,29 +328,39 @@ mapa = folium.Map(
 )
 
 
-# Vykreslení GeoJSON bodů
-for index, misto in df_mapa.iterrows():
+# Vykreslení nebezpečných míst jako JEDNÉ GeoJSON vrstvy.
+# (Dřív byl každý bod samostatný CircleMarker = ~1000 objektů a překreslení trvalo několik sekund.)
+body_geojson = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": [lon, lat]},
+            "properties": {
+                "duvod": duvod or "(bez popisu)",
+                "barva": barva,
+            },
+        }
+        for lat, lon, duvod, barva in zip(
+            df_mapa["latitude"],
+            df_mapa["longitude"],
+            df_mapa["desc_detail_duvod"],
+            df_mapa["barva"],
+        )
+    ],
+}
 
-    bod_id = f"geo_{index}"
-
-    vybran = st.session_state.vybrany_bod == bod_id
-
-    barva_bodu = "green" if vybran else misto["barva"]
-    duvod = misto["desc_detail_duvod"]
-
-    folium.CircleMarker(
-        location=[
-            misto["latitude"],
-            misto["longitude"]
-        ],
-        radius=8 if vybran else 5,
-        color=barva_bodu,
-        fill=True,
-        fill_color=barva_bodu,
-        fill_opacity=0.8,
-        popup=duvod or None,
-        tooltip=duvod or None
-    ).add_to(mapa)
+folium.GeoJson(
+    body_geojson,
+    name="Nebezpečná místa",
+    marker=folium.CircleMarker(radius=5, fill=True, fill_opacity=0.8),
+    style_function=lambda bod: {
+        "color": bod["properties"]["barva"],
+        "fillColor": bod["properties"]["barva"],
+    },
+    tooltip=folium.GeoJsonTooltip(fields=["duvod"], labels=False),
+    popup=folium.GeoJsonPopup(fields=["duvod"], labels=False),
+).add_to(mapa)
 
 
 # Skupina pro vlastní body uživatelů
