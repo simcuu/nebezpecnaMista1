@@ -151,7 +151,7 @@ def ovladani_navigace(nebezpecna_mista):
     elif st.session_state["navigace_vybirany_bod"] == "cil":
         st.info("Start je vybrán. Klikněte do mapy a vyberte cíl.")
     elif start is not None and end is not None and "route" not in st.session_state:
-        st.success("Start i cíl jsou vybrané. Teď můžete najít trasu.")
+        st.info("Start i cíl jsou vybrané, hledám trasu.")
 
     st.caption(
         "Start: "
@@ -182,32 +182,24 @@ def ovladani_navigace(nebezpecna_mista):
         st.session_state["navigace_parametry_trasy"] = parametry_trasy
         return st.session_state["route"]
 
-    sloupec_najit, sloupec_zrusit = st.columns(2)
-    with sloupec_najit:
-        najit = st.button(
-            "Najít trasu",
-            disabled=start is None or end is None,
-            use_container_width=True,
-        )
-    with sloupec_zrusit:
-        zrusit = st.button(
-            "Zrušit",
-            disabled=start is None and end is None and route is None
-            and st.session_state["navigace_vybirany_bod"] is None,
-            use_container_width=True,
-        )
+    zrusit = st.button(
+        "Zrušit",
+        disabled=start is None and end is None and route is None
+        and st.session_state["navigace_vybirany_bod"] is None,
+        use_container_width=True,
+    )
 
     if zrusit:
         zrus_navigaci()
         st.rerun()
 
-    if najit:
-        route = prepocitej_trasu()
-    elif route is not None and start is not None and end is not None and (
-        zmena_filtru
+    if start is not None and end is not None and (
+        route is None
+        or zmena_filtru
         or st.session_state.get("navigace_parametry_trasy") != parametry_trasy
     ):
-        route = prepocitej_trasu()
+        with st.spinner("Hledám trasu..."):
+            route = prepocitej_trasu()
 
     return route
 
