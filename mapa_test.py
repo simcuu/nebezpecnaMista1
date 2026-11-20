@@ -192,6 +192,52 @@ vybrane_kategorie = st.sidebar.multiselect(
     [*kategorie_slov, "Ostatní"]
 )
 
+st.sidebar.markdown(
+    """
+    <div style="background:#3B2454; border:1px solid #7B61A8;
+                border-radius:10px; padding:12px; color:white;">
+        <div style="font-size:18px; font-weight:600; margin-bottom:10px;">
+            Legenda
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:16px;">
+            <span style="display:flex; align-items:center; gap:9px;">
+                <span style="display:inline-flex; align-items:center;
+                             justify-content:center; width:28px; height:28px;
+                             border-radius:50%;">
+                    <span style="color:#7B61A8; font-size:24px;">●</span>
+                </span>
+                Noc
+            </span>
+            <span style="display:flex; align-items:center; gap:9px;">
+                <span style="display:inline-flex; align-items:center;
+                             justify-content:center; width:28px; height:28px;
+                             border-radius:50%;">
+                    <span style="color:#E5A000; font-size:24px;">●</span>
+                </span>
+                Den
+            </span>
+            <span style="display:flex; align-items:center; gap:9px;">
+                <span style="display:inline-flex; align-items:center;
+                             justify-content:center; width:28px; height:28px;
+                             border-radius:50%;">
+                    <span style="color:green; font-size:24px;">●</span>
+                </span>
+                Vlastní body
+            </span>
+            <span style="display:flex; align-items:center; gap:9px;">
+                <span style="display:inline-flex; align-items:center;
+                             justify-content:center; width:28px; height:28px;
+                             border-radius:50%;">
+                    <span style="color:red; font-size:24px;">●</span>
+                </span>
+                Testovací místa
+            </span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # Výběr bodů podle filtru
 if vyber == "Noc":
@@ -259,11 +305,11 @@ def okno_pro_bod(lat, lon):
             st.warning("Vyplňte název i popis problému.")
 
 
-# Rozdělení obrazovky
-levy_sloupec, pravy_sloupec = st.columns([2, 1])
+# Mapa přes celou šířku stránky
+levy_sloupec = st.container()
 
 
-# Levý sloupec – mapa
+# Mapa
 with levy_sloupec:
 
     st.subheader("Mapa Olomouce")
@@ -416,80 +462,38 @@ with levy_sloupec:
             st.session_state.moje_body = nove_body
 
 
-# Pravý sloupec – informace
-with pravy_sloupec:
+st.divider()
 
-    st.subheader("Informace o datech")
+# Souhrnné informace v kompaktním řádku
+informace = st.columns([1, 1, 1, 2])
+with informace[0]:
+    st.caption("Zobrazená místa")
+    st.write(f"**{len(df_mapa)}**")
 
-    st.metric(
-        "Počet zobrazených míst",
-        len(df_mapa)
-    )
+with informace[1]:
+    st.caption("Celkem míst")
+    st.write(f"**{len(df)}**")
 
-    st.metric(
-        "Celkový počet míst",
-        len(df)
-    )
+with informace[2]:
+    st.caption("Vlastní body")
+    st.write(f"**{len(st.session_state.moje_body)}**")
 
-    st.metric(
-        "Počet vlastních bodů",
-        len(st.session_state.moje_body)
-    )
+with informace[3]:
+    with st.expander("Zobrazit vlastní body"):
+        for index, bod in enumerate(st.session_state.moje_body):
+            souradnice = bod["geometry"]["coordinates"]
+            vlastnosti = bod.get("properties", {})
+            nazev = vlastnosti.get("nazev", f"Vlastní bod {index + 1}")
+            duvod = vlastnosti.get("duvod", "Bez popisu")
 
-    st.write("Legenda:")
+            st.write(f"**{nazev}** — {duvod}")
+            st.caption(
+                f"Šířka: {souradnice[1]:.6f}, "
+                f"délka: {souradnice[0]:.6f}"
+            )
 
-    st.markdown(
-        '<span style="color:#7B61A8;">●</span> Noc',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<span style="color:#E5A000;">●</span> Den',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<span style="color:green;">●</span> Vlastní body',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<span style="color:red;">●</span> Testovací místa',
-        unsafe_allow_html=True
-    )
-
-    st.divider()
-
-    st.subheader("Vlastní body")
-
-    st.write("Body, které vytvořil uživatel:")
-
-    for index, bod in enumerate(st.session_state.moje_body):
-
-        souradnice = bod["geometry"]["coordinates"]
-
-        vlastnosti = bod.get("properties", {})
-
-        nazev = vlastnosti.get(
-            "nazev",
-            f"Vlastní bod {index + 1}"
-        )
-
-        duvod = vlastnosti.get(
-            "duvod",
-            "Bez popisu"
-        )
-
-        st.write(f"**{nazev}**")
-        st.write(f"Popis: {duvod}")
-
-        st.caption(
-            f"Zeměpisná šířka: {souradnice[1]:.6f}, "
-            f"zeměpisná délka: {souradnice[0]:.6f}"
-        )
-
-    if len(st.session_state.moje_body) == 0:
-        st.info("Zatím nebyl vytvořen žádný vlastní bod.")
+        if not st.session_state.moje_body:
+            st.caption("Zatím nebyl vytvořen žádný vlastní bod.")
 
 
 # Otevření okénka po kliknutí na mapu
@@ -510,3 +514,4 @@ if st.button("🧭 Zobrazit navigaci", width=280):
 
 if st.session_state.zobrazit_navigaci:
     zobraz_navigaci(df_mapa.to_dict("records"))
+    
