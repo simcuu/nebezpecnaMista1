@@ -134,6 +134,7 @@ for feature in geojson["features"]:
                 "latitude": lat,
                 "longitude": lon,
                 "typ_ident": feature["properties"].get("typ_ident"),
+                "typ_nazev": feature["properties"].get("typ_nazev") or "",
                 "desc_detail_duvod": (
                     feature["properties"].get("desc_detail_duvod") or ""
                 ),
