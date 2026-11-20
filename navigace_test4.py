@@ -95,6 +95,7 @@ def nacti_mista_z_geojsonu():
 
         properties = feature.get("properties") or {}
         mista.append({
+            "typ_nazev": properties.get("typ_nazev") or "",
             "desc_detail_duvod": properties.get("desc_detail_duvod") or "",
             "latitude": lat,
             "longitude": lon,
@@ -102,16 +103,22 @@ def nacti_mista_z_geojsonu():
     return mista
 
 
+
 def priprav_mista(mista_filtr):
-    """Převede záznamy z mapy (latitude, longitude, desc_detail_duvod) na formát navigace."""
-    return [
-        {
-            "nazev mista": misto["desc_detail_duvod"],
-            "problem mista": misto["desc_detail_duvod"],
+    """Převede záznamy z mapy (latitude, longitude, desc_detail_duvod, typ_nazev)
+    na formát navigace. Místa bez popisu důvodu se vynechají."""
+    nebezpecna_mista = []
+    for misto in mista_filtr:
+        duvod = (misto.get("desc_detail_duvod") or "").strip()
+        if not duvod:
+            continue
+
+        nebezpecna_mista.append({
+            "nazev mista": misto.get("typ_nazev") or duvod or "Nebezpečné místo",
+            "problem mista": duvod,
             "souradnice": [misto["latitude"], misto["longitude"]],
-        }
-        for misto in mista_filtr
-    ]
+        })
+    return nebezpecna_mista
 
 
 def inicializuj_stav():
