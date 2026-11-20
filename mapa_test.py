@@ -58,36 +58,6 @@ if "rezim_pridani" not in st.session_state:
     st.session_state.rezim_pridani = False
 
 
-# Testovací místa
-nebezpecna_mista = [
-    {
-        "nazev mista": "1. Hlavní nádraží Olomouc",
-        "problem mista": "výskyt bezdomovců",
-        "souradnice": [49.5920467, 17.2778131]
-    },
-    {
-        "nazev mista": "2. Lazce",
-        "problem mista": "riziko střetu s raketou",
-        "souradnice": [49.6020331, 17.2496403]
-    },
-    {
-        "nazev mista": "3. Věznice",
-        "problem mista": "riziko střetu s vězni",
-        "souradnice": [49.5920275, 17.2483156]
-    },
-    {
-        "nazev mista": "4. Hospoda",
-        "problem mista": "výskyt zajímavých podnapilých lidí",
-        "souradnice": [49.6043722, 17.2522578]
-    },
-    {
-        "nazev mista": "5. Frajtovo náměstí",
-        "problem mista": "hrůzostrašný pán",
-        "souradnice": [49.6120267, 17.2575600]
-    }
-]
-
-
 # Načtení GeoJSON souboru
 with open(
     "pocit-nebezpeci-olomouc-2.geojson",
@@ -192,52 +162,6 @@ vybrane_kategorie = st.sidebar.multiselect(
     [*kategorie_slov, "Ostatní"]
 )
 
-st.sidebar.markdown(
-    """
-    <div style="background:#3B2454; border:1px solid #7B61A8;
-                border-radius:10px; padding:12px; color:white;">
-        <div style="font-size:18px; font-weight:600; margin-bottom:10px;">
-            Legenda
-        </div>
-        <div style="display:flex; flex-direction:column; gap:8px; font-size:16px;">
-            <span style="display:flex; align-items:center; gap:9px;">
-                <span style="display:inline-flex; align-items:center;
-                             justify-content:center; width:28px; height:28px;
-                             border-radius:50%;">
-                    <span style="color:#7B61A8; font-size:24px;">●</span>
-                </span>
-                Noc
-            </span>
-            <span style="display:flex; align-items:center; gap:9px;">
-                <span style="display:inline-flex; align-items:center;
-                             justify-content:center; width:28px; height:28px;
-                             border-radius:50%;">
-                    <span style="color:#E5A000; font-size:24px;">●</span>
-                </span>
-                Den
-            </span>
-            <span style="display:flex; align-items:center; gap:9px;">
-                <span style="display:inline-flex; align-items:center;
-                             justify-content:center; width:28px; height:28px;
-                             border-radius:50%;">
-                    <span style="color:green; font-size:24px;">●</span>
-                </span>
-                Vlastní body
-            </span>
-            <span style="display:flex; align-items:center; gap:9px;">
-                <span style="display:inline-flex; align-items:center;
-                             justify-content:center; width:28px; height:28px;
-                             border-radius:50%;">
-                    <span style="color:red; font-size:24px;">●</span>
-                </span>
-                Testovací místa
-            </span>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
 
 # Výběr bodů podle filtru
 if vyber == "Noc":
@@ -305,11 +229,11 @@ def okno_pro_bod(lat, lon):
             st.warning("Vyplňte název i popis problému.")
 
 
-# Mapa přes celou šířku stránky
-levy_sloupec = st.container()
+# Rozdělení obrazovky
+levy_sloupec, pravy_sloupec = st.columns([2, 1])
 
 
-# Mapa
+# Levý sloupec – mapa
 with levy_sloupec:
 
     st.subheader("Mapa Olomouce")
@@ -345,23 +269,6 @@ with levy_sloupec:
         ).add_to(mapa)
 
 
-    # Vykreslení testovacích bodů
-    for index, misto in enumerate(nebezpecna_mista):
-
-        bod_id = f"test_{index}"
-
-        vybran = st.session_state.vybrany_bod == bod_id
-
-        folium.Marker(
-            location=misto["souradnice"],
-            popup=misto["problem mista"],
-            tooltip=misto["nazev mista"],
-            icon=folium.Icon(
-                color="green" if vybran else "red"
-            )
-        ).add_to(mapa)
-
-
     # Skupina pro vlastní body uživatelů
     uzivatelske_body = folium.FeatureGroup(
         name="Vlastní body"
@@ -388,12 +295,15 @@ with levy_sloupec:
             "Vlastní označené místo"
         )
 
-        # Stejně jako u testovacích bodů: název v tooltipu, popis v popupu
-        folium.Marker(
+        folium.CircleMarker(
             location=[lat, lon],
+            radius=5,
+            color="green",
+            fill=True,
+            fill_color="green",
+            fill_opacity=0.8,
             tooltip=nazev,
-            popup=duvod,
-            icon=folium.Icon(color="green")
+            popup=duvod
         ).add_to(uzivatelske_body)
 
 
@@ -462,38 +372,77 @@ with levy_sloupec:
             st.session_state.moje_body = nove_body
 
 
-st.divider()
+# Pravý sloupec – informace
+with pravy_sloupec:
 
-# Souhrnné informace v kompaktním řádku
-informace = st.columns([1, 1, 1, 2])
-with informace[0]:
-    st.caption("Zobrazená místa")
-    st.write(f"**{len(df_mapa)}**")
+    st.subheader("Informace o datech")
 
-with informace[1]:
-    st.caption("Celkem míst")
-    st.write(f"**{len(df)}**")
+    st.metric(
+        "Počet zobrazených míst",
+        len(df_mapa)
+    )
 
-with informace[2]:
-    st.caption("Vlastní body")
-    st.write(f"**{len(st.session_state.moje_body)}**")
+    st.metric(
+        "Celkový počet míst",
+        len(df)
+    )
 
-with informace[3]:
-    with st.expander("Zobrazit vlastní body"):
-        for index, bod in enumerate(st.session_state.moje_body):
-            souradnice = bod["geometry"]["coordinates"]
-            vlastnosti = bod.get("properties", {})
-            nazev = vlastnosti.get("nazev", f"Vlastní bod {index + 1}")
-            duvod = vlastnosti.get("duvod", "Bez popisu")
+    st.metric(
+        "Počet vlastních bodů",
+        len(st.session_state.moje_body)
+    )
 
-            st.write(f"**{nazev}** — {duvod}")
-            st.caption(
-                f"Šířka: {souradnice[1]:.6f}, "
-                f"délka: {souradnice[0]:.6f}"
-            )
+    st.write("Legenda:")
 
-        if not st.session_state.moje_body:
-            st.caption("Zatím nebyl vytvořen žádný vlastní bod.")
+    st.markdown(
+        '<span style="color:#7B61A8;">●</span> Noc',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<span style="color:#E5A000;">●</span> Den',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<span style="color:green;">●</span> Vlastní body',
+        unsafe_allow_html=True
+    )
+
+
+
+    st.divider()
+
+    st.subheader("Vlastní body")
+
+    st.write("Body, které vytvořil uživatel:")
+
+    for index, bod in enumerate(st.session_state.moje_body):
+
+        souradnice = bod["geometry"]["coordinates"]
+
+        vlastnosti = bod.get("properties", {})
+
+        nazev = vlastnosti.get(
+            "nazev",
+            f"Vlastní bod {index + 1}"
+        )
+
+        duvod = vlastnosti.get(
+            "duvod",
+            "Bez popisu"
+        )
+
+        st.write(f"**{nazev}**")
+        st.write(f"Popis: {duvod}")
+
+        st.caption(
+            f"Zeměpisná šířka: {souradnice[1]:.6f}, "
+            f"zeměpisná délka: {souradnice[0]:.6f}"
+        )
+
+    if len(st.session_state.moje_body) == 0:
+        st.info("Zatím nebyl vytvořen žádný vlastní bod.")
 
 
 # Otevření okénka po kliknutí na mapu
@@ -501,7 +450,7 @@ if st.session_state.cekajici_bod is not None:
 
     lat_bodu, lon_bodu = st.session_state.cekajici_bod
 
-    # Vynulujeme hned, aby se okno znovu neotevřelo po zavření křížkem
+# Vynulujeme hned, aby se okno znovu neotevřelo po zavření křížkem
     st.session_state.cekajici_bod = None
 
     okno_pro_bod(lat_bodu, lon_bodu)
@@ -514,4 +463,4 @@ if st.button("🧭 Zobrazit navigaci", width=280):
 
 if st.session_state.zobrazit_navigaci:
     zobraz_navigaci(df_mapa.to_dict("records"))
-    
+
