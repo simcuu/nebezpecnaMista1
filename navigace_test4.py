@@ -223,19 +223,12 @@ def ovladani_navigace(nebezpecna_mista):
         zrus_navigaci()
         st.rerun()
 
-<<<<<<< HEAD
     if posunout_listu:
         posun_bocni_listu_dolu()
 
-    if najit:
-        route = prepocitej_trasu()
-    elif route is not None and start is not None and end is not None and (
-        zmena_filtru
-=======
     if start is not None and end is not None and (
         route is None
         or zmena_filtru
->>>>>>> 2564bd7ab9091d8420bc777a2933c1080fd9b387
         or st.session_state.get("navigace_parametry_trasy") != parametry_trasy
     ):
         with st.spinner("Hledám trasu..."):
