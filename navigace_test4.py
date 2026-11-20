@@ -305,7 +305,87 @@ def zobraz_navigaci(mista_filtr=None):
         st.metric("Nebezpečných míst", len(nebezpecna_mista))
 
     with levy_sloupec:
-        mapa = folium.Map(location=[49.5938, 17.2509], zoom_start=13)
+        st.caption("Vyhledat adresu nebo místo")
+        sloupec_dotaz, sloupec_hledat = st.columns([5, 1])
+        with sloupec_dotaz:
+            dotaz = st.text_input(
+                "Adresa nebo místo",
+                placeholder="Např. ulice, adresa nebo místo",
+                label_visibility="collapsed",
+                key="navigace_hledany_dotaz",
+            )
+        with sloupec_hledat:
+            hledat = st.button(
+                "Hledat",
+                use_container_width=True,
+            )
+
+        if hledat:
+            st.session_state["navigace_hledana_lokace"] = None
+            if not dotaz.strip():
+                st.warning("Zadejte adresu nebo místo k vyhledání.")
+            else:
+                klient = openrouteservice.Client(key=ORS_KLIC)
+                try:
+                    vysledek = klient.pelias_search(
+                        dotaz.strip(),
+                        focus_point=(17.2509, 49.5938),
+                        country="CZE",
+                        size=1,
+                    )
+                except exceptions.ApiError as error:
+                    st.error(f"Místo se nepodařilo vyhledat: {error}")
+                else:
+                    nalezena_mista = vysledek.get("features") or []
+                    if not nalezena_mista:
+                        st.warning("Pro zadaný dotaz se nepodařilo najít místo.")
+                    else:
+                        nalezene_misto = nalezena_mista[0]
+                        geometrie = nalezene_misto.get("geometry")
+                        souradnice = (
+                            geometrie.get("coordinates")
+                            if isinstance(geometrie, dict)
+                            else None
+                        )
+                        if (
+                            not isinstance(souradnice, list)
+                            or len(souradnice) < 2
+                            or not all(
+                                isinstance(hodnota, (int, float))
+                                and math.isfinite(hodnota)
+                                for hodnota in souradnice[:2]
+                            )
+                            or not -180 <= souradnice[0] <= 180
+                            or not -90 <= souradnice[1] <= 90
+                        ):
+                            st.error("Vyhledávání vrátilo neplatné souřadnice.")
+                        else:
+                            vlastnosti = nalezene_misto.get("properties") or {}
+                            st.session_state["navigace_hledana_lokace"] = {
+                                "souradnice": souradnice[:2],
+                                "nazev": vlastnosti.get("label") or dotaz.strip(),
+                            }
+
+        hledana_lokace = st.session_state.get("navigace_hledana_lokace")
+        if hledana_lokace:
+            st.caption(f"Nalezeno: {hledana_lokace['nazev']}")
+            stred_mapy = [
+                hledana_lokace["souradnice"][1],
+                hledana_lokace["souradnice"][0],
+            ]
+            priblizeni = 16
+        else:
+            stred_mapy = [49.5938, 17.2509]
+            priblizeni = 13
+
+        mapa = folium.Map(location=stred_mapy, zoom_start=priblizeni)
+        if hledana_lokace:
+            folium.Marker(
+                location=stred_mapy,
+                tooltip=hledana_lokace["nazev"],
+                icon=folium.Icon(color="orange", icon="search"),
+            ).add_to(mapa)
+
         FastMarkerCluster(
             data=[
                 [m["souradnice"][0], m["souradnice"][1], m["nazev mista"], m["problem mista"]]
