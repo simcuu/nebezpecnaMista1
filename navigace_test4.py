@@ -119,17 +119,30 @@ def zobraz_navigaci(mista_filtr=None):
         st.session_state["navigace_cil"] = None
     if "navigace_posledni_klik" not in st.session_state:
         st.session_state["navigace_posledni_klik"] = None
+    if "navigace_vybirany_bod" not in st.session_state:
+        st.session_state["navigace_vybirany_bod"] = None
 
     levy_sloupec, pravy_sloupec = st.columns([3, 1])
 
     with pravy_sloupec:
         st.subheader("Body trasy")
-        bod_k_nastaveni = st.radio(
-            "Po kliknutí na mapu nastavit:",
-            ["Start", "Cíl"],
-            key="navigace_bod_k_nastaveni",
-        )
-        st.caption("Vyberte Start a Cíl a potom klikněte na požadované místo v mapě.")
+        if st.button("Zvolit start a cíl", use_container_width=True):
+            st.session_state["navigace_start"] = None
+            st.session_state["navigace_cil"] = None
+            st.session_state["navigace_vybirany_bod"] = "start"
+            st.session_state.pop("route", None)
+            st.session_state.pop("navigace_parametry_trasy", None)
+
+        if st.session_state["navigace_vybirany_bod"] == "start":
+            st.info("Klikněte do mapy a vyberte start.")
+        elif st.session_state["navigace_vybirany_bod"] == "cil":
+            st.info("Start je vybrán. Klikněte do mapy a vyberte cíl.")
+        elif (
+            st.session_state["navigace_start"] is not None
+            and st.session_state["navigace_cil"] is not None
+        ):
+            st.success("Start i cíl jsou vybrané. Teď můžete najít trasu.")
+
         start = st.session_state["navigace_start"]
         end = st.session_state["navigace_cil"]
         st.write(
@@ -286,10 +299,12 @@ def zobraz_navigaci(mista_filtr=None):
             if podpis_kliku != st.session_state["navigace_posledni_klik"]:
                 st.session_state["navigace_posledni_klik"] = podpis_kliku
                 souradnice = (kliknuti["lng"], kliknuti["lat"])
-                if bod_k_nastaveni == "Start":
+                if st.session_state["navigace_vybirany_bod"] == "start":
                     st.session_state["navigace_start"] = souradnice
-                else:
+                    st.session_state["navigace_vybirany_bod"] = "cil"
+                elif st.session_state["navigace_vybirany_bod"] == "cil":
                     st.session_state["navigace_cil"] = souradnice
+                    st.session_state["navigace_vybirany_bod"] = None
                 st.rerun()
 
 
