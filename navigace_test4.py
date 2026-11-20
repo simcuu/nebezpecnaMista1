@@ -189,6 +189,13 @@ def ovladani_navigace(nebezpecna_mista):
         + "  \nCíl: "
         + (f"{end[1]:.5f}, {end[0]:.5f}" if end else "nevybrán")
     )
+    radius_metres = st.number_input(
+        "Odstup od nebezpečných míst (m)",
+        min_value=1,
+        value=15,
+        step=1,
+        help="Trasa se bude snažit držet alespoň tuto vzdálenost od míst.",
+    )
 
     # Při změně filtru se trasa přepočítá s novými nebezpečnými místy
     podpis_filtru = tuple(
@@ -198,7 +205,7 @@ def ovladani_navigace(nebezpecna_mista):
     zmena_filtru = st.session_state.get("route_filter_signature") != podpis_filtru
     st.session_state["route_filter_signature"] = podpis_filtru
 
-    parametry_trasy = (start, end)
+    parametry_trasy = (start, end, radius_metres)
     route = st.session_state.get("route")
 
     def prepocitej_trasu():
@@ -206,7 +213,7 @@ def ovladani_navigace(nebezpecna_mista):
         avoid_polygons = vytvor_avoid_polygony(
             nebezpecna_mista,
             [start, end],
-            radius_metres=15,
+            radius_metres=radius_metres,
         )
         st.session_state["route"] = najdi_trasu(client, start, end, avoid_polygons)
         st.session_state["navigace_parametry_trasy"] = parametry_trasy
