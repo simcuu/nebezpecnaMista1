@@ -135,13 +135,43 @@ def zrus_navigaci():
     st.session_state.pop("navigace_parametry_trasy", None)
 
 
+def posun_bocni_listu_dolu():
+    """Plynule posune dolů jen boční lištu (sidebar), hlavní stránka s mapou zůstane, kde je."""
+    # Počítadlo zajistí, že se skript spustí znovu i při opakovaném kliknutí
+    st.session_state["navigace_posun"] = st.session_state.get("navigace_posun", 0) + 1
+    st.iframe(
+        f"""
+        <script>
+        // pokus {st.session_state["navigace_posun"]}
+        const doc = window.parent.document;
+        function posun() {{
+            const lista = doc.querySelector('[data-testid="stSidebar"]');
+            if (!lista) return;
+            const kandidati = [lista, ...lista.querySelectorAll("div")];
+            const posuvny = kandidati.find(
+                el => el.scrollHeight > el.clientHeight + 5
+                    && getComputedStyle(el).overflowY !== "visible"
+            );
+            if (posuvny) {{
+                posuvny.scrollTo({{ top: posuvny.scrollHeight, behavior: "smooth" }});
+            }}
+        }}
+        setTimeout(posun, 150);
+        </script>
+        """,
+        height="content",
+    )
+
+
 def ovladani_navigace(nebezpecna_mista):
     """Vykreslí ovládání navigace do aktuálního kontejneru a vrátí nalezenou trasu (nebo None)."""
     inicializuj_stav()
 
+    posunout_listu = False
     if st.button("🧭 Zvolit start a cíl", use_container_width=True):
         zrus_navigaci()
         st.session_state["navigace_vybirany_bod"] = "start"
+        posunout_listu = True
 
     start = st.session_state["navigace_start"]
     end = st.session_state["navigace_cil"]
@@ -200,6 +230,9 @@ def ovladani_navigace(nebezpecna_mista):
     if zrusit:
         zrus_navigaci()
         st.rerun()
+
+    if posunout_listu:
+        posun_bocni_listu_dolu()
 
     if najit:
         route = prepocitej_trasu()
