@@ -135,13 +135,43 @@ def zrus_navigaci():
     st.session_state.pop("navigace_parametry_trasy", None)
 
 
+def posun_bocni_listu_dolu():
+    """Plynule posune dolů jen boční lištu (sidebar), hlavní stránka s mapou zůstane, kde je."""
+    # Počítadlo zajistí, že se skript spustí znovu i při opakovaném kliknutí
+    st.session_state["navigace_posun"] = st.session_state.get("navigace_posun", 0) + 1
+    st.iframe(
+        f"""
+        <script>
+        // pokus {st.session_state["navigace_posun"]}
+        const doc = window.parent.document;
+        function posun() {{
+            const lista = doc.querySelector('[data-testid="stSidebar"]');
+            if (!lista) return;
+            const kandidati = [lista, ...lista.querySelectorAll("div")];
+            const posuvny = kandidati.find(
+                el => el.scrollHeight > el.clientHeight + 5
+                    && getComputedStyle(el).overflowY !== "visible"
+            );
+            if (posuvny) {{
+                posuvny.scrollTo({{ top: posuvny.scrollHeight, behavior: "smooth" }});
+            }}
+        }}
+        setTimeout(posun, 150);
+        </script>
+        """,
+        height="content",
+    )
+
+
 def ovladani_navigace(nebezpecna_mista):
     """Vykreslí ovládání navigace do aktuálního kontejneru a vrátí nalezenou trasu (nebo None)."""
     inicializuj_stav()
 
+    posunout_listu = False
     if st.button("🧭 Zvolit start a cíl", use_container_width=True):
         zrus_navigaci()
         st.session_state["navigace_vybirany_bod"] = "start"
+        posunout_listu = True
 
     start = st.session_state["navigace_start"]
     end = st.session_state["navigace_cil"]
@@ -151,7 +181,7 @@ def ovladani_navigace(nebezpecna_mista):
     elif st.session_state["navigace_vybirany_bod"] == "cil":
         st.info("Start je vybrán. Klikněte do mapy a vyberte cíl.")
     elif start is not None and end is not None and "route" not in st.session_state:
-        st.success("Start i cíl jsou vybrané. Teď můžete najít trasu.")
+        st.info("Start i cíl jsou vybrané, hledám trasu.")
 
     st.caption(
         "Start: "
@@ -182,32 +212,27 @@ def ovladani_navigace(nebezpecna_mista):
         st.session_state["navigace_parametry_trasy"] = parametry_trasy
         return st.session_state["route"]
 
-    sloupec_najit, sloupec_zrusit = st.columns(2)
-    with sloupec_najit:
-        najit = st.button(
-            "Najít trasu",
-            disabled=start is None or end is None,
-            use_container_width=True,
-        )
-    with sloupec_zrusit:
-        zrusit = st.button(
-            "Zrušit",
-            disabled=start is None and end is None and route is None
-            and st.session_state["navigace_vybirany_bod"] is None,
-            use_container_width=True,
-        )
+    zrusit = st.button(
+        "Zrušit",
+        disabled=start is None and end is None and route is None
+        and st.session_state["navigace_vybirany_bod"] is None,
+        use_container_width=True,
+    )
 
     if zrusit:
         zrus_navigaci()
         st.rerun()
 
-    if najit:
-        route = prepocitej_trasu()
-    elif route is not None and start is not None and end is not None and (
-        zmena_filtru
+    if posunout_listu:
+        posun_bocni_listu_dolu()
+
+    if start is not None and end is not None and (
+        route is None
+        or zmena_filtru
         or st.session_state.get("navigace_parametry_trasy") != parametry_trasy
     ):
-        route = prepocitej_trasu()
+        with st.spinner("Hledám trasu..."):
+            route = prepocitej_trasu()
 
     return route
 
