@@ -3,6 +3,7 @@ import math
 import folium
 import openrouteservice
 import streamlit as st
+import streamlit.components.v1 as components
 
 from pathlib import Path
 from openrouteservice import convert, exceptions
@@ -280,7 +281,7 @@ def posun_bocni_listu_dolu():
     """Plynule posune dolů jen boční lištu (sidebar), hlavní stránka s mapou zůstane, kde je."""
     # Počítadlo zajistí, že se skript spustí znovu i při opakovaném kliknutí
     st.session_state["navigace_posun"] = st.session_state.get("navigace_posun", 0) + 1
-    st.iframe(
+    components.html(
         f"""
         <script>
         // pokus {st.session_state["navigace_posun"]}
@@ -300,7 +301,7 @@ def posun_bocni_listu_dolu():
         setTimeout(posun, 150);
         </script>
         """,
-        height="content",
+        height=0,
     )
 
 
