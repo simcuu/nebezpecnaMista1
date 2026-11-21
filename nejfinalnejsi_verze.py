@@ -271,7 +271,7 @@ barvy = {
 
 # Načtení a zpracování GeoJSON souboru.
 # @st.cache_data: soubor se přečte jen jednou, při dalších klicích se vezme hotová tabulka z paměti.
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def nacti_data():
     with open(
         "pocit-nebezpeci-olomouc-2.geojson",
@@ -311,7 +311,7 @@ df = nacti_data()
 
 
 # Načtení Voronoiových oblastí (data kriminality) – polygony, také jen jednou
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def nacti_voronoi():
     with open(
         "voronoi_olomouc.geojson",
@@ -325,7 +325,7 @@ voronoi_geojson = nacti_voronoi()
 
 # Osvětlení ulic – čáry po ulicích obarvené podle počtu lamp v okolí.
 # Soubor vytváří skript priprav_osvetleni_ulic.py (z dat stažených stahni_arcgis_geojson.py).
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def nacti_osvetleni():
     try:
         with open("osvetleni_ulic.geojson", encoding="utf-8") as f:
@@ -380,7 +380,7 @@ def _kod_z_iri(iri):
     return int(iri.rsplit("/", 1)[1]) if iri else 0
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def nacti_typy_cinu():
     """Vrátí {kód typu: (název skupiny, kategorie)}."""
     with open("types.json", encoding="utf-8") as f:
@@ -410,7 +410,7 @@ def nacti_typy_cinu():
     return typy
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def nacti_kriminalitu():
     """Jeden řádek = jedna událost se seznamem kategorií a skupin."""
     try:
@@ -449,7 +449,7 @@ df_krim = nacti_kriminalitu()
 
 # Budovy Univerzity Palackého a večerní výuka (data z upol.html, uložená v budovy_upol.json).
 # Za každou budovu: kolik studentů tam má výuku končící po setmění, jak často a kdy.
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def nacti_budovy():
     try:
         with open("budovy_upol.json", encoding="utf-8") as f:
@@ -464,7 +464,7 @@ budovy = nacti_budovy()
 
 
 # Tvary (obrysy) budov z OpenStreetMap – vytváří je priprav_budovy_upol.py
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def nacti_tvary_budov():
     try:
         with open("budovy_upol_tvary.geojson", encoding="utf-8") as f:
