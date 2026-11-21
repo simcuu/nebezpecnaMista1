@@ -1,7 +1,10 @@
 import json
 import math
+import re
+import unicodedata
 import folium
 import openrouteservice
+import requests
 import streamlit as st
 
 from pathlib import Path
@@ -152,27 +155,189 @@ def nastav_bod(typ, souradnice):
         st.session_state["navigace_vybirany_bod"] = None
 
 
-@st.cache_data(ttl=3600, show_spinner=False)
-def hledej_misto(text):
-    """Najde adresu/místo přes OpenRouteService (přednostně v Olomouci a okolí)."""
+def _normalizuj_text(hodnota):
+    hodnota = unicodedata.normalize("NFKD", str(hodnota))
+    hodnota = "".join(pismeno for pismeno in hodnota if not unicodedata.combining(pismeno))
+    return re.sub(r"[^a-z0-9]+", " ", hodnota.lower()).strip()
+
+
+# Zastávky MHD mají často stejný název jako budova vedle (např. "Envelopa"),
+# proto je při řazení výsledků odsouváme dozadu.
+_TYPY_ZASTAVEK = {"bus_stop", "tram_stop", "stop_position", "platform", "station", "halt"}
+
+
+def _hledej_nominatim(dotaz):
+    """Vyhledání v OpenStreetMap (Nominatim) – zná i nové budovy, které ORS ještě nemá."""
+    odpoved = requests.get(
+        "https://nominatim.openstreetmap.org/search",
+        params={
+            "q": dotaz,
+            "format": "jsonv2",
+            "addressdetails": 1,
+            "countrycodes": "cz",
+            "viewbox": "16.8,49.9,17.7,49.3",
+            "bounded": 1,
+            "limit": 10,
+            "accept-language": "cs",
+        },
+        headers={"User-Agent": "nebezpecna-mista-navigace/1.0"},
+        timeout=10,
+    )
+    odpoved.raise_for_status()
+
+    vysledky = []
+    for misto in odpoved.json():
+        adresa = misto.get("address") or {}
+        ulice = adresa.get("road") or adresa.get("pedestrian") or adresa.get("footway")
+        cislo = adresa.get("house_number")
+        obec = adresa.get("city") or adresa.get("town") or adresa.get("village")
+        casti = [misto.get("name"), " ".join(filter(None, [ulice, cislo])), obec]
+        popis = ", ".join(dict.fromkeys(c for c in casti if c)) or misto.get("display_name")
+
+        typ = misto.get("type") or ""
+        kategorie = misto.get("category") or ""
+        if typ in _TYPY_ZASTAVEK or kategorie == "public_transport":
+            druh = "zastavka"
+        elif kategorie == "highway":
+            druh = "ulice"
+        elif kategorie == "place" and typ not in {"house"}:
+            druh = "oblast"
+        elif typ == "house" or kategorie == "building" and not misto.get("name"):
+            druh = "adresa"
+        else:
+            druh = "budova"
+
+        if druh == "zastavka":
+            popis = f"🚏 {popis} (zastávka)"
+
+        vysledky.append({
+            "popis": popis,
+            "nazev": misto.get("name") or "",
+            "souradnice": (float(misto["lon"]), float(misto["lat"])),
+            "druh": druh,
+            "zdroj": "osm",
+        })
+    return vysledky
+
+
+def _hledej_ors(dotaz):
     client = openrouteservice.Client(key=ORS_KLIC)
     odpoved = client.pelias_search(
-        text,
+        dotaz,
         focus_point=[17.2509, 49.5938],
         rect_min_x=16.8,
         rect_min_y=49.3,
         rect_max_x=17.7,
         rect_max_y=49.9,
         country="CZ",
-        size=5,
+        layers=["venue", "address", "street"],
+        size=10,
     )
-    return [
-        {
-            "popis": vysledek["properties"].get("label") or text,
-            "souradnice": tuple(vysledek["geometry"]["coordinates"][:2]),
-        }
-        for vysledek in odpoved.get("features", [])
-    ]
+
+    vysledky = []
+    for vysledek in odpoved.get("features", []):
+        souradnice = tuple(vysledek.get("geometry", {}).get("coordinates", [])[:2])
+        if len(souradnice) != 2:
+            continue
+        vlastnosti = vysledek.get("properties") or {}
+        vrstva = str(vlastnosti.get("layer") or "").lower()
+        vysledky.append({
+            "popis": vlastnosti.get("label") or vlastnosti.get("name") or dotaz,
+            "nazev": vlastnosti.get("name") or "",
+            "souradnice": souradnice,
+            "druh": {"venue": "budova", "address": "adresa", "street": "ulice"}.get(vrstva, "oblast"),
+            "zdroj": "ors",
+        })
+    return vysledky
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def hledej_misto(text):
+    """Najde adresu/místo (OpenStreetMap + OpenRouteService), budovy a adresy mají přednost."""
+    dotaz = text.strip()
+    dotaz_normalizovany = _normalizuj_text(dotaz)
+
+    vysledky = []
+    chyby = 0
+    for hledac in (_hledej_nominatim, _hledej_ors):
+        try:
+            vysledky.extend(hledac(dotaz))
+        except Exception:
+            chyby += 1
+    if chyby == 2:
+        raise RuntimeError("Vyhledávání není dostupné")
+
+    # Když dotaz neobsahuje město a nic přesného se nenašlo, zkusí se ještě s "Olomouc"
+    if "olomouc" not in dotaz_normalizovany and not any(
+        dotaz_normalizovany in _normalizuj_text(v["nazev"]) for v in vysledky
+    ):
+        try:
+            vysledky.extend(_hledej_ors(f"{dotaz}, Olomouc"))
+        except Exception:
+            pass
+
+    def vzdalenost_m(a, b):
+        return math.hypot((a[0] - b[0]) * 72_000, (a[1] - b[1]) * 111_000)
+
+    # ORS zná zastávky jen jako obecná "místa" – pokud na stejném místě leží zastávka
+    # z OSM se stejným jménem, jde o tutéž zastávku.
+    zastavky = [v for v in vysledky if v["druh"] == "zastavka"]
+    for vysledek in vysledky:
+        if vysledek["zdroj"] == "ors" and any(
+            _normalizuj_text(z["nazev"]) == _normalizuj_text(vysledek["nazev"])
+            and vzdalenost_m(z["souradnice"], vysledek["souradnice"]) < 60
+            for z in zastavky
+        ):
+            vysledek["druh"] = "zastavka"
+            vysledek["popis"] = f"🚏 {vysledek['nazev']} (zastávka)"
+
+    stred_olomouce = (17.2509, 49.5938)
+    body_za_druh = {"budova": 300, "adresa": 250, "oblast": 0, "ulice": -100, "zastavka": -400}
+    kandidati = []
+    for vysledek in vysledky:
+        lon, lat = vysledek["souradnice"]
+        if not (16.8 <= lon <= 17.7 and 49.3 <= lat <= 49.9):
+            continue
+
+        nazev = _normalizuj_text(vysledek["nazev"] or vysledek["popis"])
+        skore = body_za_druh.get(vysledek["druh"], 0)
+        if vzdalenost_m(vysledek["souradnice"], stred_olomouce) < 8_000:
+            skore += 250
+        if dotaz_normalizovany == nazev:
+            skore += 500
+        elif nazev and dotaz_normalizovany in nazev:
+            skore += 300
+        elif nazev and nazev in dotaz_normalizovany:
+            skore += 150
+        if "olomouc" in _normalizuj_text(vysledek["popis"]):
+            skore += 100
+        if vysledek["zdroj"] == "osm":
+            skore += 20  # při shodě vyhrává přesnější OSM
+
+        kandidati.append({
+            "popis": vysledek["popis"],
+            "souradnice": vysledek["souradnice"],
+            "_skore": skore,
+        })
+
+    kandidati.sort(key=lambda kandidat: kandidat["_skore"], reverse=True)
+
+    unique = []
+    for kandidat in kandidati:
+        lon, lat = kandidat["souradnice"]
+        je_duplicitni = any(
+            math.hypot(
+                (lon - jiny["souradnice"][0]) * 73_000,
+                (lat - jiny["souradnice"][1]) * 111_000,
+            ) < 25
+            for jiny in unique
+        )
+        if not je_duplicitni:
+            kandidat.pop("_skore", None)
+            unique.append(kandidat)
+        if len(unique) == 5:
+            break
+    return unique
 
 
 VYHLEDAVANI_CSS = """
@@ -467,46 +632,19 @@ def zobraz_navigaci(mista_filtr=None):
             if not dotaz.strip():
                 st.warning("Zadejte adresu nebo místo k vyhledání.")
             else:
-                klient = openrouteservice.Client(key=ORS_KLIC)
                 try:
-                    vysledek = klient.pelias_search(
-                        dotaz.strip(),
-                        focus_point=(17.2509, 49.5938),
-                        country="CZE",
-                        size=1,
-                    )
-                except exceptions.ApiError as error:
+                    nalezena_mista = hledej_misto(dotaz.strip())
+                except Exception as error:
                     st.error(f"Místo se nepodařilo vyhledat: {error}")
                 else:
-                    nalezena_mista = vysledek.get("features") or []
                     if not nalezena_mista:
                         st.warning("Pro zadaný dotaz se nepodařilo najít místo.")
                     else:
                         nalezene_misto = nalezena_mista[0]
-                        geometrie = nalezene_misto.get("geometry")
-                        souradnice = (
-                            geometrie.get("coordinates")
-                            if isinstance(geometrie, dict)
-                            else None
-                        )
-                        if (
-                            not isinstance(souradnice, list)
-                            or len(souradnice) < 2
-                            or not all(
-                                isinstance(hodnota, (int, float))
-                                and math.isfinite(hodnota)
-                                for hodnota in souradnice[:2]
-                            )
-                            or not -180 <= souradnice[0] <= 180
-                            or not -90 <= souradnice[1] <= 90
-                        ):
-                            st.error("Vyhledávání vrátilo neplatné souřadnice.")
-                        else:
-                            vlastnosti = nalezene_misto.get("properties") or {}
-                            st.session_state["navigace_hledana_lokace"] = {
-                                "souradnice": souradnice[:2],
-                                "nazev": vlastnosti.get("label") or dotaz.strip(),
-                            }
+                        st.session_state["navigace_hledana_lokace"] = {
+                            "souradnice": nalezene_misto["souradnice"],
+                            "nazev": nalezene_misto["popis"],
+                        }
 
         hledana_lokace = st.session_state.get("navigace_hledana_lokace")
         if hledana_lokace:
