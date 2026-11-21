@@ -587,6 +587,8 @@ zdroj_dat = st.sidebar.radio(
 studentsky_rezim = zdroj_dat == ZDROJ_STUDENT
 zobrazit_pocit = zdroj_dat in (ZDROJ_POCIT, ZDROJ_OBA, ZDROJ_STUDENT)
 zobrazit_voronoi = zdroj_dat in (ZDROJ_VORONOI, ZDROJ_OBA)
+# Vlastní body se nezobrazují, když jsou vybraná jen data Policie ČR
+zobrazit_vlastni_body = zobrazit_pocit
 
 
 # Boční panel – filtrování (platí pro pocit nebezpečí i pro kriminalitu)
@@ -977,8 +979,8 @@ uzivatelske_body = folium.FeatureGroup(
 )
 
 
-# Vykreslení již vytvořených vlastních bodů
-for index, bod in enumerate(st.session_state.moje_body):
+# Vykreslení již vytvořených vlastních bodů (ne při samotných datech PČR)
+for index, bod in enumerate(st.session_state.moje_body if zobrazit_vlastni_body else []):
 
     souradnice = bod["geometry"]["coordinates"]
 
@@ -1009,31 +1011,33 @@ for index, bod in enumerate(st.session_state.moje_body):
     ).add_to(uzivatelske_body)
 
 
-uzivatelske_body.add_to(mapa)
+if zobrazit_vlastni_body:
+    uzivatelske_body.add_to(mapa)
 
 
 # Start, cíl a trasa navigace
 vykresli_navigaci(mapa, route)
 
 
-# Nástroj pro přesouvání a mazání bodů
-Draw(
-    feature_group=uzivatelske_body,
-    export=False,
-    position="topleft",
-    draw_options={
-        "polyline": False,
-        "polygon": False,
-        "rectangle": False,
-        "circle": False,
-        "circlemarker": False,
-        "marker": False
-    },
-    edit_options={
-        "edit": True,
-        "remove": True
-    }
-).add_to(mapa)
+# Nástroj pro přesouvání a mazání bodů (jen když jsou vlastní body vidět)
+if zobrazit_vlastni_body:
+    Draw(
+        feature_group=uzivatelske_body,
+        export=False,
+        position="topleft",
+        draw_options={
+            "polyline": False,
+            "polygon": False,
+            "rectangle": False,
+            "circle": False,
+            "circlemarker": False,
+            "marker": False
+        },
+        edit_options={
+            "edit": True,
+            "remove": True
+        }
+    ).add_to(mapa)
 
 
 # Zobrazení mapy a získání kliknutí.
@@ -1082,7 +1086,7 @@ if kliknuti:
 # Uložení upravených a přesunutých bodů
 nove_body = output.get("all_drawings")
 
-if nove_body is not None:
+if nove_body is not None and zobrazit_vlastni_body:
 
     if isinstance(nove_body, dict):
         nove_body = nove_body.get("features", [])
