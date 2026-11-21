@@ -55,6 +55,18 @@ st.markdown(
         border: 2px solid rgba(255, 255, 255, 0.8);
         flex-shrink: 0;
     }
+    .legenda-osvetleni {
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(90deg, #e3261b, #f47a20, #f9b233, #ffd84a, #fff200);
+    }
+    .legenda-osvetleni-popis {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        opacity: 0.8;
+        margin-top: 4px;
+    }
     .statistiky {
         display: flex;
         flex-wrap: wrap;
@@ -200,6 +212,29 @@ def nacti_voronoi():
 
 
 voronoi_geojson = nacti_voronoi()
+
+
+# Osvětlení ulic – čáry po ulicích obarvené podle počtu lamp v okolí.
+# Soubor vytváří skript priprav_osvetleni_ulic.py (z dat stažených stahni_arcgis_geojson.py).
+@st.cache_data
+def nacti_osvetleni():
+    try:
+        with open("osvetleni_ulic.geojson", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+# Barvy čar: 0 = žádná lampa (červená) … 4 = hodně lamp (zářivě žlutá)
+barvy_osvetleni = {
+    0: "#e3261b",
+    1: "#f47a20",
+    2: "#f9b233",
+    3: "#ffd84a",
+    4: "#fff200",
+}
+
+osvetleni = nacti_osvetleni()
 
 
 # Data kriminality Policie ČR (kriminalita_olomouc.csv vytváří priprav_kriminalitu.py).
@@ -351,26 +386,53 @@ vybrane_kategorie = st.sidebar.multiselect(
     [*kategorie_slov, "Ostatní"]
 )
 
+# Osvětlení ulic jde zapnout jen při filtru "Noc"
+if vyber == "Noc":
+    zobrazit_osvetleni = st.sidebar.checkbox(
+        "💡 Osvětlení ulic",
+        value=True,
+        disabled=osvetleni is None,
+        help=(
+            "Ulice obarvené podle počtu lamp v okolí."
+            if osvetleni is not None
+            else "Chybí soubor osvetleni_ulic.geojson – spusťte priprav_osvetleni_ulic.py."
+        ),
+    )
+else:
+    zobrazit_osvetleni = False
+
+# Pozor: HTML bez odsazení a prázdných řádků, jinak ho Streamlit ukáže jako kód
+legenda_osvetleni = (
+    '<div class="legenda-nadpis" style="margin-top:12px;">Osvětlení ulic</div>'
+    '<div class="legenda-osvetleni"></div>'
+    '<div class="legenda-osvetleni-popis">'
+    "<span>neosvětlené</span><span>osvětlené</span>"
+    "</div>"
+    if zobrazit_osvetleni
+    else ""
+)
+
 
 # Boční panel – legenda
 st.sidebar.markdown(
-    """
-    <div class="legenda">
-        <div class="legenda-nadpis">Legenda</div>
-        <div class="legenda-polozka">
-            <span class="legenda-tecka" style="background:#7B61A8;"></span> Noc
-        </div>
-        <div class="legenda-polozka">
-            <span class="legenda-tecka" style="background:#E5A000;"></span> Den
-        </div>
-        <div class="legenda-polozka">
-            <span class="legenda-tecka" style="background:green;"></span> Vlastní body
-        </div>
-        <div class="legenda-polozka">
-            <span class="legenda-tecka" style="background:rgba(214,69,65,0.35); border-color:#D64541; border-radius:3px;"></span> Oblasti kriminality (tmavší = více činů)
-        </div>
-    </div>
-    """,
+    '<div class="legenda">'
+    '<div class="legenda-nadpis">Legenda</div>'
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:#7B61A8;"></span> Noc'
+    "</div>"
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:#E5A000;"></span> Den'
+    "</div>"
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:green;"></span> Vlastní body'
+    "</div>"
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:rgba(214,69,65,0.35); '
+    'border-color:#D64541; border-radius:3px;"></span> '
+    "Oblasti kriminality (tmavší = více činů)"
+    "</div>"
+    + legenda_osvetleni
+    + "</div>",
     unsafe_allow_html=True
 )
 
@@ -543,6 +605,21 @@ if zobrazit_voronoi:
             fields=["pocet", "prehled"],
             aliases=["Počet činů:", "Nejčastější:"]
         ),
+    ).add_to(mapa)
+
+
+# Osvětlení ulic (nad oblastmi kriminality, pod body, aby body šly dál kliknout)
+if zobrazit_osvetleni and osvetleni is not None:
+    folium.GeoJson(
+        osvetleni,
+        name="Osvětlení ulic",
+        interactive=False,  # čáry nezachytávají kliknutí, takže přidávání bodů funguje dál
+        style_function=lambda cara: {
+            "color": barvy_osvetleni[cara["properties"]["uroven"]],
+            "weight": 4 if cara["properties"]["uroven"] == 4 else 3,
+            "opacity": 0.9,
+            "lineCap": "round",
+        },
     ).add_to(mapa)
 
 
