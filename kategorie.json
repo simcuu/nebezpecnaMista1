@@ -1,0 +1,2861 @@
+{
+  "kategorie": {
+    "lide": "Podezřelí lidé, lidé bez domova",
+    "alkohol_drogy": "Alkohol, drogy",
+    "agrese": "Obtěžování, agresivita",
+    "nenavist": "Nenávistné projevy vůči etnickým a sociálním skupinám",
+    "kriminalita": "Kriminalita",
+    "dav": "Velký dav lidí",
+    "opustenost": "Opuštěnost, malá koncentrace lidí",
+    "tma": "Tma, špatné osvětlení",
+    "podchody": "Podchody, uličky, schody, zákoutí",
+    "doprava": "Doprava a přecházení"
+  },
+  "v_nabidce": [
+    "lide",
+    "alkohol_drogy",
+    "agrese",
+    "kriminalita",
+    "dav",
+    "opustenost",
+    "tma",
+    "podchody",
+    "doprava"
+  ],
+  "odpovedi": {
+    "Park a málo světla": [
+      "tma"
+    ],
+    "Podchod pod obchvatem. I když zrekonstruovaný, tak je poměrně \"nepříjemný\".": [
+      "podchody"
+    ],
+    "proto": [],
+    "protoze tu chodim do skoly": [],
+    "Blízko opuštěných výrobních budov a ubytoven pro sociálně slabé": [
+      "nenavist",
+      "opustenost"
+    ],
+    "přítomnost bezdomovců a opilců": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Zápach moču a iných omamných látok. Prebiehajú tu stretnutia podozrivých z ilegálnej činnosti.": [
+      "alkohol_drogy"
+    ],
+    "Toto miesto pôsobí znepokojujúco.": [],
+    "bezdomovci, tma": [
+      "lide",
+      "tma"
+    ],
+    "tma": [
+      "tma"
+    ],
+    "bezdomovci": [
+      "lide"
+    ],
+    "mám strach z ľudí, ktorí bývaju v penzióne oproti zástavke": [],
+    "Neviem, necítim sa tam bezpečne, málo osvetlenia a príliš veľa opitých mladých ľudí": [
+      "lide",
+      "alkohol_drogy",
+      "tma"
+    ],
+    "Divný podchod, blikají tam světla, je to strašidelné.": [
+      "lide",
+      "tma",
+      "podchody"
+    ],
+    "Bezdomovci, moc lidí na nádraží ve mě probouzí pocit toho že můžu být okradena.": [
+      "lide",
+      "kriminalita",
+      "dav"
+    ],
+    "park je v noci temné místo a neradno tam chodit sám": [
+      "tma"
+    ],
+    "taktéž celý park, není bezpečný, mohou se zde vyskytovat \"ožralové\" a nebezpeční \"tvorové\"": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "mohou se zde taktéž vyskytovat nepříjemní tvorové": [
+      "lide"
+    ],
+    "všeobecně mi připadá, že v Holici se vyskytuje nejvíce Romů": [
+      "nenavist"
+    ],
+    "zle riadená premávka": [
+      "doprava"
+    ],
+    "málo ľudí": [
+      "opustenost"
+    ],
+    "Bezdomovci": [
+      "lide"
+    ],
+    "Bezdomovci.": [
+      "lide"
+    ],
+    "tajemné schody": [
+      "podchody"
+    ],
+    "tmavé schody": [
+      "tma",
+      "podchody"
+    ],
+    "nádraží - kapsáři,...": [
+      "kriminalita"
+    ],
+    "vím, že tam došlo ke znásilnění": [
+      "kriminalita"
+    ],
+    "tmavé uličky": [
+      "tma",
+      "podchody"
+    ],
+    "nepříjemní lidé": [
+      "lide"
+    ],
+    "dříve se tam často objevovali bezdomovci, je tam nepořádek a není tam vidět": [
+      "lide"
+    ],
+    "úzká ulička, pohybují se tam různá individua": [
+      "lide",
+      "podchody"
+    ],
+    "Neosvětlená místa": [
+      "tma"
+    ],
+    "V okolí nádraží se zdržují bezdomovci": [
+      "lide"
+    ],
+    "pohybují se zde pochybné individua": [
+      "lide"
+    ],
+    "ponure vypadající podchod": [
+      "tma",
+      "podchody"
+    ],
+    "OPUŠTĚNOST": [
+      "opustenost"
+    ],
+    "pochybné existence": [
+      "lide"
+    ],
+    "Průchod je sice osvětlený, ale ze vchodu nelze vidět, kdo se v něm nachází.": [
+      "tma",
+      "podchody"
+    ],
+    "Úzká ulice bez možnosti obejití podezřelých osob": [
+      "lide",
+      "podchody"
+    ],
+    "Východ z diskotéky": [
+      "alkohol_drogy"
+    ],
+    "Východ z diskotéky, velká koncentrace opilých lidí": [
+      "alkohol_drogy"
+    ],
+    "Vysoký výskyt opilých a hlasitých lidí.": [
+      "alkohol_drogy"
+    ],
+    "Tmavé opuštěné parkoviště": [
+      "opustenost",
+      "tma"
+    ],
+    "potkávám zde jednu zlou slečnu": [],
+    "klasický hororový podchod": [
+      "podchody"
+    ],
+    "spoustu zamračených studentů": [],
+    "zlá slečna": [],
+    "Opilí, divní lidé.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Divní lidé.": [
+      "lide"
+    ],
+    "V čekárně je málo lidí. Připadá mi to tam temné a občas se tam vyskytují divní lidé.": [
+      "lide",
+      "opustenost",
+      "tma"
+    ],
+    "Divní lidé. Není to moc hezké prostředí.": [
+      "lide"
+    ],
+    "pohyb množství pochybných osob": [
+      "lide"
+    ],
+    "pohyb bezdomovců a ukrajinců čekajících na noční autobusy": [
+      "lide",
+      "nenavist",
+      "opustenost",
+      "doprava"
+    ],
+    "množství nepřizpůsobivých spoluobčanů": [
+      "nenavist"
+    ],
+    "schromaždiště bezdomovců, feťáků a sprejerů": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "častý výskyt nepřízpůsobivých před hernou a sázkovou kanceláří": [
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "častý výskyt sociálně vyloučených a opilýcch lidí z důvodu blízké charity, díky které se zde scházejí": [
+      "lide",
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "výskyt bezdomvů a opilců...především když prší": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "množství bezdmvoců a podobných individuí": [
+      "lide"
+    ],
+    "scházejí se zde lidi z vyloučených sociálních vrstev a opilci kvůli nedalekého sídla charity": [
+      "lide",
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "zvlásštní existence před hernou a sázkovou kanceláří": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "někdy myslím na padající kusy domů kvůli tramvajím :-)": [
+      "doprava"
+    ],
+    "auta": [
+      "doprava"
+    ],
+    "Because night here is dark and full of terrors": [],
+    "nabízeči všeho možnéhe": [
+      "lide"
+    ],
+    "Nádraží - ve dne v noci smrad a divní lidé": [
+      "lide"
+    ],
+    "spousta bezdomovců": [
+      "lide"
+    ],
+    "Dealing za bílého dne": [
+      "alkohol_drogy",
+      "kriminalita"
+    ],
+    "není to tak frekventované místo, kde bych se dovolala pomoci": [
+      "kriminalita",
+      "opustenost"
+    ],
+    "na nádraží se pohybuje hodně lidí a je možné v takovém množství lehce přehlédnout nebezpečí": [
+      "dav"
+    ],
+    "tmavý \"opusteny\" podchod": [
+      "opustenost",
+      "tma",
+      "podchody"
+    ],
+    "Tma, odlehlé": [
+      "opustenost",
+      "tma"
+    ],
+    "Skupinky opilých lidí - nepředvídatelní": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Individuální skupiny lidí": [
+      "lide"
+    ],
+    "Možnosti autonehody - šílení řidiči": [
+      "doprava"
+    ],
+    "Neosvětlené, moc zákoutí": [
+      "tma",
+      "podchody"
+    ],
+    "Moc uliček": [],
+    "bezdomovci-opilci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Tmavá ulice, kterou lemuje park a nepřehledné křoví. Vyskytuje se zde málo lidí.": [
+      "opustenost",
+      "tma",
+      "podchody"
+    ],
+    "V parku se člověk, resp. samotná slečna, která tudy jde pozdě večer, přirozeně obává i bez důvodu.": [
+      "opustenost"
+    ],
+    "Kolem non stop okýnka se scházejí zvláštní existence.": [
+      "lide"
+    ],
+    "Hlavní nádraží - pohybují se zde v noci zvláštní lidé.": [
+      "lide"
+    ],
+    "Hlavní nádraží - člověk si více hlídá svoje věci. Je zde velké množství lidí, z čehož nemám dobrý pocit.": [
+      "dav"
+    ],
+    "Na tuhle otázku se mi těžko hledá odpověď. Toto místo sem vybral z důvodu, že bych asi raději šel osvětlenou ulicí než temným parkem.": [
+      "tma"
+    ],
+    "Když kolem procházím, jsou na zemi vidět i větší kusy omítky. Člověk si raději pár kroků odstoupí, nebo přejde na druhou stranu ulice. Kostel by si zasloužil rekonstrukci.": [],
+    "Hromada dopravních prostředků a lidí, nepřehledné. Z hlediska bezpečnosti by měly být zastávky jinak řešené, popř. doplněná podchodem/nadchodem.": [
+      "podchody",
+      "doprava"
+    ],
+    "Příjde mi to místo až podezřele klidné.": [
+      "lide",
+      "opustenost"
+    ],
+    "velký dopravní ruch": [
+      "doprava"
+    ],
+    "Temné zakoutí parku. Park zpravidla v noci bývá plný bezdomovců a opilců.": [
+      "lide",
+      "alkohol_drogy",
+      "tma",
+      "podchody"
+    ],
+    "Bezdomovci a otravní opilci. Hrůza.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Ti bezdomovci tam jsou skoro pořád a pořád otravují.": [
+      "lide",
+      "agrese"
+    ],
+    "Vágusové všude": [
+      "lide"
+    ],
+    "tma a spousta bezdomovců v keřích": [
+      "lide",
+      "tma"
+    ],
+    "vágusové": [
+      "lide"
+    ],
+    "Nebezpečí přepadení.": [
+      "kriminalita"
+    ],
+    "Nebezpečí přepadení v areálu FN.": [
+      "kriminalita"
+    ],
+    "Nebezpečná křižovatka.": [
+      "doprava"
+    ],
+    "Malá frekvence lidí, špatné osvětlení": [
+      "tma"
+    ],
+    "přechod bez světelné signalizace i přes hustou dopravu": [
+      "dav",
+      "doprava"
+    ],
+    "cikánské shromaždiště": [
+      "nenavist",
+      "dav"
+    ],
+    "Spousta našich nepřizpůsobivých agresivních občanů (cikáni)": [
+      "agrese",
+      "nenavist"
+    ],
+    "Bezdomovci, cikáni, feťáci...": [
+      "lide",
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "su tam stromy": [],
+    "su tam stromy a malo ludi": [
+      "opustenost"
+    ],
+    "chodia tam opiti": [
+      "alkohol_drogy"
+    ],
+    "prilis velky provoz, neraz ma uz skoro zrazilo auto": [
+      "doprava"
+    ],
+    "příliš hluční, nepřízpůsobivý a sprostí obyvatelé": [
+      "agrese",
+      "nenavist"
+    ],
+    "málo osvětlené a vylidněné": [
+      "opustenost",
+      "tma"
+    ],
+    "nepřizpůsobivý obyvatelé": [
+      "nenavist"
+    ],
+    "Je to takové občas šílené, v noci se tam mladé slečny nesmí vyskytovat, je to tam celkem dost nebezpečné.": [],
+    "Někteří zdejší vyučující si myslí, že snědli všechnu moudrost světa a rádi dělají ze studentů totální imbecily a povyšují se nad nás, smějí se nám, když něco neumíme a když se slušně zeptáme. Cítím se zde velice nebezpečně, z psychického hlediska.": [],
+    "Z důvodů přehršle podchodů. V jejich blízkosti se necítím bezpečně.": [
+      "podchody"
+    ],
+    "Dlouhá ulice, která mi přijde jako vhodný místo pro dělání nepořádku.": [],
+    "Myslím tím všechny parky. Očividně je to totiž místo, které i brzkých večerních hodinách přitahuje né úplně hodné lidi. Do parku se prostě večer/ v noci nechodí.": [
+      "lide",
+      "opustenost"
+    ],
+    "Okolí Černé cesty je plné takových temných zákoutí, které jsou jako dělané pro páchání špatností.": [
+      "tma",
+      "podchody"
+    ],
+    "bezdomovci, drogově závislý a jejich výskyt zde": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "stejný důvod jako u prvního bodu": [],
+    "Bezdomovci, agresivní fanoušci, fetáci": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Nebezpečný kruháč. Řidiči co ho neznají jezdí špatně a ohrožují bezpečnost silničního provozu": [
+      "doprava"
+    ],
+    "schází se tam podivné skupinky lidí": [
+      "lide"
+    ],
+    "pohybují se tam zvláštní lidi": [
+      "lide"
+    ],
+    "Tma, žádné světlo, okraj Olomouce": [
+      "opustenost",
+      "tma"
+    ],
+    "zapadlá část": [
+      "opustenost"
+    ],
+    "divní lidé": [
+      "lide"
+    ],
+    "nepřehledné": [
+      "podchody"
+    ],
+    "Často zde bývají bezdomovci a právě tento týden, zde 3 muži napadli jednoho kluka": [
+      "lide",
+      "kriminalita"
+    ],
+    "Celkově v parcích se necítím bezpečně, bývá zde ho dně tma a v noci zde chodí málo lidí": [
+      "opustenost",
+      "tma"
+    ],
+    "Strašně mnoho podivných individuí": [
+      "lide"
+    ],
+    "V úzkých temných uličkách jako je tato": [
+      "tma",
+      "podchody"
+    ],
+    "park": [],
+    "na hlavním nádraží se vyskystuje spoustu individuí": [
+      "lide"
+    ],
+    "opuštěnost": [
+      "opustenost"
+    ],
+    "Tmavá ulička, která vede k mému bytu.": [
+      "tma",
+      "podchody"
+    ],
+    "Hodně stromů podél cesty, nepříjemný pocit po tmě.": [
+      "tma"
+    ],
+    "Výskyt bezdomovců.": [
+      "lide"
+    ],
+    "podchod": [
+      "podchody"
+    ],
+    "bezdaci": [
+      "lide"
+    ],
+    "uzka ulice": [
+      "podchody"
+    ],
+    "celkově Bělidla celá čtvrť": [],
+    "Individua": [
+      "lide"
+    ],
+    "Všechny parky potmě - většinou i zde individua.": [
+      "lide"
+    ],
+    "špatně osvětlený podchod, nepříjemné prostředí": [
+      "tma",
+      "podchody"
+    ],
+    "podchod - nepříjemný pocit": [
+      "podchody"
+    ],
+    "necítím se bezpečně": [],
+    "necítím se bezpečně v podchodech - často nikdo neprojde/nejde zároveň se mnou": [
+      "opustenost",
+      "podchody"
+    ],
+    "Cikáni": [
+      "nenavist"
+    ],
+    "bydli zde spousta romů, které ohrožují okolí, plivají s oken, nadávají slovně i fyzicky.": [
+      "agrese",
+      "nenavist"
+    ],
+    "Osamělé, les, nerada tam běhám": [
+      "opustenost"
+    ],
+    "Romská oblast": [
+      "nenavist"
+    ],
+    "Nikdy jsem tu v noci nepotkal člověka. Ani ve dne.": [
+      "opustenost"
+    ],
+    "Je tu jedna lampa na 200 m.": [
+      "tma"
+    ],
+    "V noci se tu potulují divní lidi a bezdomovci.": [
+      "lide"
+    ],
+    "Okraj parku, keře, za které není vidět, často se povalující bezdomovci": [
+      "lide",
+      "opustenost",
+      "tma"
+    ],
+    "Nebezpečně vyhlížející lidé": [],
+    "Málo pouličního osvětlení, tmavé, osamělé místo": [
+      "opustenost",
+      "tma"
+    ],
+    "málo osvětlení, místo s velkou koncentrací bezdomovců a pochybných existencí": [
+      "lide",
+      "tma"
+    ],
+    "periferie, vysoký výskyt Romů": [
+      "nenavist",
+      "opustenost"
+    ],
+    "velký provoz": [
+      "doprava"
+    ],
+    "vysoká koncentrace narkomanů, bezdomovců a pochybných existencí": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Strach z neznámých lidí": [
+      "lide"
+    ],
+    "Větší koncetrace nepřizpůsobivých jedinců": [
+      "nenavist"
+    ],
+    "Málo osvětlení, hodně keřů (případná skrýš pro divnolidi)": [
+      "lide",
+      "tma"
+    ],
+    "Romské obyvatelstvo !": [
+      "nenavist"
+    ],
+    "romské obyvatelstvo !": [
+      "nenavist"
+    ],
+    "blbé zkušenosti z minulosti": [
+      "kriminalita"
+    ],
+    "další blbá zkušenost": [
+      "kriminalita"
+    ],
+    "špatná pověst": [],
+    "je to černá cesta prostě": [],
+    "hodně úzká ulička mezi baráky, kde bydlí cigáni": [
+      "nenavist",
+      "podchody"
+    ],
+    "V parku je vždy větší nebezpečí než na ulici.": [],
+    "Je to park, tudíž větší nebezpečí.": [],
+    "Bojím se, že narazím na vedoucího. Nepustilo mě to dál, tak jsem musel něco zadat.": [],
+    "neosvětleno dostatečně": [
+      "tma"
+    ],
+    "temný park": [
+      "tma"
+    ],
+    "vyšší výskyt lidí bez domova..ale že bych měla strach, to asi ne..spíš je to nepříjemné": [
+      "lide"
+    ],
+    "nepříjemný pocit, že mě někdo sleduje ze křoví": [],
+    "Romská čtvrť": [
+      "nenavist"
+    ],
+    "Pobyt bezdomovců kteří se nezdají být střízlivý": [
+      "lide"
+    ],
+    "špatné osvětlení": [
+      "tma"
+    ],
+    "Velké prostranství, málo lidí": [
+      "opustenost"
+    ],
+    "Riziková fotbalová utkání": [
+      "agrese"
+    ],
+    "Spousta hlučných lidí, bezdomovci, opilci.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Vyskytuje se zde množství nepředpovídatelných, většinou opilých a hlučných lidí.": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "cigáni": [
+      "nenavist"
+    ],
+    "tovární oblast": [
+      "nenavist"
+    ],
+    "opilci, bezdomovci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "individuality kolem místní večerky": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Z jedné strany je zeď, z druhé řeka a v případě nebezpečí není kam prchnout.": [
+      "podchody"
+    ],
+    "V noci není nikde ani živáček a keře podél cesty ve mně nevzbuzují zrovna příjemné pocity.": [
+      "opustenost"
+    ],
+    "V této lokalitě se vyskytují podivné existence.": [
+      "lide"
+    ],
+    "Park v noci je velice nebezpečný.": [],
+    "V noci je zde minimum lidí, kolem jezdí jen auta.": [
+      "opustenost",
+      "doprava"
+    ],
+    "Místo je v noci opuštěné, je zde tma a keře ve mně nevzbuzují příliš důvěry.": [
+      "opustenost",
+      "tma"
+    ],
+    "V noci je místo špatně osvětlené, v případě nebezpečí je jedinou únikovou cestou most přes řeku, v okolí jsou jen zahrádky a žádné domy.": [
+      "tma"
+    ],
+    "neukáznění bezdomovci": [
+      "lide"
+    ],
+    "neosvětlený chodník": [
+      "tma",
+      "doprava"
+    ],
+    "bezdomovci, kriminálníci": [
+      "lide",
+      "kriminalita"
+    ],
+    "u hospody, u lesíka": [
+      "alkohol_drogy"
+    ],
+    "rychlá doprava": [
+      "doprava"
+    ],
+    "V pozdních večerních hodinách se tu vyskytují bezdomovci.": [
+      "lide"
+    ],
+    "Vyskytují se tu bezdomovci": [
+      "lide"
+    ],
+    "Přebývají tu bezdomovci.": [
+      "lide"
+    ],
+    "Vyskytují se tu bezdomovci.": [
+      "lide"
+    ],
+    "Přes den tu přebývají bezdomovci. Za bílého dne tu byly přepadeny 3 osoby, které znám osobně. Tomuto místu se raději vyhýbám.": [
+      "lide",
+      "kriminalita"
+    ],
+    "Přes den i v noci se tu vyskytuje velký počet bezdomovců, někteří jsou i agresivní.": [
+      "lide",
+      "agrese"
+    ],
+    "neosvětlené": [
+      "tma"
+    ],
+    "tma, liduprázdno": [
+      "opustenost",
+      "tma"
+    ],
+    "liduprázdno, málo osvětlení": [
+      "opustenost",
+      "tma"
+    ],
+    "Tma, liduprázdno, keře, úkryty": [
+      "opustenost",
+      "tma"
+    ],
+    "večer málo lidí": [
+      "opustenost"
+    ],
+    "temná místa, nepříjemný podchod od tramvaje zast. Pionýrská": [
+      "tma",
+      "podchody",
+      "doprava"
+    ],
+    "temná místa, problematická skladba obyvatel": [
+      "tma"
+    ],
+    "temná místa, problematická skladba místních obyvatel": [
+      "tma"
+    ],
+    "tma, méně lidí večer": [
+      "tma"
+    ],
+    "shluky bezdomovců": [
+      "lide"
+    ],
+    "potulující se bezdomovci": [
+      "lide"
+    ],
+    "bezdomovec v pasáži": [
+      "lide"
+    ],
+    "opilí a někdy agresivní bezdomovci": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "V noci je tam tma, potulují se tam opilí lidé.": [
+      "alkohol_drogy",
+      "tma"
+    ],
+    "V okolí křižovatky není přechod pro chodce a není jak přejí do ulice 3lechtitelů. V převážné části ulice nění chodník, projíždí tu velká nákladní auta.": [
+      "doprava"
+    ],
+    "Málo světla, ulička mezi ploty, bezdomovci.": [
+      "lide",
+      "tma",
+      "podchody"
+    ],
+    "Špatné osvětlení": [
+      "tma"
+    ],
+    "Mezi ploty": [
+      "podchody"
+    ],
+    "Tmavý podchod": [
+      "tma",
+      "podchody"
+    ],
+    "Tma. Podivné existence.": [
+      "lide",
+      "tma"
+    ],
+    "Nepříjemní bezdomovci.": [
+      "lide"
+    ],
+    "Hodně bezdomovců a podivných existencí": [
+      "lide"
+    ],
+    "For the night is dark and full of terrors in the park :D": [],
+    "Z důvodu nepříliš frekventovaného místa ve večerních hodinách, kde se můžu v prikopech kdokoliv skrývat a je to poblíž parku": [
+      "opustenost"
+    ],
+    "Vyskytují se zde bezdomovci": [
+      "lide"
+    ],
+    "Často tu potkávám skupinky ne zrovna přátelských lidiček  (v noci)": [
+      "lide"
+    ],
+    "V noci  je  to tu nepřijemné,  hlavně díky bezdomovcům": [
+      "lide"
+    ],
+    "Pozn: podchod v Hodolanech": [
+      "podchody"
+    ],
+    "bezdomovci, individua": [
+      "lide"
+    ],
+    "tma, žádní lidé": [
+      "opustenost",
+      "tma"
+    ],
+    "hodně lidí, bezdomovci": [
+      "lide",
+      "dav"
+    ],
+    "Blízkost klubu- opilá omladina": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Výskyt individuí...": [
+      "lide"
+    ],
+    "výskyt opilých agresivních lidí": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Celkově špatné osvětlení celého parku": [
+      "tma"
+    ],
+    "Spousta bezdomovců a lidí pochybných existencí": [
+      "lide"
+    ],
+    "Spousty bezdomovců a lidí pochybných existencí": [
+      "lide"
+    ],
+    "Velmi špatně situovaná křižovatka (osvětlení, čas osvětlení, cyklostezka vede kam?). Ve špičce z určitého směru projede jen jedno auto -> Agresivní řidiči by mohli někoho srazit.": [
+      "agrese",
+      "tma",
+      "doprava"
+    ],
+    "(Jako řidič) Téměř nikdy jsem tuto křižovatku neviděl v provozu (vždy oranžová světla), špatná orientace (hlídat si všechny směry + tramvaje). Ve špičce se nedá projet.": [
+      "opustenost",
+      "tma",
+      "doprava"
+    ],
+    "Parkování v ul. kpt. Nálepky až ke křižovatce -> z Kaštanovy ulice není vidět doprava + vozovka z žulových kostek může snadno vypomoci k havárii.": [
+      "kriminalita",
+      "tma",
+      "doprava"
+    ],
+    "Just look at this place!": [],
+    "Agresivní ožralí idioti,které nikdo nehlídá a potřebují se hrozně mlátit": [
+      "alkohol_drogy",
+      "agrese",
+      "opustenost"
+    ],
+    "Netuším jak je to možné, ale poměrně často se tam dá narazit na naše milé tmavší spoluobčany a Ti prostě nejsou v pohodě...": [
+      "nenavist",
+      "tma"
+    ],
+    "Bohužel v noci je to plné bezdomovců (kteří mi jako takový nevadí), ale jejich životní styl spočívá v požívání velkého množství alkoholu a následné otravování ostatních, to není příjemné.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Čekat zde na autobus v jakoukoliv denní dobu je nepříjemné, skrz ubytování velkého množství opět tmavších spoluobčanů.": [
+      "nenavist",
+      "tma",
+      "doprava"
+    ],
+    "není příjemné procházet za tmy parkem, kde je spoustu keřů a nepřehledných míst": [
+      "tma",
+      "podchody"
+    ],
+    "Když chodím běhat a stmívá se, tak je nepříjemné běžet pod neosvětleným mostem a kolem neosvětlené řeky.": [
+      "tma"
+    ],
+    "Tam se po večer děje pořád něco.": [],
+    "Ne příliš frekventovaná ulice.": [
+      "opustenost"
+    ],
+    "Opilci": [
+      "alkohol_drogy"
+    ],
+    "Časté výpadky osvětlení": [
+      "tma"
+    ],
+    "Lidé bez domova v podnapilém stavu. K vidění i přes den": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Lidé bez domova v podnapilém stavu.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Podchody. Divný pocit.": [
+      "lide",
+      "podchody"
+    ],
+    "Parky obecně v nočních hodinách. Mimo hlavní cesty - lidé pod vlivem": [
+      "alkohol_drogy"
+    ],
+    "Ponuro, tma v parku, různá individua": [
+      "lide",
+      "tma"
+    ],
+    "Od nádraží mnoho podezřelých lidí": [
+      "lide"
+    ],
+    "Skupiny teenagerů večery, noci": [
+      "lide"
+    ],
+    "Skupiny podezřelých lidí": [
+      "lide"
+    ],
+    "Opuštěné objekty - bezdomovci": [
+      "lide",
+      "opustenost"
+    ],
+    "bydlí zde Romové": [
+      "nenavist"
+    ],
+    "Shromažďuje se zde moc lidí (Šantovka apod.)": [
+      "dav"
+    ],
+    "Podchod": [
+      "podchody"
+    ],
+    "mnohdy nelze vidět kvůli přerostlé vegetaci": [
+      "tma"
+    ],
+    "Pocit ohrožení z možného přepadení": [
+      "kriminalita"
+    ],
+    "Vyskytují se tu podivní lidé": [
+      "lide"
+    ],
+    "Místo a okolí ve mně vyvolává strach": [],
+    "Výskyt bezdomovců a podivných lidí kolem Billy, kam chodím nakupovat.": [
+      "lide"
+    ],
+    "Strach procházení parkem": [],
+    "Jednou mě tu přepadli": [
+      "kriminalita"
+    ],
+    "temný prostor, nepříjemné prostředí": [
+      "tma"
+    ],
+    "bezdomovci, romové": [
+      "lide",
+      "nenavist"
+    ],
+    "nepříjemný prostor": [],
+    "bezdomovci, temný prostor": [
+      "lide",
+      "tma"
+    ],
+    "bezdomovci, divní lidé": [
+      "lide"
+    ],
+    "opilci": [
+      "alkohol_drogy"
+    ],
+    "moc lidí, strach z krádeže": [
+      "kriminalita",
+      "dav"
+    ],
+    "špatně osvětlené": [
+      "tma"
+    ],
+    "divný pocit": [
+      "lide"
+    ],
+    "tma, staré a rozpadlé prostory, nepříjemný pocit": [
+      "tma"
+    ],
+    "Pohyb divných lidí": [
+      "lide"
+    ],
+    "V parku se někdy vyskytují bezdomovci a jinak tudy v noci moc lidí nechodí.": [
+      "lide",
+      "opustenost"
+    ],
+    "bez obyvatelstva, jen firmy": [
+      "opustenost"
+    ],
+    "Dohled policie, kamerový systém.": [],
+    "Bojím se, že mě přejede auto.": [
+      "doprava"
+    ],
+    "Bojím se, že mě při přecházení vozovky přejede auto.": [
+      "doprava"
+    ],
+    "Bojím se, že mne při přecházení vozovky přejede auto.": [
+      "doprava"
+    ],
+    "temné místo, park (pocit, že nevím přesně, co je kolem mne)": [
+      "tma"
+    ],
+    "mnoho lidí, podivná individua,": [
+      "lide",
+      "dav"
+    ],
+    "protože máme zkoušky tady": [],
+    "moc lidí": [
+      "opustenost"
+    ],
+    "Bezďáci": [
+      "lide"
+    ],
+    "Třída prvního máje - velký výskyt bezdomovců a feťáků, co mluví a pokřikují na kolemjdoucí": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Shlukování bezdomovců a podivných individuí.": [
+      "lide"
+    ],
+    "Shlukování bezdomovců, člověk má strach z krádeží při čekání na MHD, vlak atd.": [
+      "lide",
+      "kriminalita"
+    ],
+    "Shlukování bezdomovců, zažil jsem zde nepříjemné hádky, fyzické napadení a házení dlažebních kostek. Převážně ve večerních hodinách.": [
+      "lide",
+      "agrese",
+      "kriminalita"
+    ],
+    "V poledne zde chodím na obědy do restaurace, poblíž se potulují bezdomovci a žádají peníze, při odmítnutí jsou agresivní a velmi nepříjemní.": [
+      "lide",
+      "agrese"
+    ],
+    "Posedávání bezdomovců okolo kašny, necítím se na to, abych tady čekal na vlak, nebo na úřední jednaní na krajském úřadě.": [
+      "lide"
+    ],
+    "bezdéčka": [
+      "lide"
+    ],
+    "fetky": [
+      "alkohol_drogy"
+    ],
+    "velké skupiny bezdomovců a kriminálně působících individuí, které se shlukují na lavičkách kolem hlavního nádraží": [
+      "lide",
+      "kriminalita"
+    ],
+    "občasný výskyt bezdomovců a alkoholiků": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "křoviny, ve kterých se schovávají bezdomovci": [
+      "lide"
+    ],
+    "výskyt podivných individuí a sociálně slabých spoluobčanů": [
+      "lide",
+      "nenavist"
+    ],
+    "odlehlé místo, občasná bezdomovecká ležení": [
+      "lide",
+      "opustenost"
+    ],
+    "Setkávají se tu skupiny sociálně vyčleněných osob.": [
+      "lide",
+      "nenavist"
+    ],
+    "V této lokalitě se pohybuje větší množství bezdomovců a sociálně vyloučených osob.": [
+      "lide",
+      "nenavist"
+    ],
+    "V této lokalitě se setkávají skupiny osob bez domova.": [
+      "lide"
+    ],
+    "Setkávají se zde na lavečkách osoby sociálně vyloučené a pijí alkohol.": [
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "Výskyt bezdomovců": [
+      "lide"
+    ],
+    "bezdomovci - celý park": [
+      "lide"
+    ],
+    "Slyšel jsem o případech znásilnění.\nJá se nebezpečně necítím, ale ženám bych rozhodně nedoporučil tu chodit v noci.": [
+      "kriminalita"
+    ],
+    "Já se nebezpečně necítím, ale ženám bych rozhodně nedoporučil tu chodit v noci.\nJedná se o park. Nedaleko je nevěstinec.": [],
+    "smradlavé a potemnělé schody": [
+      "tma",
+      "podchody"
+    ],
+    "Budova je v tak hrozném stavu, že se někdy bojím, že se na mne zřítí": [],
+    "jednou jsem zde viděla stát divného a nebezpečně vypadajícího pána": [
+      "lide"
+    ],
+    "Občas tam přespávají bezdomovci": [
+      "lide"
+    ],
+    "Dlouhé schodiště v \"tunelu\" v noci téměř není osvětlené": [
+      "tma",
+      "podchody"
+    ],
+    "Zastrčené místo": [
+      "opustenost"
+    ],
+    "Oblíbené lavečky pro opile vypadající (většinou) muže. Když chcete projít, musíte jít přímo kolem nich.": [
+      "alkohol_drogy"
+    ],
+    "Opuštěná ulice": [
+      "opustenost"
+    ],
+    "Opět, když na lavečkách sedí opilá individua, není mi příjemné projít těsně kolem nich": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Hodně restaurací a hospod – opilců.": [
+      "alkohol_drogy"
+    ],
+    "nikdo tam moc není, a když je, tak je to někdo divný": [
+      "lide",
+      "opustenost"
+    ],
+    "je tam spousta bezdomovců, kteří občas na vás mají řeči": [
+      "lide",
+      "agrese"
+    ],
+    "stejný jako u prvního bodu": [],
+    "Cesta do Lidlu": [],
+    "Podchod k Albertu, není tu moc světla.": [
+      "tma",
+      "podchody"
+    ],
+    "Je tu pěší chodník od Smetanovy k Tovární. Pod modtem mají základnu ,, klidní\" bezdomovci, ale mají": [
+      "lide",
+      "nenavist",
+      "doprava"
+    ],
+    "Velký výskyt bezdomovců ale zejména bohužel často i ochlastů": [
+      "lide"
+    ],
+    "Prostor před nádražím a hlavně před Clarions hotelem": [],
+    "Lidé bez domova": [
+      "lide"
+    ],
+    "Bydlí zde romské obyvatelstvo. Tato cesta je zkratkou (přes koleje) na Holickou": [
+      "nenavist"
+    ],
+    "Velký výskyt lidí, bez práce, štamgastů": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Byvakují zde často lidi bez domova.": [
+      "lide"
+    ],
+    "Byvakují zde často lidé bez domova": [
+      "lide"
+    ],
+    "Bezdomovci, alkoholici, feťáci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Často se zde večer potulují a vysedávají zvláštní individua.": [
+      "lide"
+    ],
+    "bezdomovci a narkomani. Je to místo, kde už napadli několik lidí": [
+      "lide",
+      "alkohol_drogy",
+      "kriminalita"
+    ],
+    "Velký silniční provoz": [
+      "doprava"
+    ],
+    "Důvodem výskyt bezdomovců, kteří nevypadají jako duševně způsobilí.": [
+      "lide"
+    ],
+    "Centrum působí bezpečně": [],
+    "Hlavní nádraží. Ráno a na večer se zde sdružuje více podivných lidí. Vysedávají na lavičkách a popíjí víno, alkohol. Křičí, jsou hluční a občas otravují ostatní.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Tmavá ulička, v noci se zde necítím dobře. Špatně osvětlená.": [
+      "tma",
+      "podchody"
+    ],
+    "Nachází se zde Charita Olomouc. Před ní stojí bezdomovci a křičí na lidi, někdy nás obtěžují. Je to nepříjemné.": [
+      "lide",
+      "agrese"
+    ],
+    "opílí bezdomovci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Skupinky bezdomovců": [
+      "lide"
+    ],
+    "Podivní lidé v okolí hlavního nádraží.": [
+      "lide"
+    ],
+    "Podchod v noci raději obcházím. Pokud je osvětlen je to lepší, ale pokud jdu sama, nikdy nevím, koho tam potkám a raději se mu vyhýbám (nepříjemný pocit).": [
+      "tma",
+      "podchody"
+    ],
+    "Obecně park. Sama se zde v noci bojím chodit, i když větší důvod k tomu nemám, krom toho, že nevím, na koho můžu narazit.": [],
+    "Občas je zde spousta zvláštních lidí, kteří sice neohrožují ostatní, ale člověku čekajícímu na dopravní spoj (a zvláště pokud má více zavazadel) čekání moc nezpříjemňují (někdy spíše naopak).": [
+      "lide",
+      "doprava"
+    ],
+    "Je zde podchod, kde občas jsou zvláštní lidé.": [
+      "lide",
+      "podchody"
+    ],
+    "Častý výskyt bezdomovců - nepříjemné když po mě vyžadují peníze, často se hádaji, shlukují se tu. Výskyt Cikánů - hulákají přes celé nádraží, jsou neprijemní a bezohlední": [
+      "lide",
+      "agrese",
+      "nenavist"
+    ],
+    "Častý výskyt bezdomovců - jsou hluční a děsiví.": [
+      "lide",
+      "agrese"
+    ],
+    "Stejné jakk v noci. Casty výskyt Romů a bezdomovců, kteří jsou bezohlední a neprijemní": [
+      "lide",
+      "nenavist"
+    ],
+    "objevují se zde bezdomovci, většinou opilí, kamarádku zde sledoval úchyl, dokonce za ní běžel, když před ním utíkala": [
+      "lide",
+      "alkohol_drogy",
+      "kriminalita"
+    ],
+    "občas tam narazím na podivné lidi, většinou starší muže, zdá se mi, že jsou pod vlivem omamných látek": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "narážím tady na bezdomovce, kteří většinou obtěžují ostatní, jestli nemají nějaké peníze": [
+      "lide",
+      "agrese"
+    ],
+    "bezdomovci posedávající na lavičkách": [
+      "lide"
+    ],
+    "Často zde bývají bezdomovci. Naštěstí jsou tu lampy, takže je alespoň trochu vidět.": [
+      "lide",
+      "tma"
+    ],
+    "V noci je zde velká tma a nechodí tudy moc lidí. Pokud to jde, volím raději jinou trasu.": [
+      "opustenost",
+      "tma"
+    ],
+    "Bezdomovci, partie...\nMísto kde blízko nikdo nebydlí, dá se skrýt kriminalita.": [
+      "lide",
+      "kriminalita",
+      "opustenost"
+    ],
+    "Lidé kteří podvodně vymáhají peníze, na jimi smyšlené nouzové situace.\nVětší koncentrace lidí, možnost krádeže.": [
+      "agrese",
+      "kriminalita",
+      "dav"
+    ],
+    "nízké osvětlení": [
+      "tma"
+    ],
+    "park je často obývaný lidmi bez domova, kteří někdy pokřikují apod.": [
+      "lide",
+      "agrese"
+    ],
+    "často zde bývají opilci, lidé bez domova nebo lidé pravděpodobně užívající návykové látky jiné než alkohol": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "lidé, kteří se kolem nádraží pohybují": [
+      "lide"
+    ],
+    "lidé bez domova, opilí lidé, lidé pod vlivem návykových látek": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Špatně označená doprava + frekventovanější místo": [
+      "opustenost",
+      "doprava"
+    ],
+    "Špatné osvětlení, nebezpečné osoby": [
+      "lide",
+      "tma"
+    ],
+    "Špatné dláždění": [],
+    "Podchod mimo centrum města, blízko sídliště, kde se ve večerních hodinách potulují štamgasti nedaleké hospody": [
+      "alkohol_drogy",
+      "podchody"
+    ],
+    "Častý výskyt lidí bez domova - což není sám o sobě problém, ale vždy se odtud line silný zápach exkremntů, necítím se zde příjemně.": [
+      "lide"
+    ],
+    "Ve večerních hodinách se zde často potloukají lidé opouštějící místní bary - v podnapilém stavu.": [
+      "alkohol_drogy"
+    ],
+    "Častý výskyt lidí v nočních hodinách v podnapilém stavu (před klubem Vertigo).": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "V nočních hodinách časté obtěžování \"ochmelky\".": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Na nádraží se často vyskytují lidé zřejmě závislí na alkoholu či návykouvých látkách (soudě z vjadřování, respektive povolávání na kolemjdoucí).": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Častý výskyt lidí bez domova - povolávání na kolemjdoucí.": [
+      "lide",
+      "agrese"
+    ],
+    "Stísněná ulička (příliš uzavřeného prostoru) - line se zde často zápach exkrementů.": [
+      "podchody"
+    ],
+    "Mnoho opilců a bezdomovců, občas chovajících se agresivně.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Koncentrace opilců a bezdomovců, občas agresivní chování z jejich strany.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Zvýšená přítomnost bezdomovců či opilců.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Zvýšený počet bezdomovců.": [
+      "lide"
+    ],
+    "Několik zkušeností s agresivním chováním opilců a bezdomovců.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese",
+      "kriminalita"
+    ],
+    "Velký počet opilců a bezdomovců, kteří občas bývají agresivní.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Vyšší počet bezdomovců a opilců.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Vyšší počet opilců a bezdomovců.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Kolem nádraží se v noc potuluje spoustu individuí.": [
+      "lide"
+    ],
+    "V noci tu nechodí moc lídí a často se tu vyskytují opilci a bezdomovci.": [
+      "lide",
+      "alkohol_drogy",
+      "opustenost"
+    ],
+    "Je tu málo osvětlení, což ale na park...": [
+      "tma"
+    ],
+    "Různé pubs apod.": [
+      "alkohol_drogy"
+    ],
+    "No, ti týpci, co se mnou vystupovali v 1 ráno z autobusu nevypadali, že by si se mnou zahráli šachy...": [
+      "lide",
+      "doprava"
+    ],
+    "Asi kdekoliv, kde je zvýšený provoz, tady kvůli tramvajím a málo přechodům přes širokou ulici.": [
+      "doprava"
+    ],
+    "TEST TEST": [],
+    "slabé osvetleni": [
+      "tma"
+    ],
+    "cigánská osada": [
+      "nenavist"
+    ],
+    "Chválkovice, Pavlovičky a Bělidla celkově": [],
+    "Charita Olomouc": [
+      "lide"
+    ],
+    "Bezručovy Sady - potmě, když je park opuštěný to není právě příjemné místo. Způsobuje to i fakt, že je park z jedné strany lemovám hradbami a z druhé Mlýnským potokem, tak je jakoby uzavřený a evokuje pocit, že by v případě nouze nebylo tolik kam utéct.": [
+      "opustenost",
+      "podchody"
+    ],
+    "Tady je to hnusné i za dne bílého!": [],
+    "Chválkovice, Pavlovičky, Bělidla. Celkově se v této části města necítím dobře.": [],
+    "Díky individuím pohybujícím se okolo Charity...": [
+      "lide"
+    ],
+    "Na hlavním nádraží se necítím bezpečně z důvodu, že se tam vyskytují bezdomovci a různé jiné individua.": [
+      "lide"
+    ],
+    "Nevím co je vždy za rohem D:": [
+      "podchody"
+    ],
+    "Temná ulička D:": [
+      "tma",
+      "podchody"
+    ],
+    "Bojím se tady i ve dne D:": [],
+    "Není to tak ve dne strašný ale bojím se tady těch lidí D:": [],
+    "Nebezpeční řidiči": [
+      "doprava"
+    ],
+    "podivná individua": [
+      "lide"
+    ],
+    "je tu takový štekajici pes na balkoneústrese vydycky zapomenu ze tam je": [],
+    "Podchod, nikdy nevíš, kdo na tebe vybafne": [
+      "podchody"
+    ],
+    "Bezdomovecké doupě, když jdu kolem, vždy na mě vystartuje jejich pes": [
+      "lide",
+      "agrese"
+    ],
+    "I za bílého dne se zde vyskytují bezdomovci = žebráctví": [
+      "lide"
+    ],
+    "sedia tam indivíduá": [
+      "lide"
+    ],
+    "niekedy tam sú bezďáci, ale inak nemám miesto, kde by som sa bála": [
+      "lide"
+    ],
+    "večer je v parku tma": [
+      "tma"
+    ],
+    "málo osvětlené": [
+      "tma"
+    ],
+    "bezdomovci co otravují kolemjdoucí": [
+      "lide",
+      "agrese"
+    ],
+    "bezdomovci, opilci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "neosvětlené, bez lidí velmi nebezpečné": [
+      "tma"
+    ],
+    "občas se v podchodu zdržují bezdomovci a není tam úplně bezpečno, hlavně v noci": [
+      "lide",
+      "podchody"
+    ],
+    "hodně bezdomovců a různých pochybných individuí": [
+      "lide"
+    ],
+    "nepřizpůsobivá menšina": [
+      "nenavist"
+    ],
+    "tma a park, co víc dodávat": [
+      "tma"
+    ],
+    "na nádraží se bojím divných lidí vždy": [
+      "lide"
+    ],
+    "Neosvětlená cesta": [
+      "tma"
+    ],
+    "Celkově okolí okolo hlavního nádraží ve mně nebudí pocit bezpečí - důvodem bude tma a hlavně mé psychické nastavení, kdy v sobě nechám vzbudit ostatní pocit strachu, ale to se stává jen minimálně, kdy se mi nějaká osoba opravdu nezdá - pokřikuje nadávky, je opilá, možná i pod vlivem drog apod.": [
+      "alkohol_drogy",
+      "agrese",
+      "tma"
+    ],
+    "V parcích - opět stejný důvod, člověk neví zda někdo nečeká za rohem a není třeba pod vlivem alkoholu a dalších látek apod. Ale jezdím často na kole, takže bych ujela:D": [
+      "alkohol_drogy",
+      "podchody"
+    ],
+    "Zde je to poměrně nepříjemné - pěšky bych tam nešla, na kole občas. Ale je to zezadu u hřbitova, poměrně odlehlé.": [
+      "opustenost"
+    ],
+    "NIKDE SE NECÍTÍM NEBEZPEČNĚ V OLOMOUCI ZA BÍLÉHO DNE - ALESPOŇ NE NA MÍSTECH, KTERÉ NAVŠTĚVUJI ČASTO": [],
+    "chybí osvětlení": [
+      "tma"
+    ],
+    "Neestetické okolí, málo lidí, Romové.": [
+      "nenavist",
+      "opustenost"
+    ],
+    "Hospoda, u které se neustále potulují opilí lidé, připomínající opice.": [
+      "alkohol_drogy"
+    ],
+    "Hospoda WIP, před kterou se shlukuje agresivní, opilá svoloč, která napadá slovně a někdy i fyzicky kolemjdoucí.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese",
+      "kriminalita"
+    ],
+    "Opilí bezdomovci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Opilí lidí z Ponorky": [
+      "alkohol_drogy"
+    ],
+    "Další opilé opice z nenstopu Fénix": [
+      "alkohol_drogy"
+    ],
+    "Tady asi není nutné podrobně popisovat...": [],
+    "Absolutně nedostatečné osvětlení": [
+      "tma"
+    ],
+    "Spousty bezdomovců a romů, kteří si tu před městskou policií úplně v pohodě prodávají drogy za bílého dne": [
+      "lide",
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "Opilci a občas agresivní psíčkaři": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Hloučky bezdomovců": [
+      "lide"
+    ],
+    "V altánu se většinou scházejí feťáci": [
+      "alkohol_drogy"
+    ],
+    "To samé, co v noci. Opilci, bezdomovci a agresivní romové a feťáci.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese",
+      "nenavist"
+    ],
+    "Bezdomovci z charity, opilí někdy již od rána": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Svoloč všeho druhu jak ve dne, tak v noci.": [
+      "lide"
+    ],
+    "Tady je víceméně jedno, jestli je den nebo noc. Lidé tu dělají bordel nonstop": [
+      "alkohol_drogy"
+    ],
+    "neosvetlená tmavá ulica popri cintoríne, smerujúca od tramvajové zastávky k Holandské čtvrti kam smeruje veľa ľudí, ideálne miesto na prepadnutie": [
+      "kriminalita",
+      "dav",
+      "tma",
+      "podchody",
+      "doprava"
+    ],
+    "železničná stanica je vždy plná bezdomovcov a divných ľudí, ktorí sledujú kde by mohli človeka okradnúť, momentálne je to miesto, kde je najviac ľudí bez rušky": [
+      "lide",
+      "kriminalita"
+    ],
+    "Neosvetlena tmava ulica popri cintorína ktorá vedie k bytom na Holandskej štvrti, bez baterky neni vidno absolútne nič, je to veľmi neprijemné, mám pocit nebezpečia že ma niekto prepadne,chodník neni ani v dobrom stave takze je to idealne na zakopnutie alebo vyvrtnutie členka.": [
+      "kriminalita",
+      "tma",
+      "podchody",
+      "doprava"
+    ],
+    "Plná bezdomovcov, feťákov a opitých ľudí": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Když je tma, nechodím parkem, bojím se zdejších pobudů": [
+      "lide",
+      "opustenost",
+      "tma"
+    ],
+    "Velice temná ulička, bojím se přepadení, neosvětlená část": [
+      "kriminalita",
+      "tma",
+      "podchody"
+    ],
+    "Bezdomovic": [
+      "lide"
+    ],
+    "nepříjemná ulička": [
+      "podchody"
+    ],
+    "nachází se zde charita a různá individua okolo": [
+      "lide"
+    ],
+    "při večerním čekání na vlak, tma různé křoví samota": [
+      "opustenost",
+      "tma"
+    ],
+    "při čekání na autobus ve večerních hodinách, samota a tma": [
+      "opustenost",
+      "tma",
+      "doprava"
+    ],
+    "kdykoli jsem si to tudy zkratila k senim velmi nepříjemný pocit": [],
+    "vždycky když tam v noci jedu, tak to bolí, někdy i přijdu o zub": [],
+    "jsou tam zloději": [
+      "kriminalita"
+    ],
+    "jsou tam zlí lidé, kteří se neštítí člověka urážet.": [
+      "lide",
+      "agrese"
+    ],
+    "tady kradou (ČEZ)": [],
+    "nedostatečné osvětlení": [
+      "tma"
+    ],
+    "Často se zde scházejí na pohled nebezpeční lidé, kteří odcházejí z Charity Olomouc.": [
+      "lide"
+    ],
+    "Často se zde scházejí na pohled nebezpeční lidé, kteří se vracejí z Charity Olomouc.": [
+      "lide"
+    ],
+    "Plná ulice místních menšin, které vyvolávají strach obyvatel": [
+      "nenavist"
+    ],
+    "Bohužel tato hlavní trasa od náměstí, plná bezdomovců, kteří chtějí od lidí peníze, nebo nadávají a urážejí, když jsou pod vlivem různých látek...": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Hlavní nádraží, nebezpečí samo o sobě... sdružují se zde různé menšiny a bezodomovci a vyvolávají stres a neklid obyvatel, na zastávkách obtěžují a pak se do tramvaje člověk bojí i nastoupit, když jsou třeba i agresivní (mluvou)": [
+      "agrese",
+      "nenavist",
+      "doprava"
+    ],
+    "Agresivita v parku opilých lidí či lidí pod vlivem návykových látek": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Polehávání bezdomovců v létě nebo vysedávání na lavičkách v parku... dochází k tomu, že se např. člověk učí a z ničeho nic k němu tento člověk přijde a začne následně chtít nějaké drobné, cigarety či něco k jídlu... a to je jeden z mnoha příkladů, parky by měly být bezpečné místo pro klid a relax bezproblémových osob": [
+      "lide"
+    ],
+    "Opět to samé co v noci...": [],
+    "To samé co v nočním režimu": [],
+    "To samé co v nočním režimu, ale přes den je tu mnohem víc lidí naštěstí, že není šance se tolik bát": [],
+    "křoviny": [],
+    "podezřelí lidé": [
+      "lide"
+    ],
+    "málo lidí, křoviny": [
+      "opustenost"
+    ],
+    "daleko od lidí a u cesty, v noci bych tudy sama rozhodně nešla": [
+      "opustenost"
+    ],
+    "Lomená galerie - občas tam pobývají podezřelí lidé, v noci bych tudy nešla": [
+      "lide"
+    ],
+    "jsem obezřetná vůči lidem pohybujícím se v okolí Charity": [
+      "lide"
+    ],
+    "Lomená galerie - někdy tam pobývají potenciálně nebezpeční lidé": [
+      "lide"
+    ],
+    "Tak je to park a v noci je tu nepříjemně": [],
+    "Totéž, co předchozí bod. V parcích není v noci nikdy fajn.": [],
+    "Noční parky nejsou fajn.": [],
+    "Bývají tu zvláštní lidé": [
+      "lide"
+    ],
+    "Zvláštní lidé": [
+      "lide"
+    ],
+    "Těmito úzkými uličkami jen ve dne": [
+      "podchody"
+    ],
+    "Tmavá, ošklivá, zahnutá ulička... fujky": [
+      "tma",
+      "podchody"
+    ],
+    "Podezřelá individua, žebrání": [
+      "lide"
+    ],
+    "Velký provoz cyklistů a inline bruslařů": [
+      "doprava"
+    ],
+    "Test": [],
+    "Hnus": [],
+    "nikde se necítím bezpečně, když je tma": [
+      "tma"
+    ],
+    "varna": [
+      "nenavist"
+    ],
+    "bezďáci": [
+      "lide"
+    ],
+    "tma neosvětleno": [
+      "tma"
+    ],
+    "divné živly": [
+      "lide"
+    ],
+    "Varna a ubytovna": [
+      "nenavist"
+    ],
+    "místo, kde se sdružují feťáci a bezdomovci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Spoustu bezdomovců, divní lidé": [
+      "lide"
+    ],
+    "Není zde moc lidí, je tu tma, strach za napadení": [
+      "kriminalita",
+      "dav",
+      "tma"
+    ],
+    "Strašně moc bezdomovců, pokřikují na mě": [
+      "lide",
+      "agrese"
+    ],
+    "nádraží": [],
+    "V parku jsou různí lidé.": [],
+    "Škaredá ulice. Našli tam mrtvolu.": [
+      "kriminalita"
+    ],
+    "Agresivní bezdomovci": [
+      "lide",
+      "agrese"
+    ],
+    "Hovada z Varny": [
+      "nenavist"
+    ],
+    "V parku je tma, málo lidí a divná individua": [
+      "lide",
+      "opustenost",
+      "tma"
+    ],
+    "Viděli jste, kolik injekčních stříkaček tam je/bývalo?": [
+      "alkohol_drogy"
+    ],
+    "Z tohoto sídliště mám divný pocit": [
+      "lide"
+    ],
+    "Opilci a bezdomovci. Část cesty je neosvetlena a v případě problému není kam utect": [
+      "lide",
+      "alkohol_drogy",
+      "tma",
+      "podchody"
+    ],
+    "Vysoká koncentrace bezdomovců a podivných individualit čekající na podporu z charity.": [
+      "lide"
+    ],
+    "Neustále otravujici žebráci. Chtějí buď peníze nebo cigarety. Mnohokrát jsem jim nabídla, ze jim koupím jídlo a byla jsem nazvaná spoustou nehrzkych jmen. Taky se zde tady ti pochybni lidé dost části hádají nebo provokuji bitky.": [
+      "lide",
+      "agrese"
+    ],
+    "Často se tam ve večerních hodinách zdržují pochybní lidé.": [
+      "lide"
+    ],
+    "Nepříjemný pocit ve ztísněné uličce.": [
+      "podchody"
+    ],
+    "Spousta bezdomovců a žebráků.": [
+      "lide"
+    ],
+    "Spousta bezdomovců a žebráku, často na člověka pokřikují.": [
+      "lide",
+      "agrese"
+    ],
+    "Spousta opilých lidí z baru.": [
+      "alkohol_drogy"
+    ],
+    "Bezdomovci, žebráci": [
+      "lide"
+    ],
+    "Koncentrace podnapilých a agresivních individuí.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Koncentrace podnapilých a agresivních individuí": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Po tmě je park děsivý": [
+      "tma"
+    ],
+    "Po večerech, když jsou otevřené bary a hospody zde mohou být nebezpeční lidé": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "This is not Olomouc...": [],
+    "Is this Olomouc?": [],
+    "This is not Olomouc... But we are getting closer.": [],
+    "This is scary place.": [],
+    "This is pond. It is a scary pond.": [],
+    "Another scary pond. At least I think...": [],
+    "This is the pain house. Really scary.": [],
+    "This is very scary place": [],
+    "Corona place - really scary.": [],
+    "Mnoho lidí, kolem kterých se necitím bezpečně": [
+      "dav"
+    ],
+    "Zvýšená koncetrace feťáků": [
+      "alkohol_drogy"
+    ],
+    "Hlavní nádraží, více lidí bez domova, kteří jsou občas pod vlivem alkoholu či drog.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Také Hl. nádraží. I když ve dne samozřejmě necítím takový strach, atmosféra s lidmi bez domova dělá své.": [
+      "lide"
+    ],
+    "Žádné osvětlení když chodím v zimě odpoledne běhat.": [
+      "tma"
+    ],
+    "Divní lidi": [
+      "lide"
+    ],
+    "Pochybná individua": [
+      "lide"
+    ],
+    "Romové uřvaní": [
+      "nenavist"
+    ],
+    "shluk individuí - autobusové a vlakové nádraží": [
+      "lide",
+      "doprava"
+    ],
+    "nízký výskyt lidí, odlehlá lokalita": [
+      "lide",
+      "opustenost"
+    ],
+    "V okolí nádraží se vyskytuje velké množství drogově závislých a bezdomovců, což je za tmy nepříjemné, jelikož je na nádraží málo lidi.": [
+      "lide",
+      "alkohol_drogy",
+      "opustenost",
+      "tma"
+    ],
+    "Na této ulici se vyskytuje mnoho individuí, ze kterých jde strach i ve dne": [
+      "lide"
+    ],
+    "Srdužující se bezdomovci pod vlivem na zastávce U Dómu": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Místo kde se shlukují bezdomovci a romové pod vlivem (nejen alkoholu) a jsou hluční a agreseivní nejen mezi sebou ale i vůči okolí. Nejednou jsem byl svědkem verbálního obtěžování žen. A za posledni dva týdny se stalo minimálne dvakrát, že se schylovalo k bitce. Poprvé to byli romové podruhé bezdomovci. Od doby co je tepleji venku tak se to stává častěji.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese",
+      "nenavist",
+      "kriminalita"
+    ],
+    "Žádné lucerny": [
+      "tma"
+    ],
+    "Nemám takových míst": [],
+    "Bezdomovci, podivné existence, ...": [
+      "lide"
+    ],
+    "V parcích se velkmi často pohybují \"zvláštní\" lidé a už se mi několikrát stalo i přes den, že po mně pokřikovali.": [
+      "lide",
+      "agrese",
+      "kriminalita"
+    ],
+    "Na Hlavním Nádraží se celodenně pohybuje spoustu lidí bez domova, která je tedy na 99% neškodná, ale i tak to ve mně vzbuzuje mnohdy velmi zvláštní pocit. Možná bych to spíš nazvala nejistotou, jak nebezpečím. Také se mi už několikrát stalo, že jsem zde byla svědkem hádek, které někdy vyústily i ve fyzické napadení.": [
+      "lide",
+      "kriminalita"
+    ],
+    "Stejný dovůd, který jsem uváděla i v předchozí otázce. Kvůli výskytu lidí bez domova a dalších \"pochybných\" lidí, kteří mi přijdou velmi nepředvídatelní. Ať už je večer či den": [
+      "lide"
+    ],
+    "Čatý výskyt opilých lidí, agresivní": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "výskyt opilých lidí": [
+      "alkohol_drogy"
+    ],
+    "často opilci": [
+      "alkohol_drogy"
+    ],
+    "To je park, proto se  zde cítím nebezpečně.": [],
+    "Za dobu coronaviru zde málo lidi.": [
+      "opustenost"
+    ],
+    "prespávanie bezdomovcov": [
+      "lide"
+    ],
+    "bezdomovecké doupě": [
+      "lide"
+    ],
+    "úzky priechod s plotom po obidvoch stranách": [
+      "podchody"
+    ],
+    "stály výskyt bezdomovcov a alkoholikov": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "stanice a priestor pred nimi všeobecne nepôsobia bezpečne": [],
+    "chýbajúce osvetlenie pozdĺž chodníka": [
+      "tma",
+      "doprava"
+    ],
+    "podchod popod železnicu": [
+      "podchody"
+    ],
+    "chýbajúce osvetlenie": [
+      "tma"
+    ],
+    "celá priemyselná oblasť nepôsobí bezpečne, slabé osvetlenie": [
+      "tma"
+    ],
+    "krčma, ktorej návštevníci často okupujú chodník pred ňou": [
+      "alkohol_drogy",
+      "doprava"
+    ],
+    "úzky neprehľadný a neosvetlený chodník, so zábradlím/plotom po stranách": [
+      "tma",
+      "podchody",
+      "doprava"
+    ],
+    "neosvetlený a špinavý prechod": [
+      "tma",
+      "doprava"
+    ],
+    "tmavý prechod": [
+      "tma",
+      "doprava"
+    ],
+    "všetky schodiská do parku, tmavé a neprehľadné": [
+      "tma",
+      "podchody"
+    ],
+    "koncentrácia rôznych individuí a popíjajúcej mládeže": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "jedna lavička večne obsadená bezdomovcami": [
+      "lide"
+    ],
+    "koncentrácia podgurážených bezdomovcov": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "chýbajúci prechod pre chodcov": [
+      "doprava"
+    ],
+    "nebezpečný prechod pre chodcov, vhodnejšie by bolo iné riešenie (nadchod,...)": [
+      "doprava"
+    ],
+    "Nebezpečné přecházet ulici k šantovce bez semaforu.": [
+      "doprava"
+    ],
+    "Bývají tam zvláštní lidi": [
+      "lide"
+    ],
+    "Charirta": [
+      "lide"
+    ],
+    "opilci, bezdomovci, lidé konzumující alkoholické nápoje před vchodem": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "v podchodu se často vyskutují bezdomovci, žebráci": [
+      "lide",
+      "podchody"
+    ],
+    "moc podivných lidí, kteří mě oslovují": [
+      "lide",
+      "agrese"
+    ],
+    "Pocit a také znalost oblasti, kde se vyskytují různé pochybné existence": [
+      "lide"
+    ],
+    "Znalost oblasti, kde se vyskytují různé pochybné existence": [
+      "lide"
+    ],
+    "bezdomovci, feťáci, zvláštní lidé": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "bezdomovci popíjející alkohol": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "bezdomovci s alkoholem": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "hodně sociálně slabých v okolí": [
+      "nenavist"
+    ],
+    "Častý pohyb bezdomovců": [
+      "lide"
+    ],
+    "Chybí noční osvětlení": [
+      "tma"
+    ],
+    "Častý výskyt bezdomovců": [
+      "lide"
+    ],
+    "Podivná individua": [
+      "lide"
+    ],
+    "pohyb individuí": [
+      "lide"
+    ],
+    "Potemnělá ulička": [
+      "tma",
+      "podchody"
+    ],
+    "pohyb indivudí": [
+      "lide"
+    ],
+    "bezdomovecká kolonie": [
+      "lide"
+    ],
+    "Podezřele vypadající osoby": [
+      "lide"
+    ],
+    "Malá zástavba, nepohybuje se tu moc lidí": [
+      "opustenost"
+    ],
+    "Výskyt podivných osob": [
+      "lide"
+    ],
+    "Ticho, tma, žádné obytné domy. Prostě strašidelný park v noci.": [
+      "opustenost",
+      "tma"
+    ],
+    "Tichý, tmavý park.": [
+      "opustenost",
+      "tma"
+    ],
+    "Bezdomovci. Divné lidi": [
+      "lide"
+    ],
+    "temný podchod": [
+      "tma",
+      "podchody"
+    ],
+    "Vyskytuje se zde několik bezdomovců a opilých lidí, kteří otravují ostatní.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Podobné, jak jsem psala v předchozím bodě.": [],
+    "bezdomovci, feťáci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Velký výskyt bezdomovců a lidí pod vlivem omamných látek.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Osoby z nízkoprahového centra": [
+      "lide"
+    ],
+    "Velký výskyt lidí bez domova a lidí pod vlivem omamných látek": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Necítím se tam bezpečně, jelikož se zde vyskytují nebezepeční lidé.": [],
+    "Zw stejného bodu.": [],
+    "Jsou tam cigáni": [
+      "nenavist"
+    ],
+    "Jsou tam agresivní bezdomovci": [
+      "lide",
+      "agrese"
+    ],
+    "Bojím se práce a mistra Zdeny": [],
+    "Zkouška hospoda - opilci možnost zúčastnění se rvačky": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "chybí chodník, není zajištěn přístup přístup pro chodce": [
+      "doprava"
+    ],
+    "Na okraji města": [
+      "opustenost"
+    ],
+    "Temná ulička, kde nikdo nebydlí. Spousta opilců z okolních hospod": [
+      "alkohol_drogy",
+      "opustenost",
+      "tma",
+      "podchody"
+    ],
+    "Spousta temných keřů a zákoutí": [
+      "tma",
+      "podchody"
+    ],
+    "Bezdomovci a všelijaké existence se tady rádi sdružují.": [
+      "lide"
+    ],
+    "Divní lidé, podchod je taky děsivý": [
+      "lide",
+      "podchody"
+    ],
+    "kvůli těm zvláštním lidem, občas rvačky a pořvávání na cizí lidí": [
+      "lide",
+      "agrese"
+    ],
+    "Nebezpečí krádeže nebo obtěžování": [
+      "agrese",
+      "kriminalita"
+    ],
+    "Park": [],
+    "Nemám žádné takové místo přes den": [],
+    "Tmavé uličky mezi paneláky": [
+      "tma",
+      "podchody"
+    ],
+    "Spousta bezdomovců": [
+      "lide"
+    ],
+    "bezdomovci a opilí, co spí na lavičkách": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "tma, nechodí tudy moc lidí": [
+      "opustenost",
+      "tma"
+    ],
+    "bezdomovci a skupiny lidí na lavičkách": [
+      "lide"
+    ],
+    "zanedbaný park, ve dne i v noci tu chodí bezdomovci. Vysypané koše.": [
+      "lide"
+    ],
+    "kvůli charity tady často sedí bezdomovci. Někdy jsou opilí a křičí na kolemjdoucí.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Ulice plná barů. Ještě když byly otevřené, byly tu večer skupinky lidí.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Charita": [
+      "lide"
+    ],
+    "chybí světla": [
+      "tma"
+    ],
+    "tmavý dlouhý podchod": [
+      "tma",
+      "podchody"
+    ],
+    "autobusové nádraží": [
+      "doprava"
+    ],
+    "V noci tady chodí málo lidí.": [
+      "opustenost"
+    ],
+    "Pohybují se zde bezdomovci a pochybné osoby.": [
+      "lide"
+    ],
+    "obecně podchody a průchody": [
+      "podchody"
+    ],
+    "všechny parky mě děsí": [],
+    "prostě stanice": [],
+    "zelená na prechode pre chodcov sa občas prelína so zelenou pre autá ( aj električky)": [
+      "doprava"
+    ],
+    "Vyskytuje se zde spousta bezdomovců": [
+      "lide"
+    ],
+    "V parku se vždy cítím nepříjemně v nočních hodinách": [],
+    "Park je vždy nepříjemný v nočních hodinách": [],
+    "Na hlavním nádraží je poměrně dost opilců a bezdomovců": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Opilé bezdomovci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Uživatele drog": [
+      "alkohol_drogy"
+    ],
+    "Bezdomovci v podnapilém stavu co otravují ostatní lidi, zvlášť mají nepříjemné poznámky k holkám.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "V noci to není moje nejoblíbenější místo. Strach je to spíše z toho prostředí temného.": [
+      "tma"
+    ],
+    "Bezdomovci co otravují okolí a dělají bordel.": [
+      "lide",
+      "agrese"
+    ],
+    "cikáni": [
+      "nenavist"
+    ],
+    "somráci": [
+      "lide"
+    ],
+    "feťáci": [
+      "alkohol_drogy"
+    ],
+    "afroevropani": [
+      "nenavist"
+    ],
+    "nebezpeční cyklisti": [
+      "doprava"
+    ],
+    "Občas se vyskytují podivní lidé, jednou mi za nádražím nabízeli drogy.": [
+      "lide",
+      "alkohol_drogy",
+      "kriminalita"
+    ],
+    "Blízkost soudu.": [],
+    "Užívání alkoholu na veřejnosti.": [
+      "alkohol_drogy"
+    ],
+    "Koncentrace opilých (možná i zfetovaných) osob.": [
+      "alkohol_drogy"
+    ],
+    "Bezohledná jízda taxikářů.": [
+      "doprava"
+    ],
+    "Nocoviště kamioňáků a černé skládky působí jako místo setkávání drogových překupníků z amerického filmu. Jestli zde existuje skutečné riziko, nevím.": [
+      "alkohol_drogy",
+      "doprava"
+    ],
+    "Bezohledná jízda taxikářů, zásobování a dalších aut. Přitom se jedná o pěší zónu a je zde prakticky trvale přítomna hlídka policie (zbytečně).": [
+      "doprava"
+    ],
+    "Občasný výskyt nedůvěryhodných osob": [
+      "lide"
+    ],
+    "Úzká ulice, poblíž bary a klubu": [
+      "alkohol_drogy",
+      "podchody"
+    ],
+    "Nepřítomnost lidi": [
+      "opustenost"
+    ],
+    "Nepřizpůsobivé osoby": [
+      "nenavist"
+    ],
+    "Hodně lidí,bezdomovci,..": [
+      "lide",
+      "dav"
+    ],
+    "Opuštěné místo": [
+      "opustenost"
+    ],
+    "V parku mám obvykle večer strach, spíš iracionální ale jo": [],
+    "na povlu mám strach i když je den": [],
+    "nádraží je plné podivných osob": [
+      "lide"
+    ],
+    "Málo osvětlené": [
+      "tma"
+    ],
+    "auta a podivná individua": [
+      "lide",
+      "doprava"
+    ],
+    "chybí cyklostezka": [
+      "doprava"
+    ],
+    "jezdí tu auta a autobusy, do toho lidi různě přechází - není jasně vyznačené místo pro pěší x kola x motorová vozidla": [
+      "doprava"
+    ],
+    "Mnoho a často opilých bezdomovců, kteří pokřikují.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Často opilý bezdomovci.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Přes den i v noci zde potkávám bezdomovce, často pod vlivem alkoholu, někdy žebrají nebo něco pokřikují na kolemjdoucí. Bojím se spíš v noci.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Temná, ne dobře osvětlená zákoutí.": [
+      "tma",
+      "podchody"
+    ],
+    "Nejen v noci spousta zvláštních lidí, často na sebe někdo křičí, je pod vlivem alkoholu. Zvýšená hustota lidí -> možnost krádeže.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese",
+      "kriminalita",
+      "dav"
+    ],
+    "Hodně lidí, někteří pod vlivem alkoholu, často na sebe někdo křičí.": [
+      "alkohol_drogy",
+      "agrese",
+      "dav"
+    ],
+    "špatné osvětlení, nepřehlednost": [
+      "tma",
+      "podchody"
+    ],
+    "Nízké osvětlení, častý výskyt agresivních lidí": [
+      "agrese",
+      "tma"
+    ],
+    "Vysoký provoz aut": [
+      "doprava"
+    ],
+    "Rychle jezdící taxíky na pěší zóně": [
+      "doprava"
+    ],
+    "Nízká osvětlenost": [
+      "tma"
+    ],
+    "Nízká osvětlenost, častý výskyt agresivních lidí": [
+      "agrese",
+      "tma"
+    ],
+    "Nemožnost přejití frekventované silnice": [
+      "opustenost"
+    ],
+    "Rychle jezdící taxíky v pěší zóně": [
+      "doprava"
+    ],
+    "Velký provoz aut": [
+      "doprava"
+    ],
+    "Zli lide": [
+      "lide"
+    ],
+    "Opilci, bezdomovci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "málo lidí": [
+      "opustenost"
+    ],
+    "pochybne existence": [
+      "lide"
+    ],
+    "v noci lze potkat pochybné existence": [
+      "lide"
+    ],
+    "opilí lidé za normální doby": [
+      "alkohol_drogy"
+    ],
+    "opilí lidé z diskoték": [
+      "alkohol_drogy"
+    ],
+    "blízká ubytovna sociálně slabších rodin": [
+      "nenavist"
+    ],
+    "hrbitovy": [],
+    "prostredi": [],
+    "vysoký počet bezdomovců a jiných pochybných existencí": [
+      "lide"
+    ],
+    "Vysoký počet bezdomovců a jiných pocyhbných existencí": [
+      "lide"
+    ],
+    "Vysoký výskyt bezdomovců a podivných existencí": [
+      "lide"
+    ],
+    "hodně bezdomovců": [
+      "lide"
+    ],
+    "hodně bezdomovců, chtějí cigarety": [
+      "lide",
+      "agrese"
+    ],
+    "temná ulička": [
+      "tma",
+      "podchody"
+    ],
+    "Tmavý park, kde sa často stretávajú bezdomovci.": [
+      "lide",
+      "tma"
+    ],
+    "V každom meste, či sa už jedná o slovenské alebo české mesto, tak na železničnej stanici/ nádraží nájdete najväčšiu smotánku. Rómovia, opilí ľudia, bezdomovci, feťáci a pod.": [
+      "lide",
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "Tmavé shodisko": [
+      "tma"
+    ],
+    "často sa tu vyskytujú rómsky spoluobčania, ktorí radi kričia.": [
+      "agrese",
+      "nenavist"
+    ],
+    "Vysoká koncentrace bezdomovců a lidí na drogách.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Hodně často se vyskytují agresivní lidi na drogách a bezdomovci.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Často se u Kauflandu a v okolí potulují opilí lidi nebo lidi na drogách a každého obtěžují": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Olomouc považuji za bezpečné místo, ale koncentrace lidí na drogách a bezdomovců v okolí vlakového nádraží, kteří začínají být agresivnější považuji za problém.": [
+      "lide",
+      "alkohol_drogy",
+      "agrese",
+      "dav"
+    ],
+    "Stejný důvod jako v noci, vysoká koncentrace bezdomovců a lidí na drogách v okolí dómu.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "bezdomovci, opolci": [
+      "lide"
+    ],
+    "mnoho podivných pokřikujících existencí": [
+      "lide",
+      "agrese"
+    ],
+    "mnoho hospod kolem kterých se pohybují nepředvídatelné osobnosti :D": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "kolem Charity": [
+      "lide"
+    ],
+    "Děíve jsem tu bydlívala a park je po celý den plný. Ať už přes den nebo večer opilými bezdomovci, kteří hulákají bezmyšlenkovitě na kolemjdoucí...a jsem žena, takže to prožívám intenzivněji než muži si myslím... celkově se po tmě vyhýbám parkům a radši jdu vždy městem...": [
+      "lide",
+      "alkohol_drogy",
+      "agrese",
+      "tma"
+    ],
+    "Velké množství opilých lidí": [
+      "alkohol_drogy"
+    ],
+    "Málo osvětlené místo": [
+      "tma"
+    ],
+    "Všude bezďáci a cigoši": [
+      "lide",
+      "nenavist"
+    ],
+    "to samé ale aspoń je pár lidí kolem": [],
+    "V noci je to tam moc temné": [
+      "tma"
+    ],
+    "Je tam moc lidí jiné národnosti": [
+      "nenavist",
+      "dav"
+    ],
+    "Schody vo veži, uzavretý priestor, tiež potom úzka ulička medzi budovami, dá sa ľahko zablokovať.": [
+      "podchody"
+    ],
+    "V noci se tam potulují hodně zvláštní lidé popíjející alkohol": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Je zde blbě nastavenej semafor kterej mate jak chodce tak řidiče a i přes zelenou se musí člověk pořádně ohlížet, jestli neco nejede": [
+      "doprava"
+    ],
+    "Podivní lidé": [
+      "lide"
+    ],
+    "Hospody a ožralí muži": [
+      "alkohol_drogy"
+    ],
+    "Podivní lidé, opilí muži": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Park v noci= podivní a opilí lidé": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Jednou jsme zde slyšeli dívku křičet na muže ať ji nechá na pokoji": [
+      "agrese"
+    ],
+    "Stejný důvod jako v noci": [],
+    "Vyskytují se zde bezdomovci a podobní lidé.": [
+      "lide"
+    ],
+    "Na nádraží jsou lidé často obtěžováni, někdy i okradeni.": [
+      "agrese",
+      "kriminalita"
+    ],
+    "Scházejí se zde opilci, jaou nepříjemní.": [
+      "alkohol_drogy"
+    ],
+    "Ćasto sa v tomto parku zdržiavajú bezdomovci, ktorí sú vo večerných hodinách často v podnapitom stave.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Je zde moc bezdomovců": [
+      "lide"
+    ],
+    "není zde moc příjemné prostředí": [],
+    "Je zde mnoho bezdomovců": [
+      "lide"
+    ],
+    "Spousta kapsářů a bezdomovců": [
+      "lide",
+      "kriminalita"
+    ],
+    "Zdržují se tady závadové osoby": [
+      "lide"
+    ],
+    "Bezdomovci a feťáci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Potulují se zde romové a občas agresivní opilé děti": [
+      "alkohol_drogy",
+      "agrese",
+      "nenavist"
+    ],
+    "Agresivní opilé děti": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Hluční a konfliktní lidé": [
+      "agrese"
+    ],
+    "Málo osvětlené, časté místo setkávání podivných skupin": [
+      "lide",
+      "tma"
+    ],
+    "Místo setkávání různých skupin, vyskytující se vandalismus, opilectví": [
+      "lide",
+      "alkohol_drogy",
+      "kriminalita"
+    ],
+    "Málo osvětlené místo, nízká koncentrace osob": [
+      "opustenost",
+      "tma"
+    ],
+    "Koncentrace skupin, zjevný vandalismus a opilství": [
+      "lide",
+      "alkohol_drogy",
+      "kriminalita"
+    ],
+    "Koncentrace skupin, opilecké skupiny": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "možnost přepadení či znásilnění": [
+      "kriminalita"
+    ],
+    "v oblasti je málo osvětlení a bývají tam zvláštní lidé": [
+      "lide",
+      "tma"
+    ],
+    "Když jdu v noci domů z hospody, tak mě nejednou otravoval podnapilý, zfetovaný člověk.": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "V noci tu na lavečkách posedávají opilý a často agresivní lidé": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "večer tmavé a nebezpečné": [
+      "tma"
+    ],
+    "večer keď je tma, menej cez deň": [
+      "tma"
+    ],
+    "množstvo ľudí bez domova, časté pýtanie peňazí": [
+      "lide"
+    ],
+    "tmavá oblasť": [
+      "tma"
+    ],
+    "množstvo ľudí bez domova": [
+      "lide"
+    ],
+    "Opití ľudia z krčmy, bezdomovci": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Odľahlé miesto na kraji Olomouca.": [
+      "opustenost"
+    ],
+    "Veľké množstvo ľudí.": [
+      "dav"
+    ],
+    "Je zde večerka u které se zdržují lidé kteří občas nemají slušné vychovaní a nebo jsou bez domova. Hlavně ve večerních hodinách.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "U vlakového nádraží často bezdomovci prosí o peníze a můžete se s nimi dostat do blízkého kontaktu.": [
+      "lide"
+    ],
+    "Mnoho bezdomovcům a feťáků": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Opět bezdomovci": [
+      "lide"
+    ],
+    "V parku bývá hodně opilých lidí": [
+      "alkohol_drogy"
+    ],
+    "Nemám místo kde bych se necítila bezpečně, ale v kasárnách mohou být bezdomovci nebo pilý lidé": [
+      "lide"
+    ],
+    "V parku býva hodně opilých lidí": [
+      "alkohol_drogy"
+    ],
+    "Nemám místo kde bych se cítila v nebezpečí, ale v kasárnách mohou být bezdomovci nebo opilý lidé": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "zvláštní individua": [
+      "lide"
+    ],
+    "ruzná individua": [
+      "lide"
+    ],
+    "Mám tady divný pocit neklidu": [
+      "lide"
+    ],
+    "Černá cesta od stavebnin kolem domu Skoutů ke Klášternímu Hradisku.": [],
+    "úzká tmavá ulička": [
+      "tma",
+      "podchody"
+    ],
+    "malé osvětlení": [
+      "tma"
+    ],
+    "Výskyt opilých lidí": [
+      "alkohol_drogy"
+    ],
+    "Výskyt opilých lidí a bezdomovců": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Výskyt opilých lidí i za dne": [
+      "alkohol_drogy"
+    ],
+    "Park temný": [
+      "tma"
+    ],
+    "Klasika hlavního nádraží": [],
+    "Hlavní nádraží": [],
+    "místo, kde se často nachází opilí lidé": [
+      "alkohol_drogy"
+    ],
+    "průchod (schody) do parkánových zahrad, tmavé a nepříjemné": [
+      "tma",
+      "podchody"
+    ],
+    "OKOLO MOSTU SE MOTÁ SPOUSTU POCHYBNÝCH INDIVIDUÍ": [
+      "lide"
+    ],
+    "Absence chodníku a veřejného osvětlení, přitom je co nejkratší cesta na mhd": [
+      "tma",
+      "doprava"
+    ],
+    "Neustálý nepořádek, graffity, totální sídlištní džungle": [],
+    "ulice bez osvětlení": [
+      "tma"
+    ],
+    "Neosvětlené místo. Úzká temná ulice oplocená z důvodů stavby": [
+      "tma",
+      "podchody"
+    ],
+    "tmavé místo, spoustu individuí": [
+      "lide",
+      "tma"
+    ],
+    "Voženílek čeká za každým rohem": [],
+    "koleje": [],
+    "kozlovnička": [],
+    "neznámé místa": [],
+    "V noci je tu dost tmavo": [
+      "tma"
+    ],
+    "Dlouhodobě rekonstrukci, ve tmě nejde vidět, kam kdo jde": [
+      "tma"
+    ],
+    "Znovu nádraží, protože se zde necítím bezpečně nikdy": [],
+    "Párkrát jsem procházel tímto parkem a nezdál se mi zcela bezpečný. Myslím si, že v noci bych se tudy určitě bál jít. Působí dost temně a je zde hodně lidí bez domova": [
+      "lide",
+      "dav",
+      "tma"
+    ],
+    "Hlavní nádraží, tam se podle mě bojí každý za dne i v noci. Spousta divných lidí, u kterých člověk nemůže vědět, zda jej neokradou..": [
+      "lide",
+      "kriminalita"
+    ],
+    "velké množství bezdomovců, často pod vlivem, oslovují kolemjdoucí a někteří jsou dost nepříjemní": [
+      "lide",
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "žádné osvětlení": [
+      "tma"
+    ],
+    "skoro bez osvětlení a nepřehledné, občas bezdomovci": [
+      "lide",
+      "tma",
+      "podchody"
+    ],
+    "návštěvníci zdejšího baru": [
+      "alkohol_drogy"
+    ],
+    "Vyšší koncentrace problémových soicálních skupin.": [
+      "lide"
+    ],
+    "Velký počet lidí": [
+      "dav"
+    ],
+    "Byl jsem zde jednou obklíčen partou podnapilých bezdomovců-": [
+      "lide",
+      "alkohol_drogy",
+      "kriminalita"
+    ],
+    "Necítím se tu bezpečně kvůli přespávajícím bezdomovcům kolem autobusového nádraží.": [
+      "lide",
+      "doprava"
+    ],
+    "Necítím se tu bezpečně kvůli individuím, která se tu vyskytují během dne.": [
+      "lide"
+    ],
+    "Kvůli otravným bezdomovcům.": [
+      "lide",
+      "agrese"
+    ],
+    "Slabé osvetlenie": [
+      "tma"
+    ],
+    "Bezdomovci a opití ľudia": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Slabé osvetlení": [
+      "tma"
+    ],
+    "Bezdomovci, opilí lidé": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "hlavní nádraží, nepříjemný pocit": [],
+    "schází se tam bezdomovci a pokřikují": [
+      "lide",
+      "agrese"
+    ],
+    "v podstatě všude, kde se nachází divné či opilé existence.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Bývají tam bezdomovci, kteří někdy pokřikují na kolemjdoucí.": [
+      "lide",
+      "agrese"
+    ],
+    "Jsou tady divni lidi": [
+      "lide"
+    ],
+    "Psychicky nátlak": [
+      "agrese"
+    ],
+    "Málo ľudí na stanici a najmä v jej okolí.": [
+      "opustenost"
+    ],
+    "Najmä, keď ešte stál Akademik, teraz už je to lepšie - je tam tma, stromy, zlý výhľad (je to mierny kopček a nie je vidno okolo neho, atď).": [
+      "tma"
+    ],
+    "Prázdne miesto, po zotmení tadeto veľa ľudí nechodí.": [
+      "opustenost",
+      "tma"
+    ],
+    "Bojím sa prechodu cez hradby (vežička), nie je vidno pred seba, neviem, či som vo vežičke sama alebo nie, rovnako sa bojím aj ďalej v parku okolo hradieb. Bojím sa tiež, že ma vo vežičke zamknú, keďže sa vraj na noc zatvára.": [
+      "tma",
+      "podchody",
+      "doprava"
+    ],
+    "Bojím sa, že mi nejaký dôležitý predmet spadne do potoka (vypadne z vrecka, kabelky, a spadne z mosta).": [],
+    "Je to tu obrovské, málo ľudí. Do diaľky dobre nevidno, je tam veľa prekážok vo výhľade.": [
+      "opustenost",
+      "tma"
+    ],
+    "Na prechodoch pre chodcov sa dlho stojí, niekedy človek nestíha MHD, takže musí prebehnúť na červenú - to nie je bezpečné.": [
+      "doprava"
+    ],
+    "Keď prechádzam od Šantovky ku zastávke Šantovka (alebo naopak), bojím sa, že pôjde električka - veľakrát sa pozriem na obe strany, aby som si bola ako-tak istá.": [
+      "doprava"
+    ],
+    "větší koncentrace znepokojivých osob": [
+      "lide"
+    ],
+    "za bílého dne se v Olomouci nepohybuji po místech, kde bych se cítila v nebezpečí, ale nádraží ve mě vyvolává nepříjemné pocity": [],
+    "Je zde vlakové nádraží a zdržuje se zde hodně bezdomovců.": [
+      "lide"
+    ],
+    "Chodím tudy do školy. U fakulty a u kolejí bezdomovci hledají v popelnicích jídlo.": [
+      "lide"
+    ],
+    "nelíbí se mi temná ulička vedle zbořené budovy, plus tam není mnoho pouličního osvětlení": [
+      "tma",
+      "podchody"
+    ],
+    "nepřehledný přechod": [
+      "podchody",
+      "doprava"
+    ],
+    "temná ulička vedle zbořené budovy, málo pouličního osvětlení": [
+      "tma",
+      "podchody"
+    ],
+    "Mnoho pofidernich lidi": [
+      "lide"
+    ],
+    "Zvláštní lidi": [
+      "lide"
+    ],
+    "Noční prostředí parku kolem hradeb na mě působilo značně nepříjemným dojmem, zvláště když se na některých lavičkách nacházeli polehávající starší muži požívající alkohol.": [
+      "lide",
+      "alkohol_drogy"
+    ],
+    "Jedná se o místo, kde je hustý provoz, a křižovka je často docela chaotická. Jako chodec mám někdy strach vstoupit na přechod.": [
+      "doprava"
+    ],
+    "Hodně bezdomovců": [
+      "lide"
+    ],
+    "Temná ulička bez světel": [
+      "tma",
+      "podchody"
+    ],
+    "přechod": [
+      "doprava"
+    ],
+    "zvláštní lidé okolo nádraží": [
+      "lide"
+    ],
+    "zvláštní lidé v okolí": [
+      "lide"
+    ],
+    "opilí fanoušci z fotbalu": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "skupinky tmavších spoluobčanů, opilci u hladového okna": [
+      "lide",
+      "alkohol_drogy",
+      "nenavist",
+      "tma"
+    ],
+    "podivné existence": [
+      "lide"
+    ],
+    "tmavší spoluobčané": [
+      "nenavist",
+      "tma"
+    ],
+    "divní lidi a bezdomovci pojíjející a albertu a otravující ostatní lidi": [
+      "lide",
+      "agrese"
+    ],
+    "opilci z hospod": [
+      "alkohol_drogy"
+    ],
+    "Moc aut na cestě.": [
+      "doprava"
+    ],
+    "V noci jde člověk raději okolo, aby ho nekonfontovala lidská spodina.": [
+      "lide"
+    ],
+    "Bezďa boyz.": [
+      "lide"
+    ],
+    "Obdivuhodný dárce chleba pomáhající potřebným a několika parazitům.": [],
+    "Varna a jiná místa shluku fetlabůžníků.": [
+      "alkohol_drogy",
+      "nenavist"
+    ],
+    "protože moc lidí": [
+      "opustenost"
+    ],
+    "test": [],
+    "Divní lidé": [
+      "lide"
+    ],
+    "Opilci nebo agresivní lidé pod vlivem": [
+      "alkohol_drogy",
+      "agrese"
+    ],
+    "Romové nebo Cikáni": [
+      "nenavist"
+    ],
+    "Tma nebo špatné osvětlení": [
+      "tma"
+    ],
+    "Tma nebo nedostatečné osvětlení": [
+      "tma"
+    ],
+    "Doprava": [
+      "doprava"
+    ],
+    "Úzký nebo nepřehledný prostor": [
+      "podchody"
+    ],
+    "Nebezpečí nebo obtěžování": [
+      "agrese"
+    ]
+  }
+}

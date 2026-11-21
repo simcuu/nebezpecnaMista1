@@ -12,6 +12,7 @@ from navigace_test4 import (
     vyhledavaci_panel,
     zpracuj_klik_navigace,
 )
+from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
 
 # Nastavení stránky
 st.set_page_config(
@@ -125,6 +126,8 @@ if "rezim_pridani" not in st.session_state:
     st.session_state.rezim_pridani = False
 
 
+<<<<<<< HEAD
+=======
 kategorie_slov = {
     "Lidé a chování": (
         "bezdomov", "opil", "lidé", "lidi", "lidí", "lidem",
@@ -153,6 +156,7 @@ def zarad_kategorie(duvod):
     return kategorie or ["Ostatní"]
 
 
+>>>>>>> 416754e80f4aeef2fba76fdfaeceb4e6d21bbe77
 # Barvy podle kategorie
 barvy = {
     "a": "#7B61A8",
@@ -383,7 +387,8 @@ vyber = st.sidebar.selectbox(
 
 vybrane_kategorie = st.sidebar.multiselect(
     "Kategorie důvodu:",
-    [*kategorie_slov, "Ostatní"]
+    V_NABIDCE,
+    format_func=NAZVY.get
 )
 
 # Osvětlení ulic jde zapnout jen při filtru "Noc"
