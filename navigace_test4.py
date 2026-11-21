@@ -575,24 +575,15 @@ def ovladani_navigace(nebezpecna_mista):
     return route
 
 
-def vykresli_navigaci(mapa, route):
-    """Přidá do mapy start, cíl a trasu."""
+def vrstva_navigace(route):
+    """Vrátí start, cíl a trasu jako samostatnou vrstvu (FeatureGroup).
+
+    Vrstva se předá do st_folium přes `feature_group_to_add`. Základní mapa tak zůstane
+    stejná a při změně startu/cíle/trasy se jen vymění tato vrstva – mapa se znovu
+    nenačítá a zůstane na stejném místě i přiblížení."""
+    vrstva = folium.FeatureGroup(name="Navigace")
     start = st.session_state.get("navigace_start")
     end = st.session_state.get("navigace_cil")
-
-    if start is not None:
-        folium.Marker(
-            location=[start[1], start[0]],
-            popup="Start",
-            icon=folium.Icon(color="green", icon="play"),
-        ).add_to(mapa)
-
-    if end is not None:
-        folium.Marker(
-            location=[end[1], end[0]],
-            popup="Cíl",
-            icon=folium.Icon(color="blue", icon="flag"),
-        ).add_to(mapa)
 
     if route is not None:
         decoded = convert.decode_polyline(route["routes"][0]["geometry"])
@@ -601,7 +592,28 @@ def vykresli_navigaci(mapa, route):
             color="blue",
             weight=5,
             opacity=0.7,
-        ).add_to(mapa)
+        ).add_to(vrstva)
+
+    if start is not None:
+        folium.Marker(
+            location=[start[1], start[0]],
+            popup="Start",
+            icon=folium.Icon(color="green", icon="play"),
+        ).add_to(vrstva)
+
+    if end is not None:
+        folium.Marker(
+            location=[end[1], end[0]],
+            popup="Cíl",
+            icon=folium.Icon(color="blue", icon="flag"),
+        ).add_to(vrstva)
+
+    return vrstva
+
+
+def vykresli_navigaci(mapa, route):
+    """Přidá do mapy start, cíl a trasu (starší způsob – mapa se při každé změně načte znovu)."""
+    vrstva_navigace(route).add_to(mapa)
 
 
 def zpracuj_klik_navigace(kliknuti):

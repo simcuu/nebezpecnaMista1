@@ -8,7 +8,7 @@ from supabase import create_client
 from navigace_test4 import (
     ovladani_navigace,
     priprav_mista,
-    vykresli_navigaci,
+    vrstva_navigace,
     vyhledavaci_panel,
     zpracuj_klik_navigace,
 )
@@ -32,6 +32,13 @@ st.markdown(
 
     html, body, [class*="css"], .stMarkdown, button, input, textarea, select {
         font-family: 'Inter', sans-serif;
+    }
+
+    /* Při přepočtu (kliknutí, výběr startu/cíle) Streamlit stránku zešedí –
+       necháme ji plně viditelnou, aby to nevypadalo jako znovunačtení */
+    [data-stale="true"], .stale-element {
+        opacity: 1 !important;
+        transition: none !important;
     }
 
     /* Menší horní odsazení stránky, aby nadpis byl výš */
@@ -1015,8 +1022,9 @@ if zobrazit_vlastni_body:
     uzivatelske_body.add_to(mapa)
 
 
-# Start, cíl a trasa navigace
-vykresli_navigaci(mapa, route)
+# Start, cíl a trasa navigace – samostatná vrstva, která se do mapy jen vymění
+# (předává se do st_folium níže), takže se mapa po výběru startu/cíle znovu nenačítá
+vrstva_trasy = vrstva_navigace(route)
 
 
 # Nástroj pro přesouvání a mazání bodů (jen když jsou vlastní body vidět)
@@ -1044,8 +1052,6 @@ if zobrazit_vlastni_body:
 # Vyhledávání trasy (Odkud / Kam) leží ve stejném obalu a zobrazí se přes levý horní roh mapy.
 with st.container(key="mapa_obal"):
 
-    vyhledavaci_panel()
-
     with st.container(key="legenda_mapy"):
         st.markdown(legenda_html, unsafe_allow_html=True)
 
@@ -1054,9 +1060,15 @@ with st.container(key="mapa_obal"):
         width=None,
         height=650,
         use_container_width=True,
+        feature_group_to_add=vrstva_trasy,
         returned_objects=["all_drawings", "last_clicked"],
         key="mapa"
     )
+
+    # Vyhledávání (Odkud / Kam) je AŽ ZA mapou: kdyby bylo před ní, jeho objevení by
+    # mapu v obalu posunulo o pozici a Streamlit by ji načetl celou znovu.
+    # Na obrazovce je i tak nad mapou (CSS position: absolute).
+    vyhledavaci_panel()
 
 
 # Zpracování kliknutí na mapu – výběr startu/cíle nebo přidání bodu
