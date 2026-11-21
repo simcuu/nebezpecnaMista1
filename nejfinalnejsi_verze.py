@@ -582,8 +582,24 @@ st.markdown(
 
 mapa = folium.Map(
     location=[49.5938, 17.2509],
-    zoom_start=12
+    zoom_start=12,
+    tiles=None
 )
+
+# Podklad mapy (OpenStreetMap): při filtru "Noc" tmavý režim, při "Den" / "Vše" světlý režim.
+# Tmavý režim vznikne převrácením barev dlaždic, body a čáry na mapě zůstanou ve svých barvách.
+folium.TileLayer(
+    "OpenStreetMap",
+    class_name="tmava-mapa" if vyber == "Noc" else "svetla-mapa"
+).add_to(mapa)
+
+mapa.get_root().header.add_child(folium.Element(
+    "<style>"
+    ".tmava-mapa {"
+    " filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);"
+    "}"
+    "</style>"
+))
 
 
 # Voronoiovy oblasti (kriminalita) – vykreslují se jako první, aby body ležely nad nimi
