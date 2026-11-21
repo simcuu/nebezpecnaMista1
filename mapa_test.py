@@ -12,6 +12,7 @@ from navigace_test4 import (
     vyhledavaci_panel,
     zpracuj_klik_navigace,
 )
+from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
 
 # Nastavení stránky
 st.set_page_config(
@@ -113,33 +114,6 @@ if "rezim_pridani" not in st.session_state:
     st.session_state.rezim_pridani = False
 
 
-kategorie_slov = {
-    "Lidé a chování": (
-        "bezdomov", "opil", "lidé", "lidi", "lidí", "lidem",
-        "lidech", "ľud", "člověk", "osob", "agres", "podezř",
-        "narkom"
-    ),
-    "Doprava a provoz": (
-        "doprav", "provoz", "auto", "autobus", "silnic", "křižovat",
-        "přechod", "chodník", "tramvaj", "vlak", "cykl"
-    ),
-    "Tma a osvětlení": ("tma", "tmav", "svět", "sviet", "osvět"),
-}
-
-
-def zarad_kategorie(duvod):
-    text = duvod.casefold()
-    if not text:
-        return []
-
-    kategorie = [
-        kategorie
-        for kategorie, slova in kategorie_slov.items()
-        if any(slovo in text for slovo in slova)
-    ]
-    return kategorie or ["Ostatní"]
-
-
 # Barvy podle kategorie
 barvy = {
     "a": "#7B61A8",
@@ -218,7 +192,8 @@ vyber = st.sidebar.selectbox(
 
 vybrane_kategorie = st.sidebar.multiselect(
     "Kategorie důvodu:",
-    [*kategorie_slov, "Ostatní"]
+    V_NABIDCE,
+    format_func=NAZVY.get
 )
 
 
