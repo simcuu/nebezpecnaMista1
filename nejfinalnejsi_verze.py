@@ -17,6 +17,7 @@ from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
 # Nastavení stránky
 st.set_page_config(
     page_title="Nebezpečná místa – Olomouc",
+    page_icon="🛡️",
     layout="wide"
 )
 supabase = create_client(
