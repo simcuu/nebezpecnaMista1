@@ -15,6 +15,7 @@ from navigace_test4 import (
     zpracuj_klik_navigace,
 )
 from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
+from ai_kategorie import zarad_pomoci_ai
 from rychle_vrstvy import (
     GeoJsonZeSouboru,
     PrepinacMapy,
@@ -248,7 +249,7 @@ st.markdown(
 def nacti_body():
     radky = (
         supabase.table("vlastni_body")
-        .select("id,nazev,duvod,lat,lon")
+        .select("id,nazev,duvod,lat,lon,kategorie")
         .execute()
         .data
     ) or []
@@ -263,7 +264,8 @@ def nacti_body():
             "properties": {
                 "id": radek["id"],
                 "nazev": radek["nazev"],
-                "duvod": radek["duvod"]
+                "duvod": radek["duvod"],
+                "kategorie": radek.get("kategorie") or []
             }
         }
         for radek in radky
@@ -853,7 +855,21 @@ def oblasti_kriminality_json(vyber, kategorie, _df_krim_mapa):
 # Boční panel – navigace (pracuje přímo v hlavní mapě)
 with st.sidebar:
     nadpis_sekce("Navigace")
-    route = ovladani_navigace(priprav_mista(df_mapa.to_dict("records")))
+    # Vlastní body se pro navigaci převedou do stejné podoby jako body z ankety
+    vlastni_pro_navigaci = [
+        {
+            "latitude": bod["geometry"]["coordinates"][1],
+            "longitude": bod["geometry"]["coordinates"][0],
+            "desc_detail_duvod": bod.get("properties", {}).get("duvod", ""),
+            "typ_nazev": bod.get("properties", {}).get("nazev", ""),
+        }
+        for bod in st.session_state.moje_body
+        if zobrazit_vlastni_body and (
+            not vybrane_kategorie
+            or set(vybrane_kategorie) & set(bod.get("properties", {}).get("kategorie", []))
+        )
+    ]
+    route = ovladani_navigace(priprav_mista(df_mapa.to_dict("records") + vlastni_pro_navigaci))
 
 # Výběr startu/cíle a přidávání bodu se navzájem vylučují
 if st.session_state.get("navigace_vybirany_bod") and st.session_state.rezim_pridani:
@@ -884,12 +900,25 @@ def okno_pro_bod(lat, lon):
 
         if nazev.strip() and duvod.strip():
 
+            # AI zařadí bod do kategorií podle názvu a popisu
+            with st.spinner("AI třídí bod do kategorií…"):
+                kategorie_bodu = zarad_pomoci_ai(nazev.strip(), duvod.strip())
+
             supabase.table("vlastni_body").insert({
                 "nazev": nazev.strip(),
                 "duvod": duvod.strip(),
                 "lat": lat,
-                "lon": lon
+                "lon": lon,
+                "kategorie": kategorie_bodu or []
             }).execute()
+
+            # Hláška, která se ukáže po uložení
+            if kategorie_bodu is None:
+                st.session_state.zprava_ai = "⚠️ Bod uložen bez kategorie – AI teď není dostupná."
+            elif kategorie_bodu:
+                st.session_state.zprava_ai = "✅ Bod uložen. AI ho zařadila do: " + ", ".join(NAZVY[k] for k in kategorie_bodu)
+            else:
+                st.session_state.zprava_ai = "Bod uložen. AI nenašla žádnou odpovídající kategorii."
 
             st.session_state.moje_body = nacti_body()
 
@@ -899,6 +928,11 @@ def okno_pro_bod(lat, lon):
 
         else:
             st.warning("Vyplňte název i popis problému.")
+
+
+# Hláška od AI po uložení bodu (zobrazí se jednou)
+if "zprava_ai" in st.session_state:
+    st.toast(st.session_state.pop("zprava_ai"))
 
 
 # Mapa přes celou šířku
@@ -941,7 +975,14 @@ mapa.get_root().header.add_child(folium.Element(
     " filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);"
     "}"
     # Vlastní body a nástroj na jejich úpravu se skryjí, když nejsou zapnuté
-    ".skryt-vlastni .vlastni-bod, .skryt-vlastni .leaflet-draw { display: none; }"
+    ".skryt-vlastni .vlastni-bod, .skryt-vlastni .leaflet-draw { display: none !important; }"
+    # Při výběru kategorie se zelené body skryjí a ukážou se jen ty z vybrané kategorie
+    ".filtr-kategorii .vlastni-bod { display: none; }"
+    + "".join(
+        f".ukaz-{k.replace('_', '-')} .vlastni-bod.kat-{k.replace('_', '-')} {{ display: inline; }}"
+        for k in V_NABIDCE
+    )
+    +
     # Modrá záře kolem budov UP, aby byly na tmavé mapě dobře vidět
     ".budova-up { filter: drop-shadow(0 0 4px #4fb3ff) drop-shadow(0 0 8px #4fb3ff); }"
     # Stejná záře kolem základních škol, jen žlutá
@@ -982,7 +1023,9 @@ for index, bod in enumerate(st.session_state.moje_body):
         fill=True,
         fill_color="green",
         fill_opacity=0.8,
-        class_name="vlastni-bod",
+        class_name="vlastni-bod " + " ".join(
+            "kat-" + k.replace("_", "-") for k in vlastnosti.get("kategorie", [])
+        ),
         tooltip=nazev,
         popup=duvod
     ).add_to(uzivatelske_body)
@@ -1018,6 +1061,8 @@ prepinac = folium.FeatureGroup(name="Nastavení mapy")
 PrepinacMapy(
     tmava_mapa=tmava_mapa,
     skryt_vlastni=not zobrazit_vlastni_body,
+    filtr_kategorii=bool(vybrane_kategorie),
+    **{f"ukaz_{k}": k in vybrane_kategorie for k in V_NABIDCE},
 ).add_to(prepinac)
 vrstvy.append(prepinac)
 
