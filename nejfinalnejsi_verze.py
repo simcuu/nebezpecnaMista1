@@ -854,5 +854,5 @@ if st.session_state.cekajici_bod is not None:
 
     # Vynulujeme hned, aby se okno znovu neotevřelo po zavření křížkem
     st.session_state.cekajici_bod = None
-
+    
     okno_pro_bod(lat_bodu, lon_bodu)
