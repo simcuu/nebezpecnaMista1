@@ -396,7 +396,7 @@ def _hledaci_radek(typ, popisek, placeholder):
     vysledky = st.session_state.get(f"vysledky_{typ}")
     if text and text == st.session_state.get(f"hledano_{typ}"):
         if vysledky is None and f"vysledky_{typ}" in st.session_state:
-            st.caption("⚠️ Vyhledávání teď nefunguje, zkuste to znovu nebo klikněte do mapy.")
+            st.caption("Vyhledávání teď nefunguje, zkuste to znovu nebo klikněte do mapy.")
         elif vysledky == []:
             st.caption("Nic jsme nenašli, zkuste napsat adresu jinak.")
 
@@ -430,13 +430,13 @@ def vyhledavaci_panel():
         st.markdown(VYHLEDAVANI_CSS, unsafe_allow_html=True)
 
         nadpis, zavrit = st.columns([5, 1], vertical_alignment="center")
-        nadpis.markdown("**🧭 Naplánovat trasu**")
+        nadpis.markdown("**Naplánovat trasu**")
         if zavrit.button("✕", key="zavrit_hledani", help="Skrýt vyhledávání (trasa zůstane)"):
             st.session_state["navigace_aktivni"] = False
             st.rerun()
 
-        zmena = _hledaci_radek("start", "Odkud", "🟢 Odkud – adresa nebo místo")
-        zmena = _hledaci_radek("cil", "Kam", "🏁 Kam – adresa nebo místo") or zmena
+        zmena = _hledaci_radek("start", "Odkud", "Odkud – adresa nebo místo")
+        zmena = _hledaci_radek("cil", "Kam", "Kam – adresa nebo místo") or zmena
 
     if zmena:
         st.rerun()
@@ -475,7 +475,7 @@ def ovladani_navigace(nebezpecna_mista):
     inicializuj_stav()
 
     posunout_listu = False
-    if st.button("🧭 Zvolit start a cíl", use_container_width=True):
+    if st.button("Zvolit start a cíl", use_container_width=True):
         zrus_navigaci()
         st.session_state["navigace_vybirany_bod"] = "start"
         st.session_state["navigace_aktivni"] = True

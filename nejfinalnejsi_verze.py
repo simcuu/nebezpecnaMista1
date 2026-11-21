@@ -37,7 +37,7 @@ st.markdown(
     /* Menší horní odsazení stránky, aby nadpis byl výš */
     .block-container,
     [data-testid="stMainBlockContainer"] {
-        padding-top: 1.5rem !important;
+        padding-top: 3.5rem !important;
         padding-bottom: 2rem !important;
     }
 
@@ -449,12 +449,12 @@ def nacti_kriminalitu():
 df_krim = nacti_kriminalitu()
 
 ZDROJ_POCIT = "Pocit nebezpečí"
-ZDROJ_VORONOI = "Oblasti kriminality (Voronoi)"
+ZDROJ_VORONOI = "Oblasti kriminality"
 ZDROJ_OBA = "Obojí"
 
 
 # Boční panel – nastavení mapy
-st.sidebar.title("⚙️ Nastavení mapy")
+st.sidebar.title("Nastavení mapy")
 
 
 def nadpis_sekce(text):
@@ -467,7 +467,7 @@ nadpis_sekce("Vlastní body")
 # Tlačítko pro zapnutí / vypnutí režimu přidávání bodu
 if not st.session_state.rezim_pridani:
 
-    if st.sidebar.button("📍 Přidat nový bod", use_container_width=True):
+    if st.sidebar.button("Přidat nový bod", use_container_width=True):
         st.session_state.rezim_pridani = True
         # Výběr startu/cíle navigace se tím ukončí, aby klik do mapy nebyl dvojznačný
         st.session_state["navigace_vybirany_bod"] = None
@@ -477,7 +477,7 @@ else:
 
     st.sidebar.info("Režim přidávání je zapnutý. Klikněte do mapy.")
 
-    if st.sidebar.button("❌ Zrušit přidávání", use_container_width=True):
+    if st.sidebar.button("Zrušit přidávání", use_container_width=True):
         st.session_state.rezim_pridani = False
         st.rerun()
 
@@ -496,8 +496,9 @@ zobrazit_voronoi = zdroj_dat in (ZDROJ_VORONOI, ZDROJ_OBA)
 # Boční panel – filtrování (platí pro pocit nebezpečí i pro kriminalitu)
 nadpis_sekce("Filtry")
 vyber = st.sidebar.selectbox(
-    "Zobrazit místa:",
-    ["Vše", "Tma", "Světlo"]
+    "Světelné podmínky:",
+    ["Za tmy", "Za světla", "Nerozlišovat"],
+    index=2,
 )
 
 vybrane_kategorie = st.sidebar.multiselect(
@@ -506,10 +507,10 @@ vybrane_kategorie = st.sidebar.multiselect(
     placeholder="Všechny kategorie"
 )
 
-# Osvětlení ulic jde zapnout jen při filtru "Tma"
-if vyber == "Tma":
+# Osvětlení ulic jde zapnout jen při filtru "Za tmy"
+if vyber == "Za tmy":
     zobrazit_osvetleni = st.sidebar.checkbox(
-        "💡 Osvětlení ulic",
+        "Osvětlení ulic",
         value=True,
         disabled=osvetleni is None,
         help=(
@@ -558,10 +559,10 @@ st.sidebar.markdown(
 
 
 # Výběr bodů podle filtru
-if vyber == "Tma":
+if vyber == "Za tmy":
     df_mapa = df[df["typ_ident"] == "a"]
 
-elif vyber == "Světlo":
+elif vyber == "Za světla":
     df_mapa = df[df["typ_ident"] == "b"]
 
 else:
@@ -585,10 +586,10 @@ if not zobrazit_pocit:
 # Stejné filtry pro události kriminality
 df_krim_mapa = df_krim
 
-if vyber == "Tma":
+if vyber == "Za tmy":
     df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "a"]
 
-elif vyber == "Světlo":
+elif vyber == "Za světla":
     df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "b"]
 
 if vybrane_kategorie:
@@ -708,11 +709,11 @@ mapa = folium.Map(
     tiles=None
 )
 
-# Podklad mapy (OpenStreetMap): při filtru "Tma" tmavý režim, při "Světlo" / "Vše" světlý režim.
+# Podklad mapy (OpenStreetMap): při filtru "Za tmy" tmavý režim, jinak světlý režim.
 # Tmavý režim vznikne převrácením barev dlaždic, body a čáry na mapě zůstanou ve svých barvách.
 folium.TileLayer(
     "OpenStreetMap",
-    class_name="tmava-mapa" if vyber == "Tma" else "svetla-mapa"
+    class_name="tmava-mapa" if vyber == "Za tmy" else "svetla-mapa"
 ).add_to(mapa)
 
 mapa.get_root().header.add_child(folium.Element(
