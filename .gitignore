@@ -4,9 +4,7 @@ venv/
 
 # Měsíční data Policie ČR – zdroj pro priprav_kriminalitu.py, do gitu nepatří
 *.zip
-__pycache__/nejfinalnejsi_verze.cpython-315.pyc
-__pycache__/ai_kategorie.cpython-315.pyc
-__pycache__/rychle_vrstvy.cpython-315.pyc
+__pycache__/
 desktop.ini 
 # Data pro mapu, která aplikace sama vytvoří při spuštění (rychle_vrstvy.py)
 static/
