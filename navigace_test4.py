@@ -210,7 +210,7 @@ def _hledej_nominatim(dotaz):
             druh = "budova"
 
         if druh == "zastavka":
-            popis = f"🚏 {popis} (zastávka)"
+            popis = f"{popis} (zastávka)"
 
         vysledky.append({
             "popis": popis,
@@ -291,7 +291,7 @@ def hledej_misto(text):
             for z in zastavky
         ):
             vysledek["druh"] = "zastavka"
-            vysledek["popis"] = f"🚏 {vysledek['nazev']} (zastávka)"
+            vysledek["popis"] = f"{vysledek['nazev']} (zastávka)"
 
     stred_olomouce = (17.2509, 49.5938)
     body_za_druh = {"budova": 300, "adresa": 250, "oblast": 0, "ulice": -100, "zastavka": -400}
@@ -609,7 +609,7 @@ def zpracuj_klik_navigace(kliknuti):
     nastav_bod(rezim, souradnice)
     # Do vyhledávacího řádku se vepíše, že bod byl vybrán na mapě
     st.session_state[f"_text_{rezim}"] = (
-        f"📍 Bod na mapě ({kliknuti['lat']:.5f}, {kliknuti['lng']:.5f})"
+        f"Bod na mapě ({kliknuti['lat']:.5f}, {kliknuti['lng']:.5f})"
     )
     return True
 

@@ -16,7 +16,6 @@ from navigace_test4 import (
 # Nastavení stránky
 st.set_page_config(
     page_title="Nebezpečná místa – Olomouc",
-    page_icon="🛡️",
     layout="wide"
 )
 supabase = create_client(
@@ -1093,29 +1092,29 @@ if nove_body is not None:
 statistiky = [
     *(
         [
-            ("🏫 Budovy UP", f"{len(budovy)}"),
+            ("Budovy UP", f"{len(budovy)}"),
             # (Studenty přes budovy nesčítáme – jeden student chodí do více budov)
             (
-                "🌙 Výuka po setmění",
+                "Výuka po setmění",
                 f"{sum(1 for b in budovy if b['dark_students'])} <small>budov</small>",
             ),
         ]
         if studentsky_rezim
         else []
     ),
-    ("📍 Zobrazená místa", f"{len(df_mapa)} <small>/ {len(df)}</small>"),
-    ("🟢 Vlastní body", f"{len(st.session_state.moje_body)}"),
+    ("Zobrazená místa", f"{len(df_mapa)} <small>/ {len(df)}</small>"),
+    ("Vlastní body", f"{len(st.session_state.moje_body)}"),
 ]
 
 if zobrazit_voronoi:
     statistiky.append(
-        ("🚨 Činy (kriminalita)", f"{len(df_krim_mapa)} <small>/ {len(df_krim)}</small>")
+        ("Činy (kriminalita)", f"{len(df_krim_mapa)} <small>/ {len(df_krim)}</small>")
     )
 
 if route is not None:
     souhrn = route["routes"][0]["summary"]
-    statistiky.append(("🧭 Délka trasy", f"{souhrn['distance'] / 1000:.2f} <small>km</small>"))
-    statistiky.append(("🚶 Doba chůze", f"{round(souhrn['duration'] / 60)} <small>min</small>"))
+    statistiky.append(("Délka trasy", f"{souhrn['distance'] / 1000:.2f} <small>km</small>"))
+    statistiky.append(("Doba chůze", f"{round(souhrn['duration'] / 60)} <small>min</small>"))
 
 st.markdown(
     '<div class="statistiky">'
@@ -1130,7 +1129,7 @@ st.markdown(
 
 
 # Seznam vlastních bodů (sbalitelný, aby nezabíral místo)
-with st.expander(f"📋 Seznam vlastních bodů ({len(st.session_state.moje_body)})"):
+with st.expander(f"Seznam vlastních bodů ({len(st.session_state.moje_body)})"):
 
     for index, bod in enumerate(st.session_state.moje_body):
 

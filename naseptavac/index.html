@@ -29,6 +29,7 @@
     transition: border-color .15s;
   }
   .pole:focus-within { border-color: #7157a2; }
+  .ikona:empty { display: none; }
   .ikona { font-size: 15px; width: 18px; text-align: center; flex: none; }
   input {
     flex: 1;
@@ -124,69 +125,69 @@ function upravVysku() {
 
 // ---------- Druhy míst ----------
 const DRUHY = {
-  "highway:bus_stop": ["🚏", "Zastávka MHD"],
-  "railway:tram_stop": ["🚋", "Zastávka tramvaje"],
-  "public_transport:*": ["🚏", "Zastávka MHD"],
-  "railway:station": ["🚆", "Nádraží"],
-  "railway:halt": ["🚆", "Železniční zastávka"],
-  "amenity:school": ["🏫", "Škola"],
-  "amenity:university": ["🎓", "Vysoká škola"],
-  "amenity:college": ["🎓", "Škola"],
-  "amenity:kindergarten": ["🧸", "Mateřská škola"],
-  "amenity:hospital": ["🏥", "Nemocnice"],
-  "amenity:clinic": ["🏥", "Poliklinika"],
-  "amenity:doctors": ["🩺", "Lékař"],
-  "amenity:pharmacy": ["💊", "Lékárna"],
-  "amenity:restaurant": ["🍽️", "Restaurace"],
-  "amenity:fast_food": ["🍔", "Rychlé občerstvení"],
-  "amenity:cafe": ["☕", "Kavárna"],
-  "amenity:pub": ["🍺", "Hospoda"],
-  "amenity:bar": ["🍸", "Bar"],
-  "amenity:bank": ["🏦", "Banka"],
-  "amenity:atm": ["🏧", "Bankomat"],
-  "amenity:police": ["👮", "Policie"],
-  "amenity:post_office": ["📮", "Pošta"],
-  "amenity:parking": ["🅿️", "Parkoviště"],
-  "amenity:place_of_worship": ["⛪", "Kostel"],
-  "amenity:theatre": ["🎭", "Divadlo"],
-  "amenity:cinema": ["🎬", "Kino"],
-  "amenity:library": ["📚", "Knihovna"],
-  "amenity:townhall": ["🏛️", "Radnice"],
-  "amenity:*": ["📍", "Služba"],
-  "shop:supermarket": ["🛒", "Supermarket"],
-  "shop:mall": ["🛍️", "Obchodní centrum"],
-  "shop:*": ["🛍️", "Obchod"],
-  "leisure:park": ["🌳", "Park"],
-  "leisure:playground": ["🛝", "Dětské hřiště"],
-  "leisure:sports_centre": ["🏟️", "Sportoviště"],
-  "leisure:stadium": ["🏟️", "Stadion"],
-  "leisure:pitch": ["⚽", "Hřiště"],
-  "leisure:*": ["🌳", "Volný čas"],
-  "tourism:hotel": ["🏨", "Hotel"],
-  "tourism:museum": ["🏛️", "Muzeum"],
-  "tourism:*": ["📸", "Turistický cíl"],
-  "historic:*": ["🏰", "Památka"],
-  "natural:*": ["🌲", "Příroda"],
-  "waterway:*": ["🌊", "Vodní tok"],
-  "landuse:*": ["🗺️", "Oblast"],
-  "building:*": ["🏢", "Budova"],
-  "highway:pedestrian": ["🚶", "Pěší zóna"],
-  "highway:*": ["🛣️", "Ulice"],
-  "place:city": ["🏙️", "Město"],
-  "place:town": ["🏙️", "Město"],
-  "place:village": ["🏘️", "Obec"],
-  "place:hamlet": ["🏘️", "Osada"],
-  "place:suburb": ["🏘️", "Městská část"],
-  "place:quarter": ["🏘️", "Čtvrť"],
-  "place:neighbourhood": ["🏘️", "Čtvrť"],
-  "place:locality": ["📍", "Lokalita"],
-  "place:square": ["🏛️", "Náměstí"],
-  "place:house": ["🏠", "Adresa"],
+  "highway:bus_stop": ["", "Zastávka MHD"],
+  "railway:tram_stop": ["", "Zastávka tramvaje"],
+  "public_transport:*": ["", "Zastávka MHD"],
+  "railway:station": ["", "Nádraží"],
+  "railway:halt": ["", "Železniční zastávka"],
+  "amenity:school": ["", "Škola"],
+  "amenity:university": ["", "Vysoká škola"],
+  "amenity:college": ["", "Škola"],
+  "amenity:kindergarten": ["", "Mateřská škola"],
+  "amenity:hospital": ["", "Nemocnice"],
+  "amenity:clinic": ["", "Poliklinika"],
+  "amenity:doctors": ["", "Lékař"],
+  "amenity:pharmacy": ["", "Lékárna"],
+  "amenity:restaurant": ["", "Restaurace"],
+  "amenity:fast_food": ["", "Rychlé občerstvení"],
+  "amenity:cafe": ["", "Kavárna"],
+  "amenity:pub": ["", "Hospoda"],
+  "amenity:bar": ["", "Bar"],
+  "amenity:bank": ["", "Banka"],
+  "amenity:atm": ["", "Bankomat"],
+  "amenity:police": ["", "Policie"],
+  "amenity:post_office": ["", "Pošta"],
+  "amenity:parking": ["", "Parkoviště"],
+  "amenity:place_of_worship": ["", "Kostel"],
+  "amenity:theatre": ["", "Divadlo"],
+  "amenity:cinema": ["", "Kino"],
+  "amenity:library": ["", "Knihovna"],
+  "amenity:townhall": ["", "Radnice"],
+  "amenity:*": ["", "Služba"],
+  "shop:supermarket": ["", "Supermarket"],
+  "shop:mall": ["", "Obchodní centrum"],
+  "shop:*": ["", "Obchod"],
+  "leisure:park": ["", "Park"],
+  "leisure:playground": ["", "Dětské hřiště"],
+  "leisure:sports_centre": ["", "Sportoviště"],
+  "leisure:stadium": ["", "Stadion"],
+  "leisure:pitch": ["", "Hřiště"],
+  "leisure:*": ["", "Volný čas"],
+  "tourism:hotel": ["", "Hotel"],
+  "tourism:museum": ["", "Muzeum"],
+  "tourism:*": ["", "Turistický cíl"],
+  "historic:*": ["", "Památka"],
+  "natural:*": ["", "Příroda"],
+  "waterway:*": ["", "Vodní tok"],
+  "landuse:*": ["", "Oblast"],
+  "building:*": ["", "Budova"],
+  "highway:pedestrian": ["", "Pěší zóna"],
+  "highway:*": ["", "Ulice"],
+  "place:city": ["", "Město"],
+  "place:town": ["", "Město"],
+  "place:village": ["", "Obec"],
+  "place:hamlet": ["", "Osada"],
+  "place:suburb": ["", "Městská část"],
+  "place:quarter": ["", "Čtvrť"],
+  "place:neighbourhood": ["", "Čtvrť"],
+  "place:locality": ["", "Lokalita"],
+  "place:square": ["", "Náměstí"],
+  "place:house": ["", "Adresa"],
 };
 
 function druhMista(p) {
-  if (p.housenumber && !p.name) return ["🏠", "Adresa"];
-  return DRUHY[p.osm_key + ":" + p.osm_value] || DRUHY[p.osm_key + ":*"] || ["📍", "Místo"];
+  if (p.housenumber && !p.name) return ["", "Adresa"];
+  return DRUHY[p.osm_key + ":" + p.osm_value] || DRUHY[p.osm_key + ":*"] || ["", "Místo"];
 }
 
 function bezDiakritiky(t) {
@@ -272,7 +273,6 @@ function vykresli(info) {
     const li = document.createElement("li");
     if (i === aktivni) li.className = "aktivni";
     li.innerHTML =
-      `<span class="ik">${n.ikona}</span>` +
       `<div class="texty"><div class="nazev">${oznacShodu(n.nazev, vstup.value)}</div>` +
       `<div class="podtitul">${escapuj(n.podtitul)}</div></div>`;
     li.addEventListener("mousedown", e => { e.preventDefault(); vyber(i); });
@@ -301,7 +301,7 @@ function vyber(i) {
   vstup.blur();
   nastavHodnotu({
     souradnice: n.souradnice,
-    popis: `${n.ikona} ${n.nazev}`,
+    popis: n.nazev,
     nonce: Date.now() + "-" + Math.random(),
   });
 }
@@ -371,7 +371,7 @@ function zpracujZalohu() {
   cekamNaZalohu = null;
   pole.classList.remove("nacita");
   navrhy = (z.vysledky || []).map(v => ({
-    ikona: "📍", druh: "", nazev: v.popis, podtitul: "", souradnice: v.souradnice,
+    ikona: "", druh: "", nazev: v.popis, podtitul: "", souradnice: v.souradnice,
   }));
   aktivni = navrhy.length ? 0 : -1;
   vykresli(z.chyba ? "Vyhledávání teď nefunguje, klikněte místo toho do mapy."

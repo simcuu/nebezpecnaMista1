@@ -4,3 +4,5 @@ venv/
 
 # Měsíční data Policie ČR – zdroj pro priprav_kriminalitu.py, do gitu nepatří
 *.zip
+__pycache__/
+desktop.ini 
