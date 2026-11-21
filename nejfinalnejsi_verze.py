@@ -15,6 +15,7 @@ from navigace_test4 import (
 )
 from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
 from ai_kategorie import zarad_pomoci_ai
+from srovnani_tras import zobraz_srovnani
 from rychle_vrstvy import (
     GeoJsonZeSouboru,
     PrepinacMapy,
@@ -888,7 +889,8 @@ with st.sidebar:
             or set(vybrane_kategorie) & set(bod.get("properties", {}).get("kategorie", []))
         )
     ]
-    route = ovladani_navigace(priprav_mista(df_mapa.to_dict("records") + vlastni_pro_navigaci))
+    mista_navigace = priprav_mista(df_mapa.to_dict("records") + vlastni_pro_navigaci)
+    route = ovladani_navigace(mista_navigace)
 
 # Výběr startu/cíle a přidávání bodu se navzájem vylučují
 if st.session_state.get("navigace_vybirany_bod") and st.session_state.rezim_pridani:
@@ -1387,6 +1389,51 @@ st.markdown(
     + "</div>",
     unsafe_allow_html=True
 )
+
+
+# Srovnání nejkratší a nejbezpečnější cesty (srovnani_tras.py) – když je zvolený start i cíl.
+# Používá stejný start, cíl a nebezpečná místa jako navigace (tedy i filtry a vlastní body).
+start_navigace = st.session_state.get("navigace_start")
+cil_navigace = st.session_state.get("navigace_cil")
+if start_navigace is not None and cil_navigace is not None:
+    if st.toggle(
+        "Porovnat nejkratší a nejbezpečnější cestu",
+        key="srovnani_zapnuto",
+        help="Ukáže vedle sebe nejkratší trasu a trasu, která se nejvíc vyhne "
+             "nebezpečným místům, a o kolik se liší čas a bezpečnost.",
+    ):
+        nastaveni_odstup, nastaveni_zajizdka, nastaveni_svetlo = st.columns(3)
+        srovnani_odstup = nastaveni_odstup.slider(
+            "Odstup od nebezpečných míst (m)", 10, 150, 50, step=10, key="srovnani_odstup",
+            help="Místo se počítá jako ‚u trasy‘, když je od ní blíž než tato vzdálenost.",
+        )
+        srovnani_zajizdka = nastaveni_zajizdka.slider(
+            "Maximální zajížďka (%)", 10, 150, 60, step=10, key="srovnani_zajizdka",
+            help="Bezpečná trasa nesmí být delší než nejkratší o víc než toto procento.",
+        )
+        srovnani_svetlo = nastaveni_svetlo.checkbox(
+            "Obarvit trasy podle osvětlení ulic", value=vyber == "Za tmy",
+            key="srovnani_svetlo",
+        )
+        zobraz_srovnani(
+            tuple(start_navigace),
+            tuple(cil_navigace),
+            [
+                {
+                    "lat": m["souradnice"][0],
+                    "lon": m["souradnice"][1],
+                    "typ": m["nazev mista"],
+                    "duvod": m["problem mista"],
+                }
+                for m in mista_navigace
+            ],
+            za_tmy=vyber != "Za světla",
+            odstup=srovnani_odstup,
+            max_zajizdka=srovnani_zajizdka,
+            podle_svetla=srovnani_svetlo,
+            klic="hlavni_srovnani",
+            tmava=tmava_mapa,
+        )
 
 
 # Seznam vlastních bodů (sbalitelný, aby nezabíral místo)
