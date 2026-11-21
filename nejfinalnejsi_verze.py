@@ -5,7 +5,6 @@ import html
 import json
 import os
 import pandas as pd
-from folium.plugins import Draw
 from supabase import create_client
 from navigace_test4 import (
     ovladani_navigace,
@@ -997,7 +996,7 @@ mapa.get_root().header.add_child(folium.Element(
     " filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);"
     "}"
     # Vlastní body a nástroj na jejich úpravu se skryjí, když nejsou zapnuté
-    ".skryt-vlastni .vlastni-bod, .skryt-vlastni .leaflet-draw { display: none !important; }"
+    ".skryt-vlastni .vlastni-bod { display: none !important; }"
     # Při výběru kategorie se zelené body skryjí a ukážou se jen ty z vybrané kategorie
     ".filtr-kategorii .vlastni-bod { display: none; }"
     + "".join(
@@ -1058,25 +1057,6 @@ for index, bod in enumerate(st.session_state.moje_body):
 
 uzivatelske_body.add_to(mapa)
 
-
-# Nástroj pro přesouvání a mazání vlastních bodů
-Draw(
-    feature_group=uzivatelske_body,
-    export=False,
-    position="topleft",
-    draw_options={
-        "polyline": False,
-        "polygon": False,
-        "rectangle": False,
-        "circle": False,
-        "circlemarker": False,
-        "marker": False
-    },
-    edit_options={
-        "edit": True,
-        "remove": True
-    }
-).add_to(mapa)
 
 
 # --- Vrstvy, které se mění (pořadí = pořadí vykreslení, poslední je nahoře) --------
@@ -1325,7 +1305,7 @@ with st.container(key="mapa_obal"):
         height=650,
         use_container_width=True,
         feature_group_to_add=vrstvy,
-        returned_objects=["all_drawings", "last_clicked"],
+        returned_objects=["last_clicked"],
         key="mapa"
     )
 
@@ -1358,9 +1338,6 @@ if kliknuti:
                 kliknuti["lng"]
             ]
 
-
-# Uložení upravených a přesunutých bodů
-nove_body = output.get("all_drawings")
 
 if nove_body is not None and zobrazit_vlastni_body:
 
