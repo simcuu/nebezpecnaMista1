@@ -126,37 +126,6 @@ if "rezim_pridani" not in st.session_state:
     st.session_state.rezim_pridani = False
 
 
-<<<<<<< HEAD
-=======
-kategorie_slov = {
-    "Lidé a chování": (
-        "bezdomov", "opil", "lidé", "lidi", "lidí", "lidem",
-        "lidech", "ľud", "člověk", "osob", "agres", "podezř",
-        "narkom"
-    ),
-    "Doprava a provoz": (
-        "doprav", "provoz", "auto", "autobus", "silnic", "křižovat",
-        "přechod", "chodník", "tramvaj", "vlak", "cykl"
-    ),
-    "Tma a osvětlení": ("tma", "tmav", "svět", "sviet", "osvět"),
-    "Krádeže a majetek": ("krad", "krád", "zlod", "vloup", "podvod"),
-}
-
-
-def zarad_kategorie(duvod):
-    text = duvod.casefold()
-    if not text:
-        return []
-
-    kategorie = [
-        kategorie
-        for kategorie, slova in kategorie_slov.items()
-        if any(slovo in text for slovo in slova)
-    ]
-    return kategorie or ["Ostatní"]
-
-
->>>>>>> 416754e80f4aeef2fba76fdfaeceb4e6d21bbe77
 # Barvy podle kategorie
 barvy = {
     "a": "#7B61A8",
@@ -329,7 +298,7 @@ def nacti_kriminalitu():
     udalosti = radky.groupby("id").agg(
         oblast=("oblast", "first"),
         date=("date", "first"),
-        kategorie_duvodu=("kategorie", lambda k: bez_obecneho(k, "Ostatní")),
+        kategorie_duvodu=("kategorie", lambda k: ["policie"]),
         skupiny=("skupina", lambda s: bez_obecneho(s, "Přestupky")),
     ).reset_index()
 

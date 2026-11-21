@@ -9,7 +9,8 @@
     "opustenost": "Opuštěnost, malá koncentrace lidí",
     "tma": "Tma, špatné osvětlení",
     "podchody": "Podchody, uličky, schody, zákoutí",
-    "doprava": "Doprava a přecházení"
+    "doprava": "Doprava a přecházení",
+    "policie": "Kriminalita z dat Policie ČR"
   },
   "v_nabidce": [
     "lide",
@@ -20,7 +21,8 @@
     "opustenost",
     "tma",
     "podchody",
-    "doprava"
+    "doprava",
+    "policie"
   ],
   "odpovedi": {
     "Park a málo světla": [
