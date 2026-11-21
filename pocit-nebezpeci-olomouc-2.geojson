@@ -28,21 +28,65 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277030587196347,
-          49.59230578282818
+          17.277374088764173,
+          49.592336388286085
         ]
       },
       "properties": {
-        "typ_nazev": "Místa za bílého dne (když je světlo)",
         "typ_ident": "b",
-        "desc_detail_duvod": "Opilci nebo agresivní lidé pod vlivem",
-        "desc_detail_jak_casto": "vícekrát za týden",
-        "startTime": 1447879206403,
-        "endTime": 1447879595449,
-        "user_id": "me3i11v41",
-        "vek": "15-64",
-        "zamestnani": "Holice",
-        "podrobnosti": ""
+        "typ_nazev": "Místa za bílého dne (když je světlo)",
+        "desc_detail_duvod": "Hlášení o osobách pod vlivem alkoholu nebo drog (2 sloučené body).",
+        "pocet_sloucenych_bodu": 2,
+        "sloucene_zaznamy": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277030587196347,
+                49.59230578282818
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa za bílého dne (když je světlo)",
+              "typ_ident": "b",
+              "desc_detail_duvod": "Opilci nebo agresivní lidé pod vlivem",
+              "desc_detail_jak_casto": "vícekrát za týden",
+              "startTime": 1447879206403,
+              "endTime": 1447879595449,
+              "user_id": "me3i11v41",
+              "vek": "15-64",
+              "zamestnani": "Holice",
+              "podrobnosti": ""
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277717590332,
+                49.592366993744
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa za bílého dne (když je světlo)",
+              "typ_ident": "b",
+              "desc_detail_duvod": "fetky",
+              "desc_detail_jak_casto": "denně",
+              "desc_body": "4",
+              "startTime": 1603709068050,
+              "endTime": 1603709151116,
+              "user_id": "jhglkdop8",
+              "vek": "15-64",
+              "pohlavi": "muz",
+              "zamestnani": "Olomouc - střed",
+              "podrobnosti": "",
+              "ip": "85.92.32.229",
+              "datetime": "2020-10-26 11:45:52"
+            }
+          }
+        ]
       }
     },
     {
@@ -314,21 +358,65 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277197934602615,
-          49.592845189674314
+          17.277414847123083,
+          49.592675638215866
         ]
       },
       "properties": {
-        "typ_nazev": "Místa za bílého dne (když je světlo)",
         "typ_ident": "b",
-        "desc_detail_duvod": "Divní lidé",
-        "desc_detail_jak_casto": "alespoň jednou měsíčně",
-        "startTime": 1447922876476,
-        "endTime": 1447923083824,
-        "user_id": "95gt63fyd",
-        "vek": "15-64",
-        "zamestnani": "Olomouc - střed",
-        "podrobnosti": ""
+        "typ_nazev": "Místa za bílého dne (když je světlo)",
+        "desc_detail_duvod": "Hlášení o výskytu podivných osob (2 sloučené body).",
+        "pocet_sloucenych_bodu": 2,
+        "sloucene_zaznamy": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277197934602615,
+                49.592845189674314
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa za bílého dne (když je světlo)",
+              "typ_ident": "b",
+              "desc_detail_duvod": "Divní lidé",
+              "desc_detail_jak_casto": "alespoň jednou měsíčně",
+              "startTime": 1447922876476,
+              "endTime": 1447923083824,
+              "user_id": "95gt63fyd",
+              "vek": "15-64",
+              "zamestnani": "Olomouc - střed",
+              "podrobnosti": ""
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.27763175964355,
+                49.59250608675742
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa za bílého dne (když je světlo)",
+              "typ_ident": "b",
+              "desc_detail_duvod": "Výskyt podivných osob",
+              "desc_detail_jak_casto": "alespoň jednou týdne",
+              "desc_body": "3",
+              "startTime": 1617974104748,
+              "endTime": 1617974274762,
+              "user_id": "atebj6dj0",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "Lazce",
+              "podrobnosti": "Orlík",
+              "ip": "188.175.95.213",
+              "datetime": "2021-04-09 15:17:53"
+            }
+          }
+        ]
       }
     },
     {
@@ -556,21 +644,269 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277835607528687,
-          49.59222094565348
+          17.277586275282864,
+          49.59238267833
         ]
       },
       "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
         "typ_ident": "a",
-        "desc_detail_duvod": "pohyb množství pochybných osob",
-        "desc_detail_jak_casto": "vícekrát za týden",
-        "startTime": 1447930158521,
-        "endTime": 1447931293264,
-        "user_id": "d7ut27zfw",
-        "vek": "15-64",
-        "zamestnani": "Nová Ulice",
-        "podrobnosti": ""
+        "typ_nazev": "Místa v noci (když je tma)",
+        "desc_detail_duvod": "Podobná hlášení o podezřelých, podivných nebo znepokojivých osobách (10 sloučených bodů).",
+        "pocet_sloucenych_bodu": 10,
+        "sloucene_zaznamy": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277835607528687,
+                49.59222094565348
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "pohyb množství pochybných osob",
+              "desc_detail_jak_casto": "vícekrát za týden",
+              "startTime": 1447930158521,
+              "endTime": 1447931293264,
+              "user_id": "d7ut27zfw",
+              "vek": "15-64",
+              "zamestnani": "Nová Ulice",
+              "podrobnosti": ""
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277803421020508,
+                49.59204707830859
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "Strašně mnoho podivných individuí",
+              "desc_detail_jak_casto": "vícekrát za týden",
+              "startTime": 1448111983001,
+              "endTime": 1448112851088,
+              "user_id": "sr6nnrbw2",
+              "vek": "15-64",
+              "zamestnani": "Klášterní Hradisko",
+              "podrobnosti": "V místech ve dne jsem vyplnil do komentáře, že to jsou temné uličky ve městě, například i ta vedle nákupního centra Moritz, ale neuváděl jsem to tam, je jich prostě více, možná by to chtělo taky do dotazníku nějak zohlednit, i když nejsou vybrány jednotlivě, ale obecně jen popsány. Taky by bylo dobré místo vybrání části města bydliště, to prostě přesně bodem lokalizovat, bohužel nevím jak se část jmenuje a na mapách všechny sídliště nejsou, tak si tímto nejsem jistý."
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277504145536,
+                49.59228738353
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "Pohyb divných lidí",
+              "desc_detail_jak_casto": "vícekrát za měsíc",
+              "desc_body": "2",
+              "startTime": 1484658102197,
+              "endTime": 1484658310881,
+              "user_id": "jrjnmbr32",
+              "vek": "15-64",
+              "pohlavi": "muz",
+              "zamestnani": "Nová Ulice",
+              "podrobnosti": "",
+              "ip": "46.135.249.9",
+              "datetime": "2017-01-17 14:05:11"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277513742447,
+                49.592488700152
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "Setkávají se tu skupiny sociálně vyčleněných osob.",
+              "desc_detail_jak_casto": "vícekrát za týden",
+              "desc_body": "4",
+              "startTime": 1603711473551,
+              "endTime": 1603717243899,
+              "user_id": "0gn5vtht9",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "Olomouc - střed",
+              "podrobnosti": "",
+              "ip": "46.135.97.15",
+              "datetime": "2020-10-26 14:00:45"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.27728843689,
+                49.592353084421
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "podezřelí lidé",
+              "desc_detail_jak_casto": "alespoň jednou týdne",
+              "desc_body": "4",
+              "startTime": 1605521623502,
+              "endTime": 1605522263496,
+              "user_id": "2ylchm6n0",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "Hodolany",
+              "podrobnosti": "žena",
+              "ip": "2a02:8309:b881:2600:49ee:8135:1c9d:9045",
+              "datetime": "2020-11-16 11:24:24"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.27748155593872,
+                49.59253390531246
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "pohyb individuí",
+              "desc_detail_jak_casto": "vícekrát za týden",
+              "desc_body": "1",
+              "startTime": 1617973359425,
+              "endTime": 1617974176510,
+              "user_id": "sgskpj59l",
+              "vek": "15-64",
+              "pohlavi": "muz",
+              "zamestnani": "Lazce",
+              "podrobnosti": "Orlík",
+              "ip": "188.175.95.213",
+              "datetime": "2021-04-09 15:16:16"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.2772616147995,
+                49.59249565479518
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "Necítím se tam bezpečně, jelikož se zde vyskytují nebezepeční lidé.",
+              "desc_detail_jak_casto": "alespoň jednou týdne",
+              "desc_body": "4",
+              "startTime": 1617993722401,
+              "endTime": 1617994022733,
+              "user_id": "kqkfv4249",
+              "vek": "15-64",
+              "pohlavi": "muz",
+              "zamestnani": "Hodolany",
+              "podrobnosti": "Bc. Urbančík",
+              "ip": "46.135.70.239",
+              "datetime": "2021-04-09 20:47:03"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.27778196334839,
+                49.59254085994874
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "Občasný výskyt nedůvěryhodných osob",
+              "desc_detail_jak_casto": "vícekrát za měsíc",
+              "desc_body": "3",
+              "startTime": 1618215292330,
+              "endTime": 1618215724968,
+              "user_id": "efxd4dche",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "Droždín",
+              "podrobnosti": "Rušar",
+              "ip": "31.132.19.210",
+              "datetime": "2021-04-12 10:22:05"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.27728843688965,
+                49.59250608675742
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "Zdržují se tady závadové osoby",
+              "desc_detail_jak_casto": "denně",
+              "desc_body": "5",
+              "startTime": 1618511760592,
+              "endTime": 1618512323194,
+              "user_id": "1gd4oltyi",
+              "vek": "15-64",
+              "pohlavi": "muz",
+              "zamestnani": "Hejčín",
+              "podrobnosti": "",
+              "ip": "37.48.13.110",
+              "datetime": "2021-04-15 20:45:22"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.278103828430176,
+                49.59235308442109
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "větší koncentrace znepokojivých osob ",
+              "desc_detail_jak_casto": "alespoň jednou týdne",
+              "desc_body": "3",
+              "startTime": 1649270101006,
+              "endTime": 1649270835480,
+              "user_id": "4uw995eex",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "",
+              "podrobnosti": "Eliška Nesvadbová ",
+              "ip": "37.188.243.243",
+              "datetime": "2022-04-06 20:47:15"
+            }
+          }
+        ]
       }
     },
     {
@@ -666,21 +1002,65 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277953624725342,
-          49.592144444098075
+          17.27793038016917,
+          49.592309354092535
         ]
       },
       "properties": {
-        "typ_nazev": "Místa za bílého dne (když je světlo)",
         "typ_ident": "b",
-        "desc_detail_duvod": "množství bezdmvoců a podobných individuí",
-        "desc_detail_jak_casto": "vícekrát za týden",
-        "startTime": 1447930158521,
-        "endTime": 1447931293264,
-        "user_id": "d7ut27zfw",
-        "vek": "15-64",
-        "zamestnani": "Nová Ulice",
-        "podrobnosti": ""
+        "typ_nazev": "Místa za bílého dne (když je světlo)",
+        "desc_detail_duvod": "Hlášení o bezdomovcích a dalších problémových osobách; část záznamů zmiňuje alkohol nebo drogy (2 sloučené body).",
+        "pocet_sloucenych_bodu": 2,
+        "sloucene_zaznamy": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277953624725342,
+                49.592144444098075
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa za bílého dne (když je světlo)",
+              "typ_ident": "b",
+              "desc_detail_duvod": "množství bezdmvoců a podobných individuí",
+              "desc_detail_jak_casto": "vícekrát za týden",
+              "startTime": 1447930158521,
+              "endTime": 1447931293264,
+              "user_id": "d7ut27zfw",
+              "vek": "15-64",
+              "zamestnani": "Nová Ulice",
+              "podrobnosti": ""
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277907135613,
+                49.592474264087
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa za bílého dne (když je světlo)",
+              "typ_ident": "b",
+              "desc_detail_duvod": "Plná bezdomovcov, feťákov a opitých ľudí",
+              "desc_detail_jak_casto": "vícekrát za měsíc",
+              "desc_body": "3",
+              "startTime": 1605461408350,
+              "endTime": 1605461778962,
+              "user_id": "t0ad36c64",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "Řepčín",
+              "podrobnosti": "",
+              "ip": "91.228.45.20",
+              "datetime": "2020-11-15 18:36:20"
+            }
+          }
+        ]
       }
     },
     {
@@ -1297,28 +1677,6 @@
         "vek": "15-64",
         "zamestnani": "Pavlovičky",
         "podrobnosti": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          17.277803421020508,
-          49.59204707830859
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "Strašně mnoho podivných individuí",
-        "desc_detail_jak_casto": "vícekrát za týden",
-        "startTime": 1448111983001,
-        "endTime": 1448112851088,
-        "user_id": "sr6nnrbw2",
-        "vek": "15-64",
-        "zamestnani": "Klášterní Hradisko",
-        "podrobnosti": "V místech ve dne jsem vyplnil do komentáře, že to jsou temné uličky ve městě, například i ta vedle nákupního centra Moritz, ale neuváděl jsem to tam, je jich prostě více, možná by to chtělo taky do dotazníku nějak zohlednit, i když nejsou vybrány jednotlivě, ale obecně jen popsány. Taky by bylo dobré místo vybrání části města bydliště, to prostě přesně bodem lokalizovat, bohužel nevím jak se část jmenuje a na mapách všechny sídliště nejsou, tak si tímto nejsem jistý."
       }
     },
     {
@@ -3144,32 +3502,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277504145536,
-          49.59228738353
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "Pohyb divných lidí",
-        "desc_detail_jak_casto": "vícekrát za měsíc",
-        "desc_body": "2",
-        "startTime": 1484658102197,
-        "endTime": 1484658310881,
-        "user_id": "jrjnmbr32",
-        "vek": "15-64",
-        "pohlavi": "muz",
-        "zamestnani": "Nová Ulice",
-        "podrobnosti": "",
-        "ip": "46.135.249.9",
-        "datetime": "2017-01-17 14:05:11"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           17.248980402946543,
           49.58142086861905
         ]
@@ -3274,32 +3606,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277717590332,
-          49.592366993744
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa za bílého dne (když je světlo)",
-        "typ_ident": "b",
-        "desc_detail_duvod": "fetky",
-        "desc_detail_jak_casto": "denně",
-        "desc_body": "4",
-        "startTime": 1603709068050,
-        "endTime": 1603709151116,
-        "user_id": "jhglkdop8",
-        "vek": "15-64",
-        "pohlavi": "muz",
-        "zamestnani": "Olomouc - střed",
-        "podrobnosti": "",
-        "ip": "85.92.32.229",
-        "datetime": "2020-10-26 11:45:52"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           17.261023521423,
           49.596706508887
         ]
@@ -3345,32 +3651,6 @@
         "podrobnosti": "",
         "ip": "88.100.42.58",
         "datetime": "2020-10-26 12:12:21"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          17.277513742447,
-          49.592488700152
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "Setkávají se tu skupiny sociálně vyčleněných osob.",
-        "desc_detail_jak_casto": "vícekrát za týden",
-        "desc_body": "4",
-        "startTime": 1603711473551,
-        "endTime": 1603717243899,
-        "user_id": "0gn5vtht9",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "Olomouc - střed",
-        "podrobnosti": "",
-        "ip": "46.135.97.15",
-        "datetime": "2020-10-26 14:00:45"
       }
     },
     {
@@ -4521,32 +4801,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277907135613,
-          49.592474264087
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa za bílého dne (když je světlo)",
-        "typ_ident": "b",
-        "desc_detail_duvod": "Plná bezdomovcov, feťákov a opitých ľudí",
-        "desc_detail_jak_casto": "vícekrát za měsíc",
-        "desc_body": "3",
-        "startTime": 1605461408350,
-        "endTime": 1605461778962,
-        "user_id": "t0ad36c64",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "Řepčín",
-        "podrobnosti": "",
-        "ip": "91.228.45.20",
-        "datetime": "2020-11-15 18:36:20"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           17.254693508148,
           49.585509216382
         ]
@@ -4748,32 +5002,6 @@
         "podrobnosti": "",
         "ip": "85.163.36.3",
         "datetime": "2020-11-16 10:36:15"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          17.27728843689,
-          49.592353084421
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "podezřelí lidé",
-        "desc_detail_jak_casto": "alespoň jednou týdne",
-        "desc_body": "4",
-        "startTime": 1605521623502,
-        "endTime": 1605522263496,
-        "user_id": "2ylchm6n0",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "Hodolany",
-        "podrobnosti": "žena",
-        "ip": "2a02:8309:b881:2600:49ee:8135:1c9d:9045",
-        "datetime": "2020-11-16 11:24:24"
       }
     },
     {
@@ -5535,25 +5763,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.27724552154541,
-          49.592499132116174
+          17.27746546268463,
+          49.59232874279844
         ]
       },
       "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
         "typ_ident": "a",
-        "desc_detail_duvod": "moc podivných lidí, kteří mě oslovují ",
-        "desc_detail_jak_casto": "denně",
-        "desc_body": "4",
-        "startTime": 1617963392332,
-        "endTime": 1617963497728,
-        "user_id": "ksd5ijcdo",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "Olomouc - střed",
-        "podrobnosti": "Urbančík",
-        "ip": "94.113.162.186",
-        "datetime": "2021-04-09 12:18:17"
+        "typ_nazev": "Místa v noci (když je tma)",
+        "desc_detail_duvod": "Hlášení o obtěžujícím chování: oslovování a pokřikování (2 sloučené body).",
+        "pocet_sloucenych_bodu": 2,
+        "sloucene_zaznamy": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.27724552154541,
+                49.592499132116174
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "moc podivných lidí, kteří mě oslovují ",
+              "desc_detail_jak_casto": "denně",
+              "desc_body": "4",
+              "startTime": 1617963392332,
+              "endTime": 1617963497728,
+              "user_id": "ksd5ijcdo",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "Olomouc - střed",
+              "podrobnosti": "Urbančík",
+              "ip": "94.113.162.186",
+              "datetime": "2021-04-09 12:18:17"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                17.277685403823853,
+                49.59215835348072
+              ]
+            },
+            "properties": {
+              "typ_nazev": "Místa v noci (když je tma)",
+              "typ_ident": "a",
+              "desc_detail_duvod": "mnoho podivných pokřikujících existencí",
+              "desc_detail_jak_casto": "vícekrát za týden",
+              "desc_body": "3",
+              "startTime": 1618321872082,
+              "endTime": 1618322203045,
+              "user_id": "e2y8ug54d",
+              "vek": "15-64",
+              "pohlavi": "Žena",
+              "zamestnani": "Hodolany",
+              "podrobnosti": "David Dužár",
+              "ip": "41.66.202.124",
+              "datetime": "2021-04-13 15:56:24"
+            }
+          }
+        ]
       }
     },
     {
@@ -5769,32 +6041,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.27748155593872,
-          49.59253390531246
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "pohyb individuí",
-        "desc_detail_jak_casto": "vícekrát za týden",
-        "desc_body": "1",
-        "startTime": 1617973359425,
-        "endTime": 1617974176510,
-        "user_id": "sgskpj59l",
-        "vek": "15-64",
-        "pohlavi": "muz",
-        "zamestnani": "Lazce",
-        "podrobnosti": "Orlík",
-        "ip": "188.175.95.213",
-        "datetime": "2021-04-09 15:16:16"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           17.26604461669922,
           49.60014168454793
         ]
@@ -5847,32 +6093,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.27763175964355,
-          49.59250608675742
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa za bílého dne (když je světlo)",
-        "typ_ident": "b",
-        "desc_detail_duvod": "Výskyt podivných osob",
-        "desc_detail_jak_casto": "alespoň jednou týdne",
-        "desc_body": "3",
-        "startTime": 1617974104748,
-        "endTime": 1617974274762,
-        "user_id": "atebj6dj0",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "Lazce",
-        "podrobnosti": "Orlík",
-        "ip": "188.175.95.213",
-        "datetime": "2021-04-09 15:17:53"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           17.261023521423336,
           49.59660393666277
         ]
@@ -5892,32 +6112,6 @@
         "podrobnosti": "",
         "ip": "89.103.62.102",
         "datetime": "2021-04-09 20:08:32"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          17.2772616147995,
-          49.59249565479518
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "Necítím se tam bezpečně, jelikož se zde vyskytují nebezepeční lidé.",
-        "desc_detail_jak_casto": "alespoň jednou týdne",
-        "desc_body": "4",
-        "startTime": 1617993722401,
-        "endTime": 1617994022733,
-        "user_id": "kqkfv4249",
-        "vek": "15-64",
-        "pohlavi": "muz",
-        "zamestnani": "Hodolany",
-        "podrobnosti": "Bc. Urbančík",
-        "ip": "46.135.70.239",
-        "datetime": "2021-04-09 20:47:03"
       }
     },
     {
@@ -6229,32 +6423,6 @@
         "podrobnosti": "Rušar",
         "ip": "185.67.190.31",
         "datetime": "2021-04-12 10:17:16"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          17.27778196334839,
-          49.59254085994874
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "Občasný výskyt nedůvěryhodných osob",
-        "desc_detail_jak_casto": "vícekrát za měsíc",
-        "desc_body": "3",
-        "startTime": 1618215292330,
-        "endTime": 1618215724968,
-        "user_id": "efxd4dche",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "Droždín",
-        "podrobnosti": "Rušar",
-        "ip": "31.132.19.210",
-        "datetime": "2021-04-12 10:22:05"
       }
     },
     {
@@ -6728,32 +6896,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.277685403823853,
-          49.59215835348072
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "mnoho podivných pokřikujících existencí",
-        "desc_detail_jak_casto": "vícekrát za týden",
-        "desc_body": "3",
-        "startTime": 1618321872082,
-        "endTime": 1618322203045,
-        "user_id": "e2y8ug54d",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "Hodolany",
-        "podrobnosti": "David Dužár",
-        "ip": "41.66.202.124",
-        "datetime": "2021-04-13 15:56:24"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           17.280550003051758,
           49.59206098771899
         ]
@@ -6903,32 +7045,6 @@
         "podrobnosti": "Vítková",
         "ip": "93.187.107.72",
         "datetime": "2021-04-14 15:09:04"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          17.27728843688965,
-          49.59250608675742
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "Zdržují se tady závadové osoby",
-        "desc_detail_jak_casto": "denně",
-        "desc_body": "5",
-        "startTime": 1618511760592,
-        "endTime": 1618512323194,
-        "user_id": "1gd4oltyi",
-        "vek": "15-64",
-        "pohlavi": "muz",
-        "zamestnani": "Hejčín",
-        "podrobnosti": "",
-        "ip": "37.48.13.110",
-        "datetime": "2021-04-15 20:45:22"
       }
     },
     {
@@ -7813,32 +7929,6 @@
         "podrobnosti": "",
         "ip": "185.58.42.223",
         "datetime": "2022-04-06 13:38:20"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          17.278103828430176,
-          49.59235308442109
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa v noci (když je tma)",
-        "typ_ident": "a",
-        "desc_detail_duvod": "větší koncentrace znepokojivých osob ",
-        "desc_detail_jak_casto": "alespoň jednou týdne",
-        "desc_body": "3",
-        "startTime": 1649270101006,
-        "endTime": 1649270835480,
-        "user_id": "4uw995eex",
-        "vek": "15-64",
-        "pohlavi": "Žena",
-        "zamestnani": "",
-        "podrobnosti": "Eliška Nesvadbová ",
-        "ip": "37.188.243.243",
-        "datetime": "2022-04-06 20:47:15"
       }
     },
     {
