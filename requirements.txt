@@ -7,3 +7,4 @@ requests
 geopy
 supabase
 openrouteservice
+anthropic
