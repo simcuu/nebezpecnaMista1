@@ -9,6 +9,7 @@ from navigace_test4 import (
     ovladani_navigace,
     priprav_mista,
     vykresli_navigaci,
+    vyhledavaci_panel,
     zpracuj_klik_navigace,
 )
 
@@ -428,15 +429,20 @@ Draw(
 ).add_to(mapa)
 
 
-# Zobrazení mapy a získání kliknutí
-output = st_folium(
-    mapa,
-    width=None,
-    height=650,
-    use_container_width=True,
-    returned_objects=["all_drawings", "last_clicked"],
-    key="mapa"
-)
+# Zobrazení mapy a získání kliknutí.
+# Vyhledávání trasy (Odkud / Kam) leží ve stejném obalu a zobrazí se přes levý horní roh mapy.
+with st.container(key="mapa_obal"):
+
+    vyhledavaci_panel()
+
+    output = st_folium(
+        mapa,
+        width=None,
+        height=650,
+        use_container_width=True,
+        returned_objects=["all_drawings", "last_clicked"],
+        key="mapa"
+    )
 
 
 # Zpracování kliknutí na mapu – výběr startu/cíle nebo přidání bodu
