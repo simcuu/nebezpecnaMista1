@@ -3222,32 +3222,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          17.278060913086037,
-          49.592686906288364
-        ]
-      },
-      "properties": {
-        "typ_nazev": "Místa za bílého dne (když je světlo)",
-        "typ_ident": "b",
-        "desc_detail_duvod": "moc lidí",
-        "desc_detail_jak_casto": "denně",
-        "desc_body": "3",
-        "startTime": 1603702206708,
-        "endTime": 1603702340737,
-        "user_id": "tr73bfgbp",
-        "vek": "15-64",
-        "pohlavi": "muz",
-        "zamestnani": "Neředín",
-        "podrobnosti": "Byl to super průzkum",
-        "ip": "195.113.148.151",
-        "datetime": "2020-10-26 09:52:15"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           17.260331511497,
           49.596184952963
         ]
