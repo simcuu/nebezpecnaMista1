@@ -97,10 +97,17 @@ st.markdown(
         background: rgba(155, 127, 212, 0.18);
         flex-shrink: 0;
     }
+    .hlavicka-text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
     .hlavicka h1 {
         margin: 0 !important;
         padding: 0 !important;
-        font-size: clamp(1.3rem, 2.8vw, 2.2rem) !important;
+        /* Nadpis vždy na jednom řádku – na úzké obrazovce se zmenší písmo */
+        white-space: nowrap;
+        font-size: clamp(1rem, 2.6vw, 2.2rem) !important;
         font-weight: 800 !important;
         letter-spacing: 0.02em;
         line-height: 1.2 !important;
@@ -506,14 +513,14 @@ def nacti_tvary_budov():
 tvary_budov = nacti_tvary_budov()
 
 
-# Základní školy v Olomouci (zs.geojson, jen obec Olomouc)
+# Školy v Olomouci (data o školách s body; jen obec Olomouc):
+# zs.geojson = základní, ss.geojson = střední. Obrysy budov z OpenStreetMap
+# vytváří priprav_zs_tvary.py (zs_tvary.geojson, ss_tvary.geojson).
 @st.cache_data(show_spinner=False)
-def nacti_zakladni_skoly():
-    try:
-        with open("zs.geojson", encoding="utf-8") as f:
-            prvky = json.load(f)["features"]
-    except FileNotFoundError:
-        return []
+def nacti_skoly(soubor, zmena_souboru):
+    # zmena_souboru = čas změny souboru, aby se po úpravě dat nepoužila stará cache
+    with open(soubor, encoding="utf-8") as f:
+        prvky = json.load(f)["features"]
     skoly = []
     for prvek in prvky:
         p = prvek["properties"]
@@ -522,7 +529,7 @@ def nacti_zakladni_skoly():
             "id": p.get("OBJECTID"),
             "lat": lat,
             "lon": lon,
-            "nazev": p.get("ORG_NAZEV") or "Základní škola",
+            "nazev": p.get("ORG_NAZEV") or "Škola",
             "typ": p.get("ZAR_TYP_NAZEV") or "",
             "adresa": p.get("ADRESA") or "",
             "kapacita": p.get("ZAR_KAPACITA"),
@@ -531,26 +538,44 @@ def nacti_zakladni_skoly():
     return skoly
 
 
-zakladni_skoly = nacti_zakladni_skoly()
-
-
-# Obrysy budov základních škol z OpenStreetMap – vytváří je priprav_zs_tvary.py
 @st.cache_data(show_spinner=False)
-def nacti_tvary_skol(zmena_souboru):
-    # Argument = čas změny souboru, aby se po novém spuštění priprav_zs_tvary.py
-    # nepoužila stará (nebo prázdná) data z cache
-    with open("zs_tvary.geojson", encoding="utf-8") as f:
+def nacti_tvary(soubor, zmena_souboru):
+    with open(soubor, encoding="utf-8") as f:
         return {
             prvek["properties"]["id"]: prvek["geometry"]
             for prvek in json.load(f)["features"]
         }
 
 
-try:
-    tvary_skol = nacti_tvary_skol(os.path.getmtime("zs_tvary.geojson"))
-except FileNotFoundError:
-    tvary_skol = {}
-BARVA_SKOL = "#f2c94c"
+def nacti_bezpecne(funkce, soubor, prazdne):
+    """Zavolá načítací funkci; když soubor chybí, vrátí `prazdne` (a nic se neuloží do cache)."""
+    try:
+        return funkce(soubor, os.path.getmtime(soubor))
+    except FileNotFoundError:
+        return prazdne
+
+
+# Typy škol na mapě: název, data, tvary, barva výplně, barva záře, CSS třída
+TYPY_SKOL = [
+    {
+        "nazev": "Základní školy",
+        "skoly": nacti_bezpecne(nacti_skoly, "zs.geojson", []),
+        "tvary": nacti_bezpecne(nacti_tvary, "zs_tvary.geojson", {}),
+        "barva": "#f2c94c",
+        "obrys": "#fff8e1",
+        "zare": "#ffd24d",
+        "trida": "zakladni-skola",
+    },
+    {
+        "nazev": "Střední školy",
+        "skoly": nacti_bezpecne(nacti_skoly, "ss.geojson", []),
+        "tvary": nacti_bezpecne(nacti_tvary, "ss_tvary.geojson", {}),
+        "barva": "#4cd6a0",
+        "obrys": "#e3fff3",
+        "zare": "#3dffb0",
+        "trida": "stredni-skola",
+    },
+]
 
 DNY = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
 MESICE = {
@@ -614,8 +639,7 @@ def popup_budovy(b):
 
 ZDROJ_POCIT = "Pocit nebezpečí"
 ZDROJ_VORONOI = "Oblasti kriminality"
-ZDROJ_OBA = "Obojí"
-ZDROJ_STUDENT = "Studenti UP (večerní výuka)"
+ZDROJ_STUDENT = "Školy"
 
 # Body "za tmy" (fialové) – na tmavé mapě o trochu světlejší odstín, aby byly líp vidět
 BARVA_TMA = "#7B61A8"
@@ -653,33 +677,26 @@ else:
 
 # Boční panel – výběr zdroje dat
 nadpis_sekce("Data")
-zdroj_dat = st.sidebar.radio(
-    "Zdroj dat v mapě:",
-    [ZDROJ_POCIT, ZDROJ_VORONOI, ZDROJ_OBA, ZDROJ_STUDENT]
+# Vrstvy jdou libovolně kombinovat (zaškrtávátka místo jedné volby)
+st.sidebar.markdown("Vrstvy v mapě:")
+zobrazit_pocit = st.sidebar.checkbox(ZDROJ_POCIT, value=True)
+zobrazit_voronoi = st.sidebar.checkbox(ZDROJ_VORONOI, value=False)
+studentsky_rezim = st.sidebar.checkbox(
+    ZDROJ_STUDENT,
+    value=False,
+    help="Budovy UP s výukou končící po setmění a základní a střední školy.",
 )
-
-studentsky_rezim = zdroj_dat == ZDROJ_STUDENT
-zobrazit_pocit = zdroj_dat in (ZDROJ_POCIT, ZDROJ_OBA, ZDROJ_STUDENT)
-zobrazit_voronoi = zdroj_dat in (ZDROJ_VORONOI, ZDROJ_OBA)
-# Vlastní body se nezobrazují, když jsou vybraná jen data Policie ČR
+# Vlastní body patří k pocitu nebezpečí – zobrazí se jen s ním
 zobrazit_vlastni_body = zobrazit_pocit
 
 
 # Boční panel – filtrování (platí pro pocit nebezpečí i pro kriminalitu)
 nadpis_sekce("Filtry")
-if studentsky_rezim:
-    # Studentská verze je vždy "za tmy": tmavá mapa, body za tmy a osvětlení ulic
-    vyber = "Za tmy"
-    st.sidebar.caption(
-        "Studentská verze ukazuje mapu za tmy: budovy UP, kde výuka končí "
-        "po setmění, nebezpečná místa za tmy a osvětlení ulic."
-    )
-else:
-    vyber = st.sidebar.selectbox(
-        "Světelné podmínky:",
-        ["Za tmy", "Za světla", "Nerozlišovat"],
-        index=2,
-    )
+vyber = st.sidebar.selectbox(
+    "Světelné podmínky:",
+    ["Za tmy", "Za světla", "Nerozlišovat"],
+    index=2,
+)
 
 # Tmavá mapa (dark mode) je při filtru "Za tmy"
 tmava_mapa = vyber == "Za tmy"
@@ -695,8 +712,7 @@ vybrane_kategorie = st.sidebar.multiselect(
 if vyber == "Za tmy":
     zobrazit_osvetleni = st.sidebar.checkbox(
         "Osvětlení ulic",
-        # Ve studentské verzi je osvětlení na začátku vypnuté, jinak zapnuté
-        value=not studentsky_rezim,
+        value=True,
         disabled=osvetleni is None,
         help=(
             "Ulice obarvené podle počtu lamp v okolí."
@@ -723,10 +739,14 @@ legenda_budovy = (
     f'<span class="legenda-tecka" style="background:{BARVA_BUDOV}; border-radius:3px;"></span>'
     " Budovy UP"
     "</div>"
-    '<div class="legenda-polozka">'
-    f'<span class="legenda-tecka" style="background:{BARVA_SKOL};"></span>'
-    " Základní školy"
-    "</div>"
+    + "".join(
+        '<div class="legenda-polozka">'
+        f'<span class="legenda-tecka" style="background:{t["barva"]}; border-radius:3px;"></span>'
+        f' {t["nazev"]}'
+        "</div>"
+        for t in TYPY_SKOL
+        if t["skoly"]
+    )
     if studentsky_rezim
     else ""
 )
@@ -778,7 +798,7 @@ if vybrane_kategorie:
         )
     ]
 
-# Pokud jsou zvolena jen Voronoiova data, body pocitu nebezpečí se nezobrazí
+# Když je vrstva pocitu nebezpečí vypnutá, její body se nezobrazí
 if not zobrazit_pocit:
     df_mapa = df.iloc[0:0]
 
@@ -938,6 +958,8 @@ if "zprava_ai" in st.session_state:
 # Mapa přes celou šířku
 st.markdown(
     '<div class="hlavicka">'
+    # Nadpis a popis v jednom bloku – popis je pod nadpisem, ne vedle něj
+    '<div class="hlavicka-text">'
     "<h1>NEBEZPEČNÁ MÍSTA V OLOMOUCI</h1>"
     "<p>Mapa míst, kde se lidé necítí bezpečně, kriminality a osvětlení ulic"
     " – naplánujte si bezpečnější cestu.</p>"
@@ -985,8 +1007,12 @@ mapa.get_root().header.add_child(folium.Element(
     +
     # Modrá záře kolem budov UP, aby byly na tmavé mapě dobře vidět
     ".budova-up { filter: drop-shadow(0 0 4px #4fb3ff) drop-shadow(0 0 8px #4fb3ff); }"
-    # Stejná záře kolem základních škol, jen žlutá
-    ".zakladni-skola { filter: drop-shadow(0 0 4px #ffd24d) drop-shadow(0 0 8px #ffd24d); }"
+    # Stejná záře kolem škol, v barvě daného typu školy
+    + "".join(
+        f".{t['trida']} {{ filter: drop-shadow(0 0 4px {t['zare']}) drop-shadow(0 0 8px {t['zare']}); }}"
+        for t in TYPY_SKOL
+    )
+    +
     "</style>"
 ))
 
@@ -1160,7 +1186,7 @@ if zobrazit_pocit and len(df_mapa):
     vrstvy.append(vrstva_bodu)
 
 
-# Budovy UP (jen ve studentské verzi) – obarvený tvar budovy, po najetí myší jen název
+# Budovy UP (jen se zapnutou vrstvou Školy) – obarvený tvar budovy, po najetí myší jen název
 if studentsky_rezim and budovy:
     vrstva_budov = folium.FeatureGroup(name="Budovy UP")
 
@@ -1217,14 +1243,20 @@ def popis_skoly(s):
     return "<br>".join(radky)
 
 
-# Základní školy (jen ve studentské verzi) – obarvený tvar budovy jako u budov UP
-if studentsky_rezim and zakladni_skoly:
-    vrstva_skol = folium.FeatureGroup(name="Základní školy")
+def vrstva_skol(typ):
+    """Vrstva s obarvenými obrysy budov škol jednoho typu (jako u budov UP)."""
+    vrstva = folium.FeatureGroup(name=typ["nazev"])
+    styl = {
+        "color": typ["obrys"],
+        "weight": 3,
+        "fillColor": typ["barva"],
+        "fillOpacity": 0.95,
+    }
 
     # Víc škol (míst výuky) může být v jedné budově – seskupí se podle obrysu
     skupiny = {}
-    for s in zakladni_skoly:
-        tvar = tvary_skol.get(s["id"])
+    for s in typ["skoly"]:
+        tvar = typ["tvary"].get(s["id"])
         klic = json.dumps(tvar, sort_keys=True) if tvar else f"bod-{s['lat']}-{s['lon']}"
         skupiny.setdefault(klic, (tvar, []))[1].append(s)
 
@@ -1244,34 +1276,36 @@ if studentsky_rezim and zakladni_skoly:
         if tvar:
             folium.GeoJson(
                 {"type": "Feature", "geometry": tvar, "properties": {}},
-                class_name="zakladni-skola",
-                style_function=lambda _: {
-                    "color": "#fff8e1",
-                    "weight": 3,
-                    "fillColor": BARVA_SKOL,
-                    "fillOpacity": 0.95,
-                },
+                class_name=typ["trida"],
+                style_function=lambda _: styl,
                 highlight_function=lambda _: {"weight": 5, "color": "#ffffff", "fillOpacity": 1},
                 tooltip=tooltip,
                 popup=popup,
-            ).add_to(vrstva_skol)
+            ).add_to(vrstva)
         else:
             # Záloha, kdyby ke škole chyběl tvar
             s = unikatni[0]
             folium.CircleMarker(
                 location=[s["lat"], s["lon"]],
                 radius=8,
-                color="#fff8e1",
+                color=styl["color"],
                 weight=3,
                 fill=True,
-                fill_color=BARVA_SKOL,
+                fill_color=styl["fillColor"],
                 fill_opacity=0.95,
-                class_name="zakladni-skola",
+                class_name=typ["trida"],
                 tooltip=tooltip,
                 popup=popup,
-            ).add_to(vrstva_skol)
+            ).add_to(vrstva)
 
-    vrstvy.append(vrstva_skol)
+    return vrstva
+
+
+# Základní a střední školy (jen se zapnutou vrstvou Školy)
+if studentsky_rezim:
+    for typ in TYPY_SKOL:
+        if typ["skoly"]:
+            vrstvy.append(vrstva_skol(typ))
 
 
 # Start, cíl a trasa navigace (nahoře nad vším)
@@ -1347,7 +1381,7 @@ statistiky = [
                 "Výuka po setmění",
                 f"{sum(1 for b in budovy if b['dark_students'])} <small>budov</small>",
             ),
-            ("Základní školy", f"{len(zakladni_skoly)}"),
+            *((t["nazev"], f"{len(t['skoly'])}") for t in TYPY_SKOL if t["skoly"]),
         ]
         if studentsky_rezim
         else []

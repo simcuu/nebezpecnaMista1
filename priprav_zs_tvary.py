@@ -5,10 +5,12 @@ a uloží zs_tvary.geojson (klíč = OBJECTID školy). Postup je stejný jako
 v priprav_budovy_upol.py: budova, ve které bod leží, jinak nejbližší do 40 m.
 
 Použití:
-    python priprav_zs_tvary.py
+    python priprav_zs_tvary.py                          # základní školy
+    python priprav_zs_tvary.py ss.geojson ss_tvary.geojson  # střední školy
 """
 import json
 import subprocess
+import sys
 
 from priprav_budovy_upol import (
     OKOLI,
@@ -42,7 +44,8 @@ def stahni_curl(dotaz):
 
 
 def main():
-    with open(VSTUP, encoding="utf-8") as f:
+    vstup, vystup = (sys.argv[1], sys.argv[2]) if len(sys.argv) >= 3 else (VSTUP, VYSTUP)
+    with open(vstup, encoding="utf-8") as f:
         skoly = [
             {
                 "id": p["properties"]["OBJECTID"],
@@ -96,10 +99,10 @@ def main():
             "properties": {"id": s["id"]},
         })
 
-    with open(VYSTUP, "w", encoding="utf-8") as f:
+    with open(vystup, "w", encoding="utf-8") as f:
         json.dump({"type": "FeatureCollection", "features": prvky}, f, ensure_ascii=False)
 
-    print(f"Uloženo {VYSTUP}: {len(prvky)} škol s tvarem")
+    print(f"Uloženo {vystup}: {len(prvky)} škol s tvarem")
     if bez_tvaru:
         print(f"Bez tvaru (na mapě budou jako kruh), OBJECTID: {', '.join(bez_tvaru)}")
 
