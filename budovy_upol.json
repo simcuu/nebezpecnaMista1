@@ -1,0 +1,1138 @@
+[
+ {
+  "id": "AS",
+  "name": "Atletický stadión",
+  "lat": 49.5896,
+  "lon": 17.2602,
+  "students": 23,
+  "dark_students": 3,
+  "share_students": 0.13,
+  "occ": 354,
+  "dark_occ": 33,
+  "share_occ": 0.093,
+  "actions": 3,
+  "median": 120.0,
+  "max": 181.0,
+  "hour": {
+   "19": 33
+  },
+  "wd": {
+   "Po": 33
+  },
+  "month": {
+   "2026-09": 4,
+   "2026-10": 8,
+   "2026-11": 10,
+   "2026-12": 4,
+   "2027-02": 3,
+   "2027-03": 4
+  }
+ },
+ {
+  "id": "BA",
+  "name": "Plavecký stadion (bazén)",
+  "lat": 49.5989,
+  "lon": 17.2442,
+  "students": 7,
+  "dark_students": 6,
+  "share_students": 0.857,
+  "occ": 130,
+  "dark_occ": 98,
+  "share_occ": 0.754,
+  "actions": 8,
+  "median": 126.0,
+  "max": 211.0,
+  "hour": {
+   "19": 51,
+   "20": 47
+  },
+  "wd": {
+   "Út": 7,
+   "Čt": 91
+  },
+  "month": {
+   "2026-09": 4,
+   "2026-10": 30,
+   "2026-11": 24,
+   "2026-12": 18,
+   "2027-02": 9,
+   "2027-03": 12,
+   "2027-04": 1
+  }
+ },
+ {
+  "id": "BO",
+  "name": null,
+  "lat": null,
+  "lon": null,
+  "students": 5,
+  "dark_students": 0,
+  "share_students": 0.0,
+  "occ": 117,
+  "dark_occ": 0,
+  "share_occ": 0.0,
+  "actions": 0,
+  "median": null,
+  "max": null,
+  "hour": {},
+  "wd": {},
+  "month": {}
+ },
+ {
+  "id": "DK",
+  "name": null,
+  "lat": null,
+  "lon": null,
+  "students": 24,
+  "dark_students": 0,
+  "share_students": 0.0,
+  "occ": 624,
+  "dark_occ": 0,
+  "share_occ": 0.0,
+  "actions": 0,
+  "median": null,
+  "max": null,
+  "hour": {},
+  "wd": {},
+  "month": {}
+ },
+ {
+  "id": "FN",
+  "name": "Fakultní nemocnice Olomouc",
+  "lat": 49.5827,
+  "lon": 17.2381,
+  "students": 123,
+  "dark_students": 9,
+  "share_students": 0.073,
+  "occ": 3648,
+  "dark_occ": 19,
+  "share_occ": 0.005,
+  "actions": 8,
+  "median": 20.0,
+  "max": 31.0,
+  "hour": {
+   "16": 3,
+   "17": 16
+  },
+  "wd": {
+   "Po": 13,
+   "Út": 2,
+   "St": 2,
+   "Pá": 2
+  },
+  "month": {
+   "2026-11": 11,
+   "2026-12": 7,
+   "2027-01": 1
+  }
+ },
+ {
+  "id": "HK",
+  "name": "Hanácká kasárna – pedagogická fakulta",
+  "lat": 49.5966,
+  "lon": 17.2584,
+  "students": 134,
+  "dark_students": 57,
+  "share_students": 0.425,
+  "occ": 2905,
+  "dark_occ": 132,
+  "share_occ": 0.045,
+  "actions": 31,
+  "median": 59.0,
+  "max": 136.0,
+  "hour": {
+   "16": 36,
+   "17": 31,
+   "18": 65
+  },
+  "wd": {
+   "Po": 34,
+   "Út": 14,
+   "St": 36,
+   "Pá": 48
+  },
+  "month": {
+   "2026-10": 10,
+   "2026-11": 55,
+   "2026-12": 67
+  }
+ },
+ {
+  "id": "HR",
+  "name": "FF a CMTF – Na Hradě 5",
+  "lat": 49.5942,
+  "lon": 17.2546,
+  "students": 76,
+  "dark_students": 36,
+  "share_students": 0.474,
+  "occ": 3386,
+  "dark_occ": 313,
+  "share_occ": 0.092,
+  "actions": 40,
+  "median": 60.0,
+  "max": 165.0,
+  "hour": {
+   "16": 58,
+   "17": 88,
+   "18": 92,
+   "19": 73,
+   "20": 2
+  },
+  "wd": {
+   "Po": 88,
+   "Út": 37,
+   "St": 52,
+   "Čt": 113,
+   "Pá": 2,
+   "So": 21
+  },
+  "month": {
+   "2026-10": 56,
+   "2026-11": 127,
+   "2026-12": 128,
+   "2027-02": 2
+  }
+ },
+ {
+  "id": "HY",
+  "name": "Fakulta tělesné kultury – HY (tělocvična Hynaisova)",
+  "lat": 49.5969,
+  "lon": 17.2438,
+  "students": 25,
+  "dark_students": 10,
+  "share_students": 0.4,
+  "occ": 345,
+  "dark_occ": 61,
+  "share_occ": 0.177,
+  "actions": 15,
+  "median": 112.0,
+  "max": 211.0,
+  "hour": {
+   "17": 4,
+   "18": 6,
+   "19": 45,
+   "20": 6
+  },
+  "wd": {
+   "Po": 36,
+   "Pá": 14,
+   "So": 11
+  },
+  "month": {
+   "2026-09": 4,
+   "2026-10": 16,
+   "2026-11": 16,
+   "2026-12": 15,
+   "2027-02": 7,
+   "2027-03": 3
+  }
+ },
+ {
+  "id": "JK",
+  "name": "Konvikt (Umělecké centrum UP) – FF a PdF",
+  "lat": 49.5947,
+  "lon": 17.2553,
+  "students": 127,
+  "dark_students": 83,
+  "share_students": 0.654,
+  "occ": 5894,
+  "dark_occ": 811,
+  "share_occ": 0.138,
+  "actions": 76,
+  "median": 60.0,
+  "max": 211.0,
+  "hour": {
+   "16": 91,
+   "17": 258,
+   "18": 211,
+   "19": 108,
+   "20": 143
+  },
+  "wd": {
+   "Po": 290,
+   "Út": 100,
+   "St": 315,
+   "Čt": 60,
+   "Pá": 46
+  },
+  "month": {
+   "2026-09": 30,
+   "2026-10": 138,
+   "2026-11": 336,
+   "2026-12": 295,
+   "2027-01": 12
+  }
+ },
+ {
+  "id": "KA",
+  "name": "Filozofická fakulta – Křížkovského 10 (hlavní budova)",
+  "lat": 49.5949,
+  "lon": 17.26,
+  "students": 83,
+  "dark_students": 46,
+  "share_students": 0.554,
+  "occ": 4515,
+  "dark_occ": 322,
+  "share_occ": 0.071,
+  "actions": 57,
+  "median": 74.0,
+  "max": 211.0,
+  "hour": {
+   "16": 80,
+   "17": 46,
+   "18": 144,
+   "20": 52
+  },
+  "wd": {
+   "Po": 59,
+   "Út": 132,
+   "St": 51,
+   "Čt": 66,
+   "Pá": 10,
+   "So": 4
+  },
+  "month": {
+   "2026-09": 8,
+   "2026-10": 38,
+   "2026-11": 123,
+   "2026-12": 153
+  }
+ },
+ {
+  "id": "KB",
+  "name": "Filozofická fakulta – Křížkovského 12",
+  "lat": 49.5946,
+  "lon": 17.2605,
+  "students": 34,
+  "dark_students": 16,
+  "share_students": 0.471,
+  "occ": 2149,
+  "dark_occ": 154,
+  "share_occ": 0.072,
+  "actions": 27,
+  "median": 98.0,
+  "max": 266.0,
+  "hour": {
+   "16": 26,
+   "17": 16,
+   "18": 64,
+   "19": 21,
+   "20": 21,
+   "21": 6
+  },
+  "wd": {
+   "Po": 80,
+   "Út": 24,
+   "St": 32,
+   "Čt": 12,
+   "Pá": 6
+  },
+  "month": {
+   "2026-09": 1,
+   "2026-10": 13,
+   "2026-11": 76,
+   "2026-12": 64
+  }
+ },
+ {
+  "id": "KC",
+  "name": "Filozofická fakulta – Křížkovského 14",
+  "lat": 49.5947,
+  "lon": 17.261,
+  "students": 12,
+  "dark_students": 9,
+  "share_students": 0.75,
+  "occ": 529,
+  "dark_occ": 47,
+  "share_occ": 0.089,
+  "actions": 11,
+  "median": 46.0,
+  "max": 231.0,
+  "hour": {
+   "16": 20,
+   "17": 8,
+   "18": 16,
+   "20": 3
+  },
+  "wd": {
+   "Po": 12,
+   "Út": 18,
+   "St": 8,
+   "Čt": 6,
+   "Pá": 3
+  },
+  "month": {
+   "2026-10": 6,
+   "2026-11": 13,
+   "2026-12": 28
+  }
+ },
+ {
+  "id": "LA",
+  "name": "Právnická fakulta – A",
+  "lat": 49.5901,
+  "lon": 17.2619,
+  "students": 56,
+  "dark_students": 31,
+  "share_students": 0.554,
+  "occ": 1114,
+  "dark_occ": 259,
+  "share_occ": 0.232,
+  "actions": 31,
+  "median": 103.0,
+  "max": 211.0,
+  "hour": {
+   "16": 24,
+   "18": 96,
+   "20": 139
+  },
+  "wd": {
+   "Po": 94,
+   "Út": 26,
+   "St": 114,
+   "Čt": 21,
+   "Pá": 4
+  },
+  "month": {
+   "2026-09": 18,
+   "2026-10": 45,
+   "2026-11": 104,
+   "2026-12": 92
+  }
+ },
+ {
+  "id": "LB",
+  "name": "Právnická fakulta – B",
+  "lat": 49.5902,
+  "lon": 17.2627,
+  "students": 71,
+  "dark_students": 70,
+  "share_students": 0.986,
+  "occ": 7870,
+  "dark_occ": 1337,
+  "share_occ": 0.17,
+  "actions": 89,
+  "median": 95.0,
+  "max": 211.0,
+  "hour": {
+   "16": 185,
+   "18": 588,
+   "20": 564
+  },
+  "wd": {
+   "Po": 300,
+   "Út": 356,
+   "St": 328,
+   "Čt": 275,
+   "Pá": 78
+  },
+  "month": {
+   "2026-09": 79,
+   "2026-10": 263,
+   "2026-11": 497,
+   "2026-12": 498
+  }
+ },
+ {
+  "id": "LN",
+  "name": "Společná laboratoř optiky",
+  "lat": 49.5934,
+  "lon": 17.2658,
+  "students": 35,
+  "dark_students": 6,
+  "share_students": 0.171,
+  "occ": 668,
+  "dark_occ": 20,
+  "share_occ": 0.03,
+  "actions": 3,
+  "median": 92.0,
+  "max": 106.0,
+  "hour": {
+   "17": 4,
+   "18": 16
+  },
+  "wd": {
+   "Út": 16,
+   "Čt": 4
+  },
+  "month": {
+   "2026-10": 4,
+   "2026-11": 10,
+   "2026-12": 6
+  }
+ },
+ {
+  "id": "LP",
+  "name": "Přírodovědecká fakulta – hlavní budova",
+  "lat": 49.5925,
+  "lon": 17.2634,
+  "students": 129,
+  "dark_students": 83,
+  "share_students": 0.643,
+  "occ": 10749,
+  "dark_occ": 1125,
+  "share_occ": 0.105,
+  "actions": 140,
+  "median": 75.0,
+  "max": 270.0,
+  "hour": {
+   "16": 161,
+   "17": 221,
+   "18": 411,
+   "19": 254,
+   "20": 78
+  },
+  "wd": {
+   "Po": 291,
+   "Út": 234,
+   "St": 337,
+   "Čt": 253,
+   "Pá": 10
+  },
+  "month": {
+   "2026-09": 31,
+   "2026-10": 184,
+   "2026-11": 461,
+   "2026-12": 449
+  }
+ },
+ {
+  "id": "LS",
+  "name": "Přírodovědecká fakulta – zoologie a geoinformatika",
+  "lat": 49.5938,
+  "lon": 17.2655,
+  "students": 32,
+  "dark_students": 11,
+  "share_students": 0.344,
+  "occ": 994,
+  "dark_occ": 78,
+  "share_occ": 0.078,
+  "actions": 12,
+  "median": 46.0,
+  "max": 106.0,
+  "hour": {
+   "16": 16,
+   "17": 38,
+   "18": 24
+  },
+  "wd": {
+   "Po": 14,
+   "Út": 24,
+   "St": 16,
+   "Čt": 24
+  },
+  "month": {
+   "2026-10": 6,
+   "2026-11": 33,
+   "2026-12": 39
+  }
+ },
+ {
+  "id": "MK",
+  "name": "Cyrilometodějská teologická fakulta – Kateřinská 17",
+  "lat": 49.5902,
+  "lon": 17.2548,
+  "students": 19,
+  "dark_students": 7,
+  "share_students": 0.368,
+  "occ": 228,
+  "dark_occ": 37,
+  "share_occ": 0.162,
+  "actions": 24,
+  "median": 182.0,
+  "max": 215.0,
+  "hour": {
+   "16": 6,
+   "20": 31
+  },
+  "wd": {
+   "Po": 4,
+   "Út": 4,
+   "St": 2,
+   "Čt": 4,
+   "Pá": 12,
+   "So": 11
+  },
+  "month": {
+   "2026-10": 6,
+   "2026-11": 6,
+   "2026-12": 7,
+   "2027-01": 14,
+   "2027-02": 4
+  }
+ },
+ {
+  "id": "MT",
+  "name": "Ústav molekulární a translační medicíny (LF)",
+  "lat": 49.586,
+  "lon": 17.235,
+  "students": 10,
+  "dark_students": 0,
+  "share_students": 0.0,
+  "occ": 42,
+  "dark_occ": 0,
+  "share_occ": 0.0,
+  "actions": 0,
+  "median": null,
+  "max": null,
+  "hour": {},
+  "wd": {},
+  "month": {}
+ },
+ {
+  "id": "NA",
+  "name": "Fakulta tělesné kultury – NA (budova děkanátu)",
+  "lat": 49.5944,
+  "lon": 17.2135,
+  "students": 64,
+  "dark_students": 43,
+  "share_students": 0.672,
+  "occ": 5176,
+  "dark_occ": 418,
+  "share_occ": 0.081,
+  "actions": 84,
+  "median": 59.0,
+  "max": 211.0,
+  "hour": {
+   "16": 30,
+   "17": 206,
+   "18": 84,
+   "19": 87,
+   "20": 11
+  },
+  "wd": {
+   "Po": 111,
+   "Út": 130,
+   "St": 60,
+   "Čt": 47,
+   "Pá": 38,
+   "So": 28,
+   "Ne": 4
+  },
+  "month": {
+   "2026-09": 7,
+   "2026-10": 59,
+   "2026-11": 173,
+   "2026-12": 110,
+   "2027-02": 36,
+   "2027-03": 33
+  }
+ },
+ {
+  "id": "NB",
+  "name": "Fakulta tělesné kultury – NB (budova center – BALUO)",
+  "lat": 49.5937,
+  "lon": 17.2127,
+  "students": 36,
+  "dark_students": 5,
+  "share_students": 0.139,
+  "occ": 978,
+  "dark_occ": 7,
+  "share_occ": 0.007,
+  "actions": 5,
+  "median": 56.0,
+  "max": 162.0,
+  "hour": {
+   "17": 2,
+   "18": 2,
+   "19": 1,
+   "20": 2
+  },
+  "wd": {
+   "Pá": 7
+  },
+  "month": {
+   "2026-09": 2,
+   "2026-11": 2,
+   "2026-12": 2,
+   "2027-02": 1
+  }
+ },
+ {
+  "id": "NC",
+  "name": "Fakulta tělesné kultury – NC (budova pedagogů)",
+  "lat": 49.5949,
+  "lon": 17.2155,
+  "students": 45,
+  "dark_students": 15,
+  "share_students": 0.333,
+  "occ": 1242,
+  "dark_occ": 90,
+  "share_occ": 0.072,
+  "actions": 20,
+  "median": 53.0,
+  "max": 151.0,
+  "hour": {
+   "16": 2,
+   "17": 30,
+   "18": 27,
+   "19": 31
+  },
+  "wd": {
+   "Po": 40,
+   "Út": 14,
+   "Čt": 27,
+   "Pá": 9
+  },
+  "month": {
+   "2026-10": 19,
+   "2026-11": 38,
+   "2026-12": 17,
+   "2027-02": 11,
+   "2027-03": 5
+  }
+ },
+ {
+  "id": "OV",
+  "name": null,
+  "lat": null,
+  "lon": null,
+  "students": 15,
+  "dark_students": 0,
+  "share_students": 0.0,
+  "occ": 30,
+  "dark_occ": 0,
+  "share_occ": 0.0,
+  "actions": 0,
+  "median": null,
+  "max": null,
+  "hour": {},
+  "wd": {},
+  "month": {}
+ },
+ {
+  "id": "PA",
+  "name": "Lékařská fakulta – Klinika zubního lékařství",
+  "lat": 49.596,
+  "lon": 17.2447,
+  "students": 51,
+  "dark_students": 29,
+  "share_students": 0.569,
+  "occ": 5723,
+  "dark_occ": 249,
+  "share_occ": 0.044,
+  "actions": 13,
+  "median": 24.0,
+  "max": 58.0,
+  "hour": {
+   "16": 64,
+   "17": 179,
+   "18": 6
+  },
+  "wd": {
+   "Po": 74,
+   "Út": 62,
+   "St": 64,
+   "Čt": 37,
+   "Pá": 12
+  },
+  "month": {
+   "2026-10": 7,
+   "2026-11": 135,
+   "2026-12": 92,
+   "2027-01": 9,
+   "2027-02": 6
+  }
+ },
+ {
+  "id": "PU",
+  "name": "Pedagogická fakulta – Purkrabská",
+  "lat": 49.593,
+  "lon": 17.2537,
+  "students": 139,
+  "dark_students": 59,
+  "share_students": 0.424,
+  "occ": 2714,
+  "dark_occ": 178,
+  "share_occ": 0.066,
+  "actions": 48,
+  "median": 60.0,
+  "max": 138.0,
+  "hour": {
+   "16": 20,
+   "17": 83,
+   "18": 71,
+   "19": 4
+  },
+  "wd": {
+   "Po": 7,
+   "Út": 70,
+   "St": 44,
+   "Čt": 5,
+   "Pá": 47,
+   "So": 4,
+   "Ne": 1
+  },
+  "month": {
+   "2026-10": 13,
+   "2026-11": 56,
+   "2026-12": 92,
+   "2027-01": 17
+  }
+ },
+ {
+  "id": "PV",
+  "name": null,
+  "lat": null,
+  "lon": null,
+  "students": 27,
+  "dark_students": 0,
+  "share_students": 0.0,
+  "occ": 63,
+  "dark_occ": 0,
+  "share_occ": 0.0,
+  "actions": 0,
+  "median": null,
+  "max": null,
+  "hour": {},
+  "wd": {},
+  "month": {}
+ },
+ {
+  "id": "SE",
+  "name": "Areál Šlechtitelů (Holice)",
+  "lat": 49.5756,
+  "lon": 17.2801,
+  "students": 68,
+  "dark_students": 40,
+  "share_students": 0.588,
+  "occ": 4075,
+  "dark_occ": 343,
+  "share_occ": 0.084,
+  "actions": 35,
+  "median": 75.0,
+  "max": 165.0,
+  "hour": {
+   "16": 26,
+   "17": 83,
+   "18": 194,
+   "19": 26,
+   "20": 14
+  },
+  "wd": {
+   "Po": 61,
+   "Út": 79,
+   "St": 113,
+   "Čt": 90
+  },
+  "month": {
+   "2026-09": 14,
+   "2026-10": 47,
+   "2026-11": 156,
+   "2026-12": 126
+  }
+ },
+ {
+  "id": "SV",
+  "name": "Filozofická fakulta – tř. Svobody 26",
+  "lat": 49.5903,
+  "lon": 17.2514,
+  "students": 128,
+  "dark_students": 67,
+  "share_students": 0.523,
+  "occ": 4887,
+  "dark_occ": 593,
+  "share_occ": 0.121,
+  "actions": 110,
+  "median": 70.0,
+  "max": 211.0,
+  "hour": {
+   "16": 88,
+   "17": 147,
+   "18": 294,
+   "19": 25,
+   "20": 39
+  },
+  "wd": {
+   "Po": 163,
+   "Út": 180,
+   "St": 136,
+   "Čt": 44,
+   "Pá": 51,
+   "So": 19
+  },
+  "month": {
+   "2026-09": 8,
+   "2026-10": 79,
+   "2026-11": 256,
+   "2026-12": 240,
+   "2027-01": 10
+  }
+ },
+ {
+  "id": "TC",
+  "name": "FZV – Telecom (ústavy klinické rehabilitace a ošetřovatelství)",
+  "lat": 49.5893,
+  "lon": 17.2335,
+  "students": 53,
+  "dark_students": 6,
+  "share_students": 0.113,
+  "occ": 504,
+  "dark_occ": 31,
+  "share_occ": 0.062,
+  "actions": 29,
+  "median": 122.0,
+  "max": 151.0,
+  "hour": {
+   "17": 3,
+   "18": 4,
+   "19": 24
+  },
+  "wd": {
+   "Út": 3,
+   "St": 4,
+   "Čt": 24
+  },
+  "month": {
+   "2026-10": 8,
+   "2026-11": 15,
+   "2026-12": 6,
+   "2027-01": 2
+  }
+ },
+ {
+  "id": "TD",
+  "name": "Teoretické ústavy – LF a FZV",
+  "lat": 49.5862,
+  "lon": 17.2362,
+  "students": 196,
+  "dark_students": 54,
+  "share_students": 0.276,
+  "occ": 6705,
+  "dark_occ": 304,
+  "share_occ": 0.045,
+  "actions": 74,
+  "median": 60.0,
+  "max": 153.0,
+  "hour": {
+   "16": 18,
+   "17": 127,
+   "18": 136,
+   "19": 23
+  },
+  "wd": {
+   "Po": 53,
+   "Út": 47,
+   "St": 125,
+   "Čt": 15,
+   "Pá": 46,
+   "So": 18
+  },
+  "month": {
+   "2026-10": 29,
+   "2026-11": 143,
+   "2026-12": 102,
+   "2027-01": 16,
+   "2027-02": 12,
+   "2027-03": 2
+  }
+ },
+ {
+  "id": "TL",
+  "name": "Červená budova LF a FZV",
+  "lat": 49.5865,
+  "lon": 17.2341,
+  "students": 112,
+  "dark_students": 35,
+  "share_students": 0.312,
+  "occ": 5169,
+  "dark_occ": 182,
+  "share_occ": 0.035,
+  "actions": 30,
+  "median": 25.0,
+  "max": 105.0,
+  "hour": {
+   "16": 10,
+   "17": 156,
+   "18": 13,
+   "19": 3
+  },
+  "wd": {
+   "Po": 25,
+   "Út": 13,
+   "St": 12,
+   "Čt": 124,
+   "Pá": 8
+  },
+  "month": {
+   "2026-10": 5,
+   "2026-11": 69,
+   "2026-12": 85,
+   "2027-01": 18,
+   "2027-02": 2,
+   "2027-03": 3
+  }
+ },
+ {
+  "id": "TU",
+  "name": "Teoretické ústavy – LF a FZV",
+  "lat": 49.5862,
+  "lon": 17.237,
+  "students": 184,
+  "dark_students": 124,
+  "share_students": 0.674,
+  "occ": 17056,
+  "dark_occ": 974,
+  "share_occ": 0.057,
+  "actions": 195,
+  "median": 40.0,
+  "max": 196.0,
+  "hour": {
+   "16": 26,
+   "17": 488,
+   "18": 269,
+   "19": 183,
+   "20": 8
+  },
+  "wd": {
+   "Po": 265,
+   "Út": 250,
+   "St": 225,
+   "Čt": 202,
+   "Pá": 32
+  },
+  "month": {
+   "2026-09": 17,
+   "2026-10": 204,
+   "2026-11": 286,
+   "2026-12": 285,
+   "2027-01": 51,
+   "2027-02": 69,
+   "2027-03": 62
+  }
+ },
+ {
+  "id": "UN",
+  "name": "Cyrilometodějská teologická fakulta – hlavní budova",
+  "lat": 49.5947,
+  "lon": 17.2549,
+  "students": 54,
+  "dark_students": 25,
+  "share_students": 0.463,
+  "occ": 2135,
+  "dark_occ": 98,
+  "share_occ": 0.046,
+  "actions": 28,
+  "median": 17.0,
+  "max": 211.0,
+  "hour": {
+   "16": 46,
+   "17": 29,
+   "20": 23
+  },
+  "wd": {
+   "Po": 10,
+   "Út": 22,
+   "St": 32,
+   "Čt": 14,
+   "Pá": 11,
+   "So": 9
+  },
+  "month": {
+   "2026-09": 4,
+   "2026-10": 12,
+   "2026-11": 30,
+   "2026-12": 51,
+   "2027-02": 1
+  }
+ },
+ {
+  "id": "VK",
+  "name": "Veslařský klub",
+  "lat": 49.5911,
+  "lon": 17.2644,
+  "students": 33,
+  "dark_students": 3,
+  "share_students": 0.091,
+  "occ": 535,
+  "dark_occ": 4,
+  "share_occ": 0.007,
+  "actions": 3,
+  "median": 120.0,
+  "max": 120.0,
+  "hour": {
+   "16": 2,
+   "18": 2
+  },
+  "wd": {
+   "Čt": 2,
+   "Pá": 2
+  },
+  "month": {
+   "2026-12": 2,
+   "2027-01": 2
+  }
+ },
+ {
+  "id": "VO",
+  "name": "Vodární 6",
+  "lat": 49.5962,
+  "lon": 17.2544,
+  "students": 34,
+  "dark_students": 15,
+  "share_students": 0.441,
+  "occ": 2084,
+  "dark_occ": 202,
+  "share_occ": 0.097,
+  "actions": 17,
+  "median": 58.0,
+  "max": 151.0,
+  "hour": {
+   "17": 89,
+   "18": 54,
+   "19": 59
+  },
+  "wd": {
+   "Po": 45,
+   "Út": 127,
+   "St": 23,
+   "Čt": 3,
+   "Pá": 4
+  },
+  "month": {
+   "2026-09": 4,
+   "2026-10": 38,
+   "2026-11": 96,
+   "2026-12": 64
+  }
+ },
+ {
+  "id": "ZI",
+  "name": "Pedagogická fakulta – hlavní budova",
+  "lat": 49.5957,
+  "lon": 17.2647,
+  "students": 306,
+  "dark_students": 256,
+  "share_students": 0.837,
+  "occ": 21143,
+  "dark_occ": 1875,
+  "share_occ": 0.089,
+  "actions": 310,
+  "median": 60.0,
+  "max": 240.0,
+  "hour": {
+   "16": 220,
+   "17": 558,
+   "18": 695,
+   "19": 386,
+   "20": 16
+  },
+  "wd": {
+   "Po": 293,
+   "Út": 567,
+   "St": 515,
+   "Čt": 105,
+   "Pá": 359,
+   "So": 36
+  },
+  "month": {
+   "2026-09": 51,
+   "2026-10": 318,
+   "2026-11": 723,
+   "2026-12": 699,
+   "2027-01": 80,
+   "2027-02": 3,
+   "2027-03": 1
+  }
+ }
+]

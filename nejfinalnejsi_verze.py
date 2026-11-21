@@ -448,9 +448,105 @@ def nacti_kriminalitu():
 
 df_krim = nacti_kriminalitu()
 
+# Budovy Univerzity Palackého a večerní výuka (data z upol.html, uložená v budovy_upol.json).
+# Za každou budovu: kolik studentů tam má výuku končící po setmění, jak často a kdy.
+@st.cache_data
+def nacti_budovy():
+    try:
+        with open("budovy_upol.json", encoding="utf-8") as f:
+            budovy = json.load(f)
+    except FileNotFoundError:
+        return []
+    # Budovy bez souřadnic (BO, DK, OV, PV) na mapu dát nejde
+    return [b for b in budovy if b["lat"] is not None and b["lon"] is not None]
+
+
+budovy = nacti_budovy()
+
+
+# Tvary (obrysy) budov z OpenStreetMap – vytváří je priprav_budovy_upol.py
+@st.cache_data
+def nacti_tvary_budov():
+    try:
+        with open("budovy_upol_tvary.geojson", encoding="utf-8") as f:
+            return {
+                prvek["properties"]["id"]: prvek["geometry"]
+                for prvek in json.load(f)["features"]
+            }
+    except FileNotFoundError:
+        return {}
+
+
+tvary_budov = nacti_tvary_budov()
+
+DNY = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
+MESICE = {
+    "01": "leden", "02": "únor", "03": "březen", "04": "duben",
+    "05": "květen", "06": "červen", "07": "červenec", "08": "srpen",
+    "09": "září", "10": "říjen", "11": "listopad", "12": "prosinec",
+}
+
+# Všechny budovy UP mají stejnou světle modrou barvu
+BARVA_BUDOV = "#86b6ef"
+
+
+def nejvic(slovnik):
+    """Klíč s nejvyšší hodnotou, nebo None."""
+    return max(slovnik, key=slovnik.get) if slovnik else None
+
+
+def popup_budovy(b):
+    """HTML okénko s detaily budovy (po kliknutí)."""
+    radky = [
+        f"<b style='font-size:14px'>{b['name']}</b> <span style='opacity:.6'>({b['id']})</span>",
+        f"Studenti v budově: <b>{b['students']}</b>",
+        f"Z toho s výukou po setmění: <b>{b['dark_students']}</b> "
+        f"({b['share_students']:.0%})",
+        f"Hodin výuky po setmění: <b>{b['dark_occ']}</b> z {b['occ']} "
+        f"({b['share_occ']:.1%})",
+    ]
+
+    if b["dark_occ"]:
+        radky.append(
+            f"Končí typicky <b>{b['median']:.0f} min</b> po setmění, "
+            f"nejpozději {b['max']:.0f} min"
+        )
+
+        # Malý sloupcový graf: kolik výuky končí v kterou hodinu
+        nejvyssi = max(b["hour"].values())
+        sloupce = "".join(
+            "<div style='display:flex;align-items:center;gap:6px;margin:2px 0'>"
+            f"<span style='width:42px'>{hodina}:00</span>"
+            f"<span style='display:inline-block;height:9px;border-radius:3px;"
+            f"background:#2a78d6;width:{max(4, 120 * pocet / nejvyssi):.0f}px'></span>"
+            f"<span style='opacity:.7'>{pocet}</span></div>"
+            for hodina, pocet in sorted(b["hour"].items(), key=lambda x: int(x[0]))
+        )
+        radky.append(f"<div style='margin-top:6px'><b>Kdy výuka po setmění končí</b>{sloupce}</div>")
+
+        den = nejvic(b["wd"])
+        mesic = nejvic(b["month"])
+        dny = ", ".join(f"{d} {b['wd'][d]}" for d in DNY if d in b["wd"])
+        radky.append(f"Podle dnů: {dny}")
+        if den and mesic:
+            radky.append(
+                f"Nejvíc ve dnech: <b>{den}</b>, nejvíc v měsíci: "
+                f"<b>{MESICE[mesic[5:]]} {mesic[:4]}</b>"
+            )
+    else:
+        radky.append("Žádná výuka nekončí po setmění.")
+
+    return "<div style='font-size:12.5px;line-height:1.5'>" + "<br>".join(radky) + "</div>"
+
+
 ZDROJ_POCIT = "Pocit nebezpečí"
 ZDROJ_VORONOI = "Oblasti kriminality"
 ZDROJ_OBA = "Obojí"
+ZDROJ_STUDENT = "Studenti UP (večerní výuka)"
+
+# Body "za tmy" (fialové) – na tmavé mapě o trochu světlejší odstín, aby byly líp vidět
+BARVA_TMA = "#7B61A8"
+BARVA_TMA_TMAVA_MAPA = "#A48BDA"
 
 
 # Boční panel – nastavení mapy
@@ -486,20 +582,32 @@ else:
 nadpis_sekce("Data")
 zdroj_dat = st.sidebar.radio(
     "Zdroj dat v mapě:",
-    [ZDROJ_POCIT, ZDROJ_VORONOI, ZDROJ_OBA]
+    [ZDROJ_POCIT, ZDROJ_VORONOI, ZDROJ_OBA, ZDROJ_STUDENT]
 )
 
-zobrazit_pocit = zdroj_dat in (ZDROJ_POCIT, ZDROJ_OBA)
+studentsky_rezim = zdroj_dat == ZDROJ_STUDENT
+zobrazit_pocit = zdroj_dat in (ZDROJ_POCIT, ZDROJ_OBA, ZDROJ_STUDENT)
 zobrazit_voronoi = zdroj_dat in (ZDROJ_VORONOI, ZDROJ_OBA)
 
 
 # Boční panel – filtrování (platí pro pocit nebezpečí i pro kriminalitu)
 nadpis_sekce("Filtry")
-vyber = st.sidebar.selectbox(
-    "Světelné podmínky:",
-    ["Za tmy", "Za světla", "Nerozlišovat"],
-    index=2,
-)
+if studentsky_rezim:
+    # Studentská verze je vždy "za tmy": tmavá mapa, body za tmy a osvětlení ulic
+    vyber = "Za tmy"
+    st.sidebar.caption(
+        "Studentská verze ukazuje mapu za tmy: budovy UP, kde výuka končí "
+        "po setmění, nebezpečná místa za tmy a osvětlení ulic."
+    )
+else:
+    vyber = st.sidebar.selectbox(
+        "Světelné podmínky:",
+        ["Za tmy", "Za světla", "Nerozlišovat"],
+        index=2,
+    )
+
+# Tmavá mapa (dark mode) je při filtru "Za tmy"
+tmava_mapa = vyber == "Za tmy"
 
 vybrane_kategorie = st.sidebar.multiselect(
     "Kategorie důvodu:",
@@ -511,7 +619,8 @@ vybrane_kategorie = st.sidebar.multiselect(
 if vyber == "Za tmy":
     zobrazit_osvetleni = st.sidebar.checkbox(
         "Osvětlení ulic",
-        value=True,
+        # Ve studentské verzi je osvětlení na začátku vypnuté, jinak zapnuté
+        value=not studentsky_rezim,
         disabled=osvetleni is None,
         help=(
             "Ulice obarvené podle počtu lamp v okolí."
@@ -533,13 +642,24 @@ legenda_osvetleni = (
     else ""
 )
 
+legenda_budovy = (
+    '<div class="legenda-polozka">'
+    f'<span class="legenda-tecka" style="background:{BARVA_BUDOV}; border-radius:3px;"></span>'
+    " Budovy UP"
+    "</div>"
+    if studentsky_rezim
+    else ""
+)
+
 
 # Boční panel – legenda
 st.sidebar.markdown(
     '<div class="legenda">'
     '<div class="legenda-nadpis">Legenda</div>'
     '<div class="legenda-polozka">'
-    '<span class="legenda-tecka" style="background:#7B61A8;"></span> Tma'
+    '<span class="legenda-tecka" style="background:'
+    + (BARVA_TMA_TMAVA_MAPA if tmava_mapa else BARVA_TMA)
+    + ';"></span> Tma'
     "</div>"
     '<div class="legenda-polozka">'
     '<span class="legenda-tecka" style="background:#E5A000;"></span> Světlo'
@@ -552,6 +672,7 @@ st.sidebar.markdown(
     'border-color:#D64541; border-radius:3px;"></span> '
     "Oblasti kriminality (tmavší = více činů)"
     "</div>"
+    + legenda_budovy
     + legenda_osvetleni
     + "</div>",
     unsafe_allow_html=True
@@ -713,7 +834,7 @@ mapa = folium.Map(
 # Tmavý režim vznikne převrácením barev dlaždic, body a čáry na mapě zůstanou ve svých barvách.
 folium.TileLayer(
     "OpenStreetMap",
-    class_name="tmava-mapa" if vyber == "Za tmy" else "svetla-mapa"
+    class_name="tmava-mapa" if tmava_mapa else "svetla-mapa"
 ).add_to(mapa)
 
 mapa.get_root().header.add_child(folium.Element(
@@ -772,7 +893,12 @@ body_geojson = {
             "geometry": {"type": "Point", "coordinates": [lon, lat]},
             "properties": {
                 "duvod": duvod or "(bez popisu)",
-                "barva": barva,
+                # Na tmavé mapě jsou fialové body o trochu světlejší
+                "barva": (
+                    BARVA_TMA_TMAVA_MAPA
+                    if tmava_mapa and barva == BARVA_TMA
+                    else barva
+                ),
             },
         }
         for lat, lon, duvod, barva in zip(
@@ -796,6 +922,54 @@ if zobrazit_pocit and body_geojson["features"]:
         tooltip=folium.GeoJsonTooltip(fields=["duvod"], labels=False),
         popup=folium.GeoJsonPopup(fields=["duvod"], labels=False),
     ).add_to(mapa)
+
+
+# Budovy UP (jen ve studentské verzi) – obarvený tvar budovy, po najetí myší jen název
+if studentsky_rezim and budovy:
+    vrstva_budov = folium.FeatureGroup(name="Budovy UP")
+
+    # Modrá záře kolem budov, aby byly na tmavé mapě dobře vidět
+    mapa.get_root().header.add_child(folium.Element(
+        "<style>"
+        ".budova-up { filter: drop-shadow(0 0 4px #4fb3ff) drop-shadow(0 0 8px #4fb3ff); }"
+        "</style>"
+    ))
+
+    for b in budovy:
+        tooltip = folium.Tooltip(f"<b>{b['name']}</b>", sticky=True)
+        popup = folium.Popup(popup_budovy(b), max_width=320)
+
+        if b["id"] in tvary_budov:
+            folium.GeoJson(
+                {"type": "Feature", "geometry": tvary_budov[b["id"]], "properties": {}},
+                class_name="budova-up",
+                style_function=lambda _: {
+                    # Světlý silný obrys – i malá budova je vidět při oddálené mapě
+                    "color": "#e6f4ff",
+                    "weight": 3,
+                    "fillColor": BARVA_BUDOV,
+                    "fillOpacity": 0.95,
+                },
+                highlight_function=lambda _: {"weight": 5, "color": "#ffffff", "fillOpacity": 1},
+                tooltip=tooltip,
+                popup=popup,
+            ).add_to(vrstva_budov)
+        else:
+            # Záloha, kdyby k budově chyběl tvar
+            folium.CircleMarker(
+                location=[b["lat"], b["lon"]],
+                radius=8,
+                color="#e6f4ff",
+                weight=3,
+                fill=True,
+                fill_color=BARVA_BUDOV,
+                fill_opacity=0.95,
+                class_name="budova-up",
+                tooltip=tooltip,
+                popup=popup,
+            ).add_to(vrstva_budov)
+
+    vrstva_budov.add_to(mapa)
 
 
 # Skupina pro vlastní body uživatelů
@@ -917,6 +1091,18 @@ if nove_body is not None:
 
 # Řádek se statistikami pod mapou
 statistiky = [
+    *(
+        [
+            ("🏫 Budovy UP", f"{len(budovy)}"),
+            # (Studenty přes budovy nesčítáme – jeden student chodí do více budov)
+            (
+                "🌙 Výuka po setmění",
+                f"{sum(1 for b in budovy if b['dark_students'])} <small>budov</small>",
+            ),
+        ]
+        if studentsky_rezim
+        else []
+    ),
     ("📍 Zobrazená místa", f"{len(df_mapa)} <small>/ {len(df)}</small>"),
     ("🟢 Vlastní body", f"{len(st.session_state.moje_body)}"),
 ]
