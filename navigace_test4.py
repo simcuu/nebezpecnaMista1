@@ -514,13 +514,18 @@ def ovladani_navigace(nebezpecna_mista):
         + "  \nCíl: "
         + (f"{end[1]:.5f}, {end[0]:.5f}" if end else "nevybrán")
     )
-    radius_metres = st.number_input(
-        "Odstup od nebezpečných míst (m)",
-        min_value=1,
-        value=20,
-        step=1,
-        help="Trasa se bude snažit držet alespoň tuto vzdálenost od míst.",
-    )
+    # Odstup se ukáže až po kliknutí na „Zvolit start a cíl";
+    # hodnota se pamatuje i když je políčko skryté
+    radius_metres = st.session_state.get("navigace_odstup_m", 20)
+    if st.session_state.get("navigace_aktivni"):
+        radius_metres = st.number_input(
+            "Odstup od nebezpečných míst (m)",
+            min_value=1,
+            value=radius_metres,
+            step=1,
+            help="Trasa se bude snažit držet alespoň tuto vzdálenost od míst.",
+        )
+        st.session_state["navigace_odstup_m"] = radius_metres
 
     # Při změně filtru se trasa přepočítá s novými nebezpečnými místy
     podpis_filtru = tuple(

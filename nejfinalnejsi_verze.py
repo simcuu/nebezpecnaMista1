@@ -41,6 +41,19 @@ st.markdown(
         padding-bottom: 2rem !important;
     }
 
+    /* Boční panel – obsah začíná výš */
+    [data-testid="stSidebarHeader"] {
+        height: 1.75rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0;
+    }
+    [data-testid="stSidebarUserContent"] {
+        padding-top: 0 !important;
+    }
+    [data-testid="stSidebarUserContent"] h1 {
+        padding-top: 0 !important;
+    }
+
     /* Hlavička */
     .hlavicka {
         display: flex;
@@ -123,13 +136,27 @@ st.markdown(
         background: #141019;
     }
 
+    /* Legenda jako banner v pravém horním rohu mapy */
+    .st-key-mapa_obal {
+        position: relative;
+    }
+    .st-key-legenda_mapy {
+        position: absolute !important;
+        top: 24px;
+        right: 14px;
+        z-index: 1000;
+        width: 240px !important;
+        overflow: visible;
+    }
     .legenda {
-        background: rgba(155, 127, 212, 0.08);
-        border: 1px solid #2e2442;
+        background: rgba(27, 23, 38, 0.95);
+        border: 1px solid #3b2a5c;
         border-radius: 12px;
-        padding: 12px 16px;
-        margin: 4px 0 12px 0;
-        font-size: 0.9rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+        padding: 10px 14px;
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.3;
     }
     .legenda-nadpis {
         font-weight: 600;
@@ -138,12 +165,12 @@ st.markdown(
     .legenda-polozka {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin: 7px 0;
+        gap: 8px;
+        margin: 5px 0;
     }
     .legenda-tecka {
-        width: 18px;
-        height: 18px;
+        width: 14px;
+        height: 14px;
         border-radius: 50%;
         border: 2px solid rgba(255, 255, 255, 0.8);
         flex-shrink: 0;
@@ -625,8 +652,8 @@ legenda_budovy = (
 )
 
 
-# Boční panel – legenda
-st.sidebar.markdown(
+# Legenda – vykreslí se jako banner v pravém horním rohu mapy
+legenda_html = (
     '<div class="legenda">'
     '<div class="legenda-nadpis">Legenda</div>'
     '<div class="legenda-polozka">'
@@ -647,8 +674,7 @@ st.sidebar.markdown(
     "</div>"
     + legenda_budovy
     + legenda_osvetleni
-    + "</div>",
-    unsafe_allow_html=True
+    + "</div>"
 )
 
 
@@ -1015,6 +1041,9 @@ Draw(
 with st.container(key="mapa_obal"):
 
     vyhledavaci_panel()
+
+    with st.container(key="legenda_mapy"):
+        st.markdown(legenda_html, unsafe_allow_html=True)
 
     output = st_folium(
         mapa,
