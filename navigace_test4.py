@@ -587,6 +587,20 @@ def ovladani_navigace(nebezpecna_mista):
     return route
 
 
+SLOZKA_IKON = Path(__file__).with_name("Ikony")
+
+
+def _ikona_spendliku(soubor):
+    """Vlastní ikona špendlíku (obrázek 35×45 px, na mapě zmenšený na 28×36) –
+    špička dole uprostřed sedí přesně na bodu."""
+    return folium.CustomIcon(
+        str(SLOZKA_IKON / soubor),
+        icon_size=(28, 36),
+        icon_anchor=(14, 36),
+        popup_anchor=(0, -33),
+    )
+
+
 def vrstva_navigace(route):
     """Vrátí start, cíl a trasu jako samostatnou vrstvu (FeatureGroup).
 
@@ -618,14 +632,14 @@ def vrstva_navigace(route):
         folium.Marker(
             location=[start[1], start[0]],
             popup="Start",
-            icon=folium.Icon(color="green", icon="play"),
+            icon=_ikona_spendliku("StartMain.png"),
         ).add_to(vrstva)
 
     if end is not None:
         folium.Marker(
             location=[end[1], end[0]],
             popup="Cíl",
-            icon=folium.Icon(color="blue", icon="flag"),
+            icon=_ikona_spendliku("CilMain.png"),
         ).add_to(vrstva)
 
     return vrstva
