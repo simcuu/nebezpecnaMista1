@@ -1502,28 +1502,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.248878479003906,
-                    49.59295118173416
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa za bílého dne (když je světlo)",
-                "typ_ident": "b",
-                "desc_detail_duvod": "zvlásštní existence před hernou a sázkovou kanceláří",
-                "desc_detail_jak_casto": "vícekrát za týden",
-                "startTime": 1447930158521,
-                "endTime": 1447931293264,
-                "user_id": "d7ut27zfw",
-                "vek": "15-64",
-                "zamestnani": "Nová Ulice",
-                "podrobnosti": ""
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.248460054397583,
                     49.59553126166109
                 ]
@@ -1678,28 +1656,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.24825620651245,
-                    49.58850004918905
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "není to tak frekventované místo, kde bych se dovolala pomoci",
-                "desc_detail_jak_casto": "alespoň jednou týdne",
-                "startTime": 1447936210752,
-                "endTime": 1447936633616,
-                "user_id": "p7jngvu84",
-                "vek": "15-64",
-                "zamestnani": "Topolany",
-                "podrobnosti": ""
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.27874755859375,
                     49.5924365403004
                 ]
@@ -1810,28 +1766,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.26997137069702,
-                    49.59996089186177
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa za bílého dne (když je světlo)",
-                "typ_ident": "b",
-                "desc_detail_duvod": "Individuální skupiny lidí",
-                "desc_detail_jak_casto": "denně",
-                "startTime": 1447939953237,
-                "endTime": 1447940193629,
-                "user_id": "urqs2jcgc",
-                "vek": "15-64",
-                "zamestnani": "Klášterní Hradisko",
-                "podrobnosti": ""
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.277073860168457,
                     49.587067254491295
                 ]
@@ -1862,28 +1796,6 @@
                 "typ_nazev": "Místa v noci (když je tma)",
                 "typ_ident": "a",
                 "desc_detail_duvod": "Neosvětlené, moc zákoutí",
-                "desc_detail_jak_casto": "denně",
-                "startTime": 1447940501162,
-                "endTime": 1447940643705,
-                "user_id": "nx6ilz3dm",
-                "vek": "15-64",
-                "zamestnani": "Hodolany",
-                "podrobnosti": ""
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.280550003051758,
-                    49.59257563311528
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa za bílého dne (když je světlo)",
-                "typ_ident": "b",
-                "desc_detail_duvod": "Moc uliček",
                 "desc_detail_jak_casto": "denně",
                 "startTime": 1447940501162,
                 "endTime": 1447940643705,
@@ -1964,50 +1876,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.245083153247833,
-                    49.59204881698511
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "V parku se člověk, resp. samotná slečna, která tudy jde pozdě večer, přirozeně obává i bez důvodu.",
-                "desc_detail_jak_casto": "vícekrát za týden",
-                "startTime": 1447941235974,
-                "endTime": 1447941744274,
-                "user_id": "ytiigtm2c",
-                "vek": "15-64",
-                "zamestnani": "Nová Ulice",
-                "podrobnosti": "Olomouc mi např. oproti Brnu připadá mnohem bezpečnější, cítím se zde bezpečněji."
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.258716821670532,
-                    49.596559604532835
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "Kolem non stop okýnka se scházejí zvláštní existence.",
-                "desc_detail_jak_casto": "vícekrát za měsíc",
-                "startTime": 1447941235974,
-                "endTime": 1447941744274,
-                "user_id": "ytiigtm2c",
-                "vek": "15-64",
-                "zamestnani": "Nová Ulice",
-                "podrobnosti": "Olomouc mi např. oproti Brnu připadá mnohem bezpečnější, cítím se zde bezpečněji."
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.2780179977417,
                     49.592478268186504
                 ]
@@ -2059,7 +1927,7 @@
             "properties": {
                 "typ_nazev": "Místa v noci (když je tma)",
                 "typ_ident": "a",
-                "desc_detail_duvod": "Na tuhle otázku se mi těžko hledá odpověď. Toto místo sem vybral z důvodu, že bych asi raději šel osvětlenou ulicí než temným parkem. ",
+                "desc_detail_duvod": "Temný park",
                 "desc_detail_jak_casto": "výjimečně (1x za rok)",
                 "startTime": 1447940864775,
                 "endTime": 1447942045430,
@@ -2081,7 +1949,7 @@
             "properties": {
                 "typ_nazev": "Místa za bílého dne (když je světlo)",
                 "typ_ident": "b",
-                "desc_detail_duvod": "Když kolem procházím, jsou na zemi vidět i větší kusy omítky. Člověk si raději pár kroků odstoupí, nebo přejde na druhou stranu ulice. Kostel by si zasloužil rekonstrukci. ",
+                "desc_detail_duvod": "Bordel. ",
                 "desc_detail_jak_casto": "alespoň jednou měsíčně",
                 "startTime": 1447940864775,
                 "endTime": 1447942045430,
@@ -2110,28 +1978,6 @@
                 "user_id": "5kenuqoo6",
                 "vek": "15-64",
                 "zamestnani": "Holice",
-                "podrobnosti": ""
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.26123809814453,
-                    49.581669552935516
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "Příjde mi to místo až podezřele klidné.",
-                "desc_detail_jak_casto": "vícekrát za měsíc",
-                "startTime": 1447941569416,
-                "endTime": 1447943043095,
-                "user_id": "y1yhxnfl8",
-                "vek": "15-64",
-                "zamestnani": "Olomouc - střed",
                 "podrobnosti": ""
             }
         },
@@ -11094,58 +10940,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.251968383789,
-                    49.594634160399
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "TEST TEST",
-                "desc_detail_jak_casto": "denně",
-                "desc_body": "1",
-                "startTime": 1604306246973,
-                "endTime": 1604306292945,
-                "user_id": "zut7aylz1",
-                "vek": "65+",
-                "pohlavi": "muz",
-                "zamestnani": "Černovír",
-                "podrobnosti": "TEST muz",
-                "ip": "195.113.148.151",
-                "datetime": "2020-11-02 09:38:12"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.251195907593,
-                    49.596692600802
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa za bílého dne (když je světlo)",
-                "typ_ident": "b",
-                "desc_detail_duvod": "TEST TEST",
-                "desc_detail_jak_casto": "denně",
-                "desc_body": "1",
-                "startTime": 1604306246973,
-                "endTime": 1604306292945,
-                "user_id": "zut7aylz1",
-                "vek": "65+",
-                "pohlavi": "muz",
-                "zamestnani": "Černovír",
-                "podrobnosti": "TEST muz",
-                "ip": "195.113.148.151",
-                "datetime": "2020-11-02 09:38:12"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.248814105988,
                     49.587581952575
                 ]
@@ -12420,32 +12214,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.25076675415,
-                    49.593688361355
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa za bílého dne (když je světlo)",
-                "typ_ident": "b",
-                "desc_detail_duvod": "NIKDE SE NECÍTÍM NEBEZPEČNĚ V OLOMOUCI ZA BÍLÉHO DNE - ALESPOŇ NE NA MÍSTECH, KTERÉ NAVŠTĚVUJI ČASTO",
-                "desc_detail_jak_casto": "denně",
-                "desc_body": "1",
-                "startTime": 1605459801285,
-                "endTime": 1605460419274,
-                "user_id": "uw01ffl2g",
-                "vek": "15-64",
-                "pohlavi": "Žena",
-                "zamestnani": "Neředín",
-                "podrobnosti": "Žena \r\nJindro, zajímavý nápad na výzkum! Hodně štěstí při zpracovávání dat:) ",
-                "ip": "158.194.110.3",
-                "datetime": "2020-11-15 18:13:39"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.248679995537,
                     49.604303207804
                 ]
@@ -12576,32 +12344,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.258459329605,
-                    49.596470070893
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "Opilí lidí z Ponorky",
-                "desc_detail_jak_casto": "denně",
-                "desc_body": "4",
-                "startTime": 1605459592454,
-                "endTime": 1605460394169,
-                "user_id": "7pphcirgq",
-                "vek": "15-64",
-                "pohlavi": "muz",
-                "zamestnani": "Olomouc - střed",
-                "podrobnosti": "Bylo by velmi fajn, kdyby se MP Olomouc přestala chovat arogantně a otravně pokaždé, když jsou zavolání k nějaké potyčce. Aby člověk, který se nachází v centru, např.: na náměstí Republiky, čekal na příjezd těchto povalečů 25 minut (!), mi přijde opravdu směšné. I celková neochota sboru MP Olomouc. Minimálně by bylo příjemné, pokud by opravdu dohlížela na dodržování dvou borů městské vyhlášky, a to 1. zákaz konzumace alkoholu na veřejnosti (občas projíždějí kolem skupinky dělníků, kteří rozbíjejí flašky od piva o zem a ani u nich nepřibrzdí) a 2. žebrání. ",
-                "ip": "94.112.28.139",
-                "datetime": "2020-11-15 18:16:16"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.253084182739,
                     49.595552124285
                 ]
@@ -12610,32 +12352,6 @@
                 "typ_nazev": "Místa v noci (když je tma)",
                 "typ_ident": "a",
                 "desc_detail_duvod": "Další opilé opice z nenstopu Fénix",
-                "desc_detail_jak_casto": "denně",
-                "desc_body": "5",
-                "startTime": 1605459592454,
-                "endTime": 1605460394169,
-                "user_id": "7pphcirgq",
-                "vek": "15-64",
-                "pohlavi": "muz",
-                "zamestnani": "Olomouc - střed",
-                "podrobnosti": "Bylo by velmi fajn, kdyby se MP Olomouc přestala chovat arogantně a otravně pokaždé, když jsou zavolání k nějaké potyčce. Aby člověk, který se nachází v centru, např.: na náměstí Republiky, čekal na příjezd těchto povalečů 25 minut (!), mi přijde opravdu směšné. I celková neochota sboru MP Olomouc. Minimálně by bylo příjemné, pokud by opravdu dohlížela na dodržování dvou borů městské vyhlášky, a to 1. zákaz konzumace alkoholu na veřejnosti (občas projíždějí kolem skupinky dělníků, kteří rozbíjejí flašky od piva o zem a ani u nich nepřibrzdí) a 2. žebrání. ",
-                "ip": "94.112.28.139",
-                "datetime": "2020-11-15 18:16:16"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.248288393021,
-                    49.59475933831
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "Tady asi není nutné podrobně popisovat...",
                 "desc_detail_jak_casto": "denně",
                 "desc_body": "5",
                 "startTime": 1605459592454,
@@ -13174,32 +12890,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.267739772797,
-                    49.591532427335
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "nepříjemná ulička",
-                "desc_detail_jak_casto": "vícekrát za měsíc",
-                "desc_body": "4",
-                "startTime": 1605466111274,
-                "endTime": 1605466527382,
-                "user_id": "8f98uzjoo",
-                "vek": "15-64",
-                "pohlavi": "Žena",
-                "zamestnani": "Hodolany",
-                "podrobnosti": "",
-                "ip": "89.235.9.85",
-                "datetime": "2020-11-15 19:55:28"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.261731624603,
                     49.594794109895
                 ]
@@ -13209,32 +12899,6 @@
                 "typ_ident": "a",
                 "desc_detail_duvod": "bezdomovci",
                 "desc_detail_jak_casto": "alespoň jednou týdne",
-                "desc_body": "4",
-                "startTime": 1605466111274,
-                "endTime": 1605466527382,
-                "user_id": "8f98uzjoo",
-                "vek": "15-64",
-                "pohlavi": "Žena",
-                "zamestnani": "Hodolany",
-                "podrobnosti": "",
-                "ip": "89.235.9.85",
-                "datetime": "2020-11-15 19:55:28"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.260964512825,
-                    49.596550042696
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "nachází se zde charita a různá individua okolo",
-                "desc_detail_jak_casto": "vícekrát za týden",
                 "desc_body": "4",
                 "startTime": 1605466111274,
                 "endTime": 1605466527382,
@@ -14370,32 +14034,6 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    17.25136756897,
-                    49.5937439971
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "Test",
-                "desc_detail_jak_casto": "alespoň jednou měsíčně",
-                "desc_body": "2",
-                "startTime": 1605636080305,
-                "endTime": 1605636147667,
-                "user_id": "uxh8xrpcc",
-                "vek": "15-64",
-                "pohlavi": "muz",
-                "zamestnani": "Nová Ulice",
-                "podrobnosti": "Jsem Ondra. Jsem nejlepší.",
-                "ip": "37.48.17.130",
-                "datetime": "2020-11-17 19:02:25"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
                     17.264671325684,
                     49.599529768136
                 ]
@@ -15002,32 +14640,6 @@
                 "typ_nazev": "Místa v noci (když je tma)",
                 "typ_ident": "a",
                 "desc_detail_duvod": "divní lidé",
-                "desc_detail_jak_casto": "denně",
-                "desc_body": "4",
-                "startTime": 1605884861306,
-                "endTime": 1605885096940,
-                "user_id": "gsn3srwnn",
-                "vek": "15-64",
-                "pohlavi": "Žena",
-                "zamestnani": "Tabulový Vrch",
-                "podrobnosti": "žena",
-                "ip": "109.80.244.17",
-                "datetime": "2020-11-20 16:11:37"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.245059013367,
-                    49.593396272649
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "park",
                 "desc_detail_jak_casto": "denně",
                 "desc_body": "4",
                 "startTime": 1605884861306,
@@ -26549,57 +26161,6 @@
                 "podrobnosti": "",
                 "ip": "158.194.94.81",
                 "datetime": "2024-04-30 11:40:11"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.272653579711914,
-                    49.59046137952257
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa v noci (když je tma)",
-                "typ_ident": "a",
-                "desc_detail_duvod": "test",
-                "desc_detail_jak_casto": "denně",
-                "desc_body": "5",
-                "startTime": 1742464198273,
-                "endTime": 1742464230034,
-                "user_id": "4j4bb90eh",
-                "vek": "65+",
-                "pohlavi": "muz",
-                "zamestnani": "Olomouc - střed",
-                "podrobnosti": "test",
-                "ip": "158.194.110.24",
-                "datetime": "2025-03-20 10:50:30"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    17.290163040161133,
-                    49.587067254491295
-                ]
-            },
-            "properties": {
-                "typ_nazev": "Místa za bílého dne (když je světlo)",
-                "typ_ident": "b",
-                "desc_detail_duvod": "test",
-                "desc_detail_jak_casto": "denně",
-                "startTime": 1742464198273,
-                "endTime": 1742464230034,
-                "user_id": "4j4bb90eh",
-                "vek": "65+",
-                "pohlavi": "muz",
-                "zamestnani": "Olomouc - střed",
-                "podrobnosti": "test",
-                "ip": "158.194.110.24",
-                "datetime": "2025-03-20 10:50:30"
             }
         }
     ]
