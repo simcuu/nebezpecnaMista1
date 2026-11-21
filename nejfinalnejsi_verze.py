@@ -1,7 +1,9 @@
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
+import html
 import json
+import os
 import pandas as pd
 from folium.plugins import Draw
 from supabase import create_client
@@ -501,6 +503,53 @@ def nacti_tvary_budov():
 
 tvary_budov = nacti_tvary_budov()
 
+
+# Základní školy v Olomouci (zs.geojson, jen obec Olomouc)
+@st.cache_data(show_spinner=False)
+def nacti_zakladni_skoly():
+    try:
+        with open("zs.geojson", encoding="utf-8") as f:
+            prvky = json.load(f)["features"]
+    except FileNotFoundError:
+        return []
+    skoly = []
+    for prvek in prvky:
+        p = prvek["properties"]
+        lon, lat = prvek["geometry"]["coordinates"][:2]
+        skoly.append({
+            "id": p.get("OBJECTID"),
+            "lat": lat,
+            "lon": lon,
+            "nazev": p.get("ORG_NAZEV") or "Základní škola",
+            "typ": p.get("ZAR_TYP_NAZEV") or "",
+            "adresa": p.get("ADRESA") or "",
+            "kapacita": p.get("ZAR_KAPACITA"),
+            "web": p.get("ORG_WEB"),
+        })
+    return skoly
+
+
+zakladni_skoly = nacti_zakladni_skoly()
+
+
+# Obrysy budov základních škol z OpenStreetMap – vytváří je priprav_zs_tvary.py
+@st.cache_data(show_spinner=False)
+def nacti_tvary_skol(zmena_souboru):
+    # Argument = čas změny souboru, aby se po novém spuštění priprav_zs_tvary.py
+    # nepoužila stará (nebo prázdná) data z cache
+    with open("zs_tvary.geojson", encoding="utf-8") as f:
+        return {
+            prvek["properties"]["id"]: prvek["geometry"]
+            for prvek in json.load(f)["features"]
+        }
+
+
+try:
+    tvary_skol = nacti_tvary_skol(os.path.getmtime("zs_tvary.geojson"))
+except FileNotFoundError:
+    tvary_skol = {}
+BARVA_SKOL = "#f2c94c"
+
 DNY = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
 MESICE = {
     "01": "leden", "02": "únor", "03": "březen", "04": "duben",
@@ -671,6 +720,10 @@ legenda_budovy = (
     '<div class="legenda-polozka">'
     f'<span class="legenda-tecka" style="background:{BARVA_BUDOV}; border-radius:3px;"></span>'
     " Budovy UP"
+    "</div>"
+    '<div class="legenda-polozka">'
+    f'<span class="legenda-tecka" style="background:{BARVA_SKOL};"></span>'
+    " Základní školy"
     "</div>"
     if studentsky_rezim
     else ""
@@ -891,6 +944,8 @@ mapa.get_root().header.add_child(folium.Element(
     ".skryt-vlastni .vlastni-bod, .skryt-vlastni .leaflet-draw { display: none; }"
     # Modrá záře kolem budov UP, aby byly na tmavé mapě dobře vidět
     ".budova-up { filter: drop-shadow(0 0 4px #4fb3ff) drop-shadow(0 0 8px #4fb3ff); }"
+    # Stejná záře kolem základních škol, jen žlutá
+    ".zakladni-skola { filter: drop-shadow(0 0 4px #ffd24d) drop-shadow(0 0 8px #ffd24d); }"
     "</style>"
 ))
 
@@ -1101,6 +1156,79 @@ if studentsky_rezim and budovy:
     vrstvy.append(vrstva_budov)
 
 
+def popis_skoly(s):
+    """HTML s detaily jedné školy (do okénka po kliknutí)."""
+    radky = [f"<b style='font-size:14px'>{html.escape(s['nazev'])}</b>"]
+    if s["typ"]:
+        radky.append(html.escape(s["typ"]))
+    if s["adresa"]:
+        radky.append(html.escape(s["adresa"]))
+    if s["kapacita"]:
+        radky.append(f"Kapacita: <b>{s['kapacita']}</b> žáků")
+    if s["web"]:
+        web = html.escape(s["web"])
+        odkaz = web if web.startswith("http") else f"https://{web}"
+        radky.append(f"<a href='{odkaz}' target='_blank'>{web}</a>")
+    return "<br>".join(radky)
+
+
+# Základní školy (jen ve studentské verzi) – obarvený tvar budovy jako u budov UP
+if studentsky_rezim and zakladni_skoly:
+    vrstva_skol = folium.FeatureGroup(name="Základní školy")
+
+    # Víc škol (míst výuky) může být v jedné budově – seskupí se podle obrysu
+    skupiny = {}
+    for s in zakladni_skoly:
+        tvar = tvary_skol.get(s["id"])
+        klic = json.dumps(tvar, sort_keys=True) if tvar else f"bod-{s['lat']}-{s['lon']}"
+        skupiny.setdefault(klic, (tvar, []))[1].append(s)
+
+    for tvar, skoly_v_budove in skupiny.values():
+        # Stejná škola na stejné adrese se v okénku neopakuje
+        unikatni = list({(s["nazev"], s["adresa"]): s for s in skoly_v_budove}.values())
+        tooltip = folium.Tooltip(
+            "<br>".join(f"<b>{html.escape(s['nazev'])}</b>" for s in unikatni), sticky=True
+        )
+        popup = folium.Popup(
+            "<div style='font-size:12.5px;line-height:1.5'>"
+            + "<hr style='margin:6px 0'>".join(popis_skoly(s) for s in unikatni)
+            + "</div>",
+            max_width=320,
+        )
+
+        if tvar:
+            folium.GeoJson(
+                {"type": "Feature", "geometry": tvar, "properties": {}},
+                class_name="zakladni-skola",
+                style_function=lambda _: {
+                    "color": "#fff8e1",
+                    "weight": 3,
+                    "fillColor": BARVA_SKOL,
+                    "fillOpacity": 0.95,
+                },
+                highlight_function=lambda _: {"weight": 5, "color": "#ffffff", "fillOpacity": 1},
+                tooltip=tooltip,
+                popup=popup,
+            ).add_to(vrstva_skol)
+        else:
+            # Záloha, kdyby ke škole chyběl tvar
+            s = unikatni[0]
+            folium.CircleMarker(
+                location=[s["lat"], s["lon"]],
+                radius=8,
+                color="#fff8e1",
+                weight=3,
+                fill=True,
+                fill_color=BARVA_SKOL,
+                fill_opacity=0.95,
+                class_name="zakladni-skola",
+                tooltip=tooltip,
+                popup=popup,
+            ).add_to(vrstva_skol)
+
+    vrstvy.append(vrstva_skol)
+
+
 # Start, cíl a trasa navigace (nahoře nad vším)
 vrstvy.append(vrstva_navigace(route))
 
@@ -1174,6 +1302,7 @@ statistiky = [
                 "Výuka po setmění",
                 f"{sum(1 for b in budovy if b['dark_students'])} <small>budov</small>",
             ),
+            ("Základní školy", f"{len(zakladni_skoly)}"),
         ]
         if studentsky_rezim
         else []
