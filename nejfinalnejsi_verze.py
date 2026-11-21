@@ -25,6 +25,7 @@ from rychle_vrstvy import (
 # Nastavení stránky
 st.set_page_config(
     page_title="Nebezpečná místa – Olomouc",
+    page_icon="🛡️",
     layout="wide"
 )
 supabase = create_client(
