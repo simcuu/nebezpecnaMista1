@@ -16,6 +16,7 @@ from navigace_test4 import (
 # Nastavení stránky
 st.set_page_config(
     page_title="Nebezpečná místa – Olomouc",
+    page_icon="🛡️",
     layout="wide"
 )
 supabase = create_client(
@@ -27,16 +28,108 @@ supabase = create_client(
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    html, body, [class*="css"], .stMarkdown, button, input, textarea, select {
+        font-family: 'Inter', sans-serif;
+    }
+
     /* Menší horní odsazení stránky, aby nadpis byl výš */
     .block-container,
     [data-testid="stMainBlockContainer"] {
-        padding-top: 2rem !important;
+        padding-top: 1.5rem !important;
+        padding-bottom: 2rem !important;
     }
-    .legenda {
-        background: #3b2a5c;
+
+    /* Hlavička */
+    .hlavicka {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 22px;
+        margin-bottom: 14px;
+        border-radius: 16px;
+        background:
+            radial-gradient(circle at 0% 0%, rgba(155, 127, 212, 0.35), transparent 55%),
+            linear-gradient(135deg, #1d1729 0%, #141019 100%);
+        border: 1px solid #2e2442;
+    }
+    .hlavicka-ikona {
+        font-size: 2.2rem;
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: rgba(155, 127, 212, 0.18);
+        flex-shrink: 0;
+    }
+    .hlavicka h1 {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: clamp(1.3rem, 2.8vw, 2.2rem) !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.02em;
+        line-height: 1.2 !important;
+        background: linear-gradient(90deg, #ffffff, #c9b6f0);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    .hlavicka p {
+        margin: 4px 0 0 0;
+        opacity: 0.7;
+        font-size: 0.95rem;
+    }
+
+    /* Boční panel */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #17131f 0%, #100d16 100%);
+        border-right: 1px solid #2e2442;
+    }
+    .sekce {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #9b7fd4;
+        margin: 18px 0 6px 0;
+    }
+
+    /* Tlačítka */
+    .stButton > button {
         border-radius: 10px;
+        font-weight: 600;
+        border: 1px solid #3b2a5c;
+        transition: all 0.15s ease;
+    }
+    .stButton > button:hover {
+        border-color: #9b7fd4;
+        box-shadow: 0 0 0 3px rgba(155, 127, 212, 0.2);
+    }
+
+    /* Mapa se zaoblenými rohy a stínem */
+    .st-key-mapa_obal iframe {
+        border-radius: 14px;
+        border: 1px solid #2e2442 !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Rozbalovací seznam */
+    [data-testid="stExpander"] details {
+        border-radius: 12px;
+        border-color: #2e2442;
+        background: #141019;
+    }
+
+    .legenda {
+        background: rgba(155, 127, 212, 0.08);
+        border: 1px solid #2e2442;
+        border-radius: 12px;
         padding: 12px 16px;
         margin: 4px 0 12px 0;
+        font-size: 0.9rem;
     }
     .legenda-nadpis {
         font-weight: 600;
@@ -46,7 +139,7 @@ st.markdown(
         display: flex;
         align-items: center;
         gap: 10px;
-        margin: 6px 0;
+        margin: 7px 0;
     }
     .legenda-tecka {
         width: 18px;
@@ -67,19 +160,36 @@ st.markdown(
         opacity: 0.8;
         margin-top: 4px;
     }
+    /* Statistiky pod mapou jako karty */
     .statistiky {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px 28px;
-        background: #1b1726;
-        border: 1px solid #3b2a5c;
-        border-radius: 8px;
-        padding: 8px 16px;
-        margin-top: 8px;
-        font-size: 0.9rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin: 14px 0 12px 0;
     }
-    .statistiky span b {
+    .karta {
+        background: linear-gradient(180deg, #1b1726 0%, #15111d 100%);
+        border: 1px solid #2e2442;
+        border-radius: 12px;
+        padding: 12px 14px;
+    }
+    .karta-popis {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.65;
+    }
+    .karta-hodnota {
+        font-size: 1.5rem;
+        font-weight: 700;
         color: #c9b6f0;
+        margin-top: 2px;
+    }
+    .karta-hodnota small {
+        font-size: 0.85rem;
+        font-weight: 500;
+        opacity: 0.6;
+        color: #ECE8F5;
     }
     </style>
     """,
@@ -262,7 +372,7 @@ kategorie_skupin = {
     ),
 }
 
-# Noc = 20:00–5:59, den = 6:00–19:59
+# Tma = 20:00–5:59, světlo = 6:00–19:59
 NOC_OD = 20
 NOC_DO = 6
 
@@ -344,7 +454,14 @@ ZDROJ_OBA = "Obojí"
 
 
 # Boční panel – nastavení mapy
-st.sidebar.title("Nastavení mapy")
+st.sidebar.title("⚙️ Nastavení mapy")
+
+
+def nadpis_sekce(text):
+    st.sidebar.markdown(f'<div class="sekce">{text}</div>', unsafe_allow_html=True)
+
+
+nadpis_sekce("Vlastní body")
 
 
 # Tlačítko pro zapnutí / vypnutí režimu přidávání bodu
@@ -366,6 +483,7 @@ else:
 
 
 # Boční panel – výběr zdroje dat
+nadpis_sekce("Data")
 zdroj_dat = st.sidebar.radio(
     "Zdroj dat v mapě:",
     [ZDROJ_POCIT, ZDROJ_VORONOI, ZDROJ_OBA]
@@ -376,18 +494,20 @@ zobrazit_voronoi = zdroj_dat in (ZDROJ_VORONOI, ZDROJ_OBA)
 
 
 # Boční panel – filtrování (platí pro pocit nebezpečí i pro kriminalitu)
+nadpis_sekce("Filtry")
 vyber = st.sidebar.selectbox(
     "Zobrazit místa:",
-    ["Vše", "Noc", "Den"]
+    ["Vše", "Tma", "Světlo"]
 )
 
 vybrane_kategorie = st.sidebar.multiselect(
     "Kategorie důvodu:",
-    [*kategorie_slov, "Ostatní"]
+    [*kategorie_slov, "Ostatní"],
+    placeholder="Všechny kategorie"
 )
 
-# Osvětlení ulic jde zapnout jen při filtru "Noc"
-if vyber == "Noc":
+# Osvětlení ulic jde zapnout jen při filtru "Tma"
+if vyber == "Tma":
     zobrazit_osvetleni = st.sidebar.checkbox(
         "💡 Osvětlení ulic",
         value=True,
@@ -418,10 +538,10 @@ st.sidebar.markdown(
     '<div class="legenda">'
     '<div class="legenda-nadpis">Legenda</div>'
     '<div class="legenda-polozka">'
-    '<span class="legenda-tecka" style="background:#7B61A8;"></span> Noc'
+    '<span class="legenda-tecka" style="background:#7B61A8;"></span> Tma'
     "</div>"
     '<div class="legenda-polozka">'
-    '<span class="legenda-tecka" style="background:#E5A000;"></span> Den'
+    '<span class="legenda-tecka" style="background:#E5A000;"></span> Světlo'
     "</div>"
     '<div class="legenda-polozka">'
     '<span class="legenda-tecka" style="background:green;"></span> Vlastní body'
@@ -438,10 +558,10 @@ st.sidebar.markdown(
 
 
 # Výběr bodů podle filtru
-if vyber == "Noc":
+if vyber == "Tma":
     df_mapa = df[df["typ_ident"] == "a"]
 
-elif vyber == "Den":
+elif vyber == "Světlo":
     df_mapa = df[df["typ_ident"] == "b"]
 
 else:
@@ -465,10 +585,10 @@ if not zobrazit_pocit:
 # Stejné filtry pro události kriminality
 df_krim_mapa = df_krim
 
-if vyber == "Noc":
+if vyber == "Tma":
     df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "a"]
 
-elif vyber == "Den":
+elif vyber == "Světlo":
     df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "b"]
 
 if vybrane_kategorie:
@@ -522,8 +642,7 @@ for feature in voronoi_geojson["features"]:
 
 # Boční panel – navigace (pracuje přímo v hlavní mapě)
 with st.sidebar:
-    st.divider()
-    st.subheader("Navigace")
+    nadpis_sekce("Navigace")
     route = ovladani_navigace(priprav_mista(df_mapa.to_dict("records")))
 
 # Výběr startu/cíle a přidávání bodu se navzájem vylučují
@@ -574,9 +693,12 @@ def okno_pro_bod(lat, lon):
 
 # Mapa přes celou šířku
 st.markdown(
-    '<h1 style="white-space:nowrap; font-size:clamp(1.4rem, 3.2vw, 2.6rem); '
-    'line-height:1.4; overflow:visible; '
-    'margin:0 0 0.4rem 0; padding:0.25em 0 0 0;">NEBEZPEČNÁ MÍSTA V OLOMOUCI</h1>',
+    '<div class="hlavicka">'
+    "<h1>NEBEZPEČNÁ MÍSTA V OLOMOUCI</h1>"
+    "<p>Mapa míst, kde se lidé necítí bezpečně, kriminality a osvětlení ulic"
+    " – naplánujte si bezpečnější cestu.</p>"
+    "</div>"
+    "</div>",
     unsafe_allow_html=True
 )
 
@@ -586,11 +708,11 @@ mapa = folium.Map(
     tiles=None
 )
 
-# Podklad mapy (OpenStreetMap): při filtru "Noc" tmavý režim, při "Den" / "Vše" světlý režim.
+# Podklad mapy (OpenStreetMap): při filtru "Tma" tmavý režim, při "Světlo" / "Vše" světlý režim.
 # Tmavý režim vznikne převrácením barev dlaždic, body a čáry na mapě zůstanou ve svých barvách.
 folium.TileLayer(
     "OpenStreetMap",
-    class_name="tmava-mapa" if vyber == "Noc" else "svetla-mapa"
+    class_name="tmava-mapa" if vyber == "Tma" else "svetla-mapa"
 ).add_to(mapa)
 
 mapa.get_root().header.add_child(folium.Element(
@@ -794,31 +916,34 @@ if nove_body is not None:
 
 # Řádek se statistikami pod mapou
 statistiky = [
-    f"Zobrazená místa: <b>{len(df_mapa)}</b>",
-    f"Celkem míst: <b>{len(df)}</b>",
-    f"Vlastní body: <b>{len(st.session_state.moje_body)}</b>",
+    ("📍 Zobrazená místa", f"{len(df_mapa)} <small>/ {len(df)}</small>"),
+    ("🟢 Vlastní body", f"{len(st.session_state.moje_body)}"),
 ]
 
 if zobrazit_voronoi:
     statistiky.append(
-        f"Činy (kriminalita): <b>{len(df_krim_mapa)}</b> z {len(df_krim)}"
+        ("🚨 Činy (kriminalita)", f"{len(df_krim_mapa)} <small>/ {len(df_krim)}</small>")
     )
 
 if route is not None:
     souhrn = route["routes"][0]["summary"]
-    statistiky.append(f"Délka trasy: <b>{souhrn['distance'] / 1000:.2f} km</b>")
-    statistiky.append(f"Doba chůze: <b>{round(souhrn['duration'] / 60)} min</b>")
+    statistiky.append(("🧭 Délka trasy", f"{souhrn['distance'] / 1000:.2f} <small>km</small>"))
+    statistiky.append(("🚶 Doba chůze", f"{round(souhrn['duration'] / 60)} <small>min</small>"))
 
 st.markdown(
     '<div class="statistiky">'
-    + "".join(f"<span>{polozka}</span>" for polozka in statistiky)
+    + "".join(
+        f'<div class="karta"><div class="karta-popis">{popis}</div>'
+        f'<div class="karta-hodnota">{hodnota}</div></div>'
+        for popis, hodnota in statistiky
+    )
     + "</div>",
     unsafe_allow_html=True
 )
 
 
 # Seznam vlastních bodů (sbalitelný, aby nezabíral místo)
-with st.expander(f"Vlastní body ({len(st.session_state.moje_body)})"):
+with st.expander(f"📋 Seznam vlastních bodů ({len(st.session_state.moje_body)})"):
 
     for index, bod in enumerate(st.session_state.moje_body):
 
