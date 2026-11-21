@@ -12,6 +12,7 @@ from navigace_test4 import (
     vyhledavaci_panel,
     zpracuj_klik_navigace,
 )
+from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
 
 # Nastavení stránky
 st.set_page_config(
@@ -234,34 +235,6 @@ if "rezim_pridani" not in st.session_state:
     st.session_state.rezim_pridani = False
 
 
-kategorie_slov = {
-    "Lidé a chování": (
-        "bezdomov", "opil", "lidé", "lidi", "lidí", "lidem",
-        "lidech", "ľud", "člověk", "osob", "agres", "podezř",
-        "narkom"
-    ),
-    "Doprava a provoz": (
-        "doprav", "provoz", "auto", "autobus", "silnic", "křižovat",
-        "přechod", "chodník", "tramvaj", "vlak", "cykl"
-    ),
-    "Tma a osvětlení": ("tma", "tmav", "svět", "sviet", "osvět"),
-    "Krádeže a majetek": ("krad", "krád", "zlod", "vloup", "podvod"),
-}
-
-
-def zarad_kategorie(duvod):
-    text = duvod.casefold()
-    if not text:
-        return []
-
-    kategorie = [
-        kategorie
-        for kategorie, slova in kategorie_slov.items()
-        if any(slovo in text for slovo in slova)
-    ]
-    return kategorie or ["Ostatní"]
-
-
 # Barvy podle kategorie
 barvy = {
     "a": "#7B61A8",
@@ -434,7 +407,7 @@ def nacti_kriminalitu():
     udalosti = radky.groupby("id").agg(
         oblast=("oblast", "first"),
         date=("date", "first"),
-        kategorie_duvodu=("kategorie", lambda k: bez_obecneho(k, "Ostatní")),
+        kategorie_duvodu=("kategorie", lambda k: ["policie"]),
         skupiny=("skupina", lambda s: bez_obecneho(s, "Přestupky")),
     ).reset_index()
 
@@ -610,7 +583,8 @@ tmava_mapa = vyber == "Za tmy"
 
 vybrane_kategorie = st.sidebar.multiselect(
     "Kategorie důvodu:",
-    [*kategorie_slov, "Ostatní"],
+    V_NABIDCE,
+    format_func=NAZVY.get,
     placeholder="Všechny kategorie"
 )
 
