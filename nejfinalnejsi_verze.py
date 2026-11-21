@@ -717,6 +717,10 @@ st.markdown(
     .st-key-navigace_panel .stButton > button {{
         white-space: nowrap;
     }}
+    /* Bez nápovědy „Press Enter to apply" u políčka s odstupem */
+    .st-key-navigace_panel [data-testid="InputInstructions"] {{
+        display: none;
+    }}
     </style>
     """,
     unsafe_allow_html=True,
