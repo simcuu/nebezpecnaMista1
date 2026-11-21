@@ -140,8 +140,9 @@ def zrus_navigaci():
     st.session_state.pop("navigace_parametry_trasy", None)
     # Vyčistí i vyhledávací řádky nad mapou
     for typ in ("start", "cil"):
-        for predpona in ("hledat_", "hledano_", "vysledky_", "volba_", "_text_"):
-            st.session_state.pop(predpona + typ, None)
+        st.session_state.pop(f"_text_{typ}", None)
+        st.session_state.pop(f"_zaloha_{typ}", None)
+        _nastav_text_pole(typ, "")
 
 
 def nastav_bod(typ, souradnice):
@@ -341,6 +342,14 @@ def hledej_misto(text):
     return unique
 
 
+# --- Našeptávač ve stylu mapy.com -------------------------------------------------
+# Komponenta ve složce "naseptavac" hledá návrhy přímo v prohlížeči (Photon nad
+# OpenStreetMap), takže psaní nespouští Streamlit znovu a nic se nezasekává.
+# Do Pythonu pošle až vybrané místo, nebo žádost o záložní hledání, když Photon nejede.
+_naseptavac = components.declare_component(
+    "naseptavac", path=str(Path(__file__).with_name("naseptavac"))
+)
+
 VYHLEDAVANI_CSS = """
 <style>
 .st-key-mapa_obal {
@@ -351,13 +360,13 @@ VYHLEDAVANI_CSS = """
     top: 10px;
     left: 56px;
     z-index: 1000;
-    width: min(380px, calc(100% - 70px)) !important;
+    width: min(420px, calc(100% - 70px)) !important;
     padding: 10px 12px 12px 12px;
-    background: rgba(27, 23, 38, 0.96);
+    background: rgba(27, 23, 38, 0.97);
     border: 1px solid #3b2a5c;
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
-    gap: 0.5rem !important;
+    gap: 0.4rem !important;
 }
 .st-key-hledani_trasy p {
     margin: 0;
@@ -366,77 +375,85 @@ VYHLEDAVANI_CSS = """
 """
 
 
-def _hledaci_radek(typ, popisek, placeholder):
-    """Jeden vyhledávací řádek (Odkud / Kam). Vrací True, když se změnil start/cíl."""
-    klic = f"hledat_{typ}"
+def _nastav_text_pole(typ, text):
+    """Vepíše text do vyhledávacího políčka (projeví se při dalším vykreslení)."""
+    st.session_state[f"_popisek_{typ}"] = text
+    st.session_state[f"_verze_{typ}"] = st.session_state.get(f"_verze_{typ}", 0) + 1
 
-    # Text nastavený kliknutím do mapy se musí zapsat před vytvořením políčka
+
+def _hledaci_radek(typ, ikona, placeholder):
+    """Jeden vyhledávací řádek s našeptávačem. Vrací True, když se změnil start/cíl."""
+    # Text nastavený kliknutím do mapy
     cekajici_text = st.session_state.pop(f"_text_{typ}", None)
     if cekajici_text is not None:
-        st.session_state[klic] = cekajici_text
-        st.session_state[f"hledano_{typ}"] = cekajici_text
-        st.session_state.pop(f"vysledky_{typ}", None)
-        st.session_state.pop(f"volba_{typ}", None)
+        _nastav_text_pole(typ, cekajici_text)
 
-    text = st.text_input(
-        popisek,
-        key=klic,
+    hodnota = _naseptavac(
+        ikona=ikona,
         placeholder=placeholder,
-        label_visibility="collapsed",
-    ).strip()
+        text=st.session_state.get(f"_popisek_{typ}", ""),
+        verze=st.session_state.get(f"_verze_{typ}", 0),
+        zaloha=st.session_state.get(f"_zaloha_{typ}"),
+        key=f"naseptavac_{typ}",
+        default=None,
+    )
 
-    if text and text != st.session_state.get(f"hledano_{typ}"):
-        st.session_state[f"hledano_{typ}"] = text
-        st.session_state.pop(f"volba_{typ}", None)
-        try:
-            st.session_state[f"vysledky_{typ}"] = hledej_misto(text)
-        except Exception:
-            st.session_state[f"vysledky_{typ}"] = None
-
-    vysledky = st.session_state.get(f"vysledky_{typ}")
-    if text and text == st.session_state.get(f"hledano_{typ}"):
-        if vysledky is None and f"vysledky_{typ}" in st.session_state:
-            st.caption("⚠️ Vyhledávání teď nefunguje, zkuste to znovu nebo klikněte do mapy.")
-        elif vysledky == []:
-            st.caption("Nic jsme nenašli, zkuste napsat adresu jinak.")
-
-    if not vysledky:
+    # Komponenta vrací pořád poslední hodnotu -> zpracujeme jen novou (podle nonce)
+    if not isinstance(hodnota, dict) or hodnota.get("nonce") == st.session_state.get(f"_nonce_{typ}"):
         return False
+    st.session_state[f"_nonce_{typ}"] = hodnota.get("nonce")
 
-    poradi = 0
-    if len(vysledky) > 1:
-        poradi = st.selectbox(
-            f"Upřesnit – {popisek}",
-            range(len(vysledky)),
-            format_func=lambda i: vysledky[i]["popis"],
-            key=f"volba_{typ}",
-            label_visibility="collapsed",
-        )
+    if "zaloha" in hodnota:
+        dotaz = hodnota["zaloha"]
+        try:
+            vysledky = [
+                {"popis": v["popis"], "souradnice": list(v["souradnice"])}
+                for v in hledej_misto(dotaz)
+            ]
+            st.session_state[f"_zaloha_{typ}"] = {"dotaz": dotaz, "vysledky": vysledky}
+        except Exception:
+            st.session_state[f"_zaloha_{typ}"] = {"dotaz": dotaz, "vysledky": [], "chyba": True}
+        return True  # překreslit, aby komponenta dostala výsledky
 
-    souradnice = vysledky[poradi]["souradnice"]
-    klic_bodu = "navigace_start" if typ == "start" else "navigace_cil"
-    if st.session_state.get(klic_bodu) != souradnice:
-        nastav_bod(typ, souradnice)
-        return True
-    return False
+    souradnice = tuple(hodnota["souradnice"])
+    st.session_state[f"_popisek_{typ}"] = hodnota.get("popis", "")
+    nastav_bod(typ, souradnice)
+    return True
+
+
+def _prohod_start_a_cil():
+    stav = st.session_state
+    stav["navigace_start"], stav["navigace_cil"] = stav.get("navigace_cil"), stav.get("navigace_start")
+    popisek_start, popisek_cil = stav.get("_popisek_start", ""), stav.get("_popisek_cil", "")
+    _nastav_text_pole("start", popisek_cil)
+    _nastav_text_pole("cil", popisek_start)
+    if stav["navigace_start"] is None:
+        stav["navigace_vybirany_bod"] = "start"
+    elif stav["navigace_cil"] is None:
+        stav["navigace_vybirany_bod"] = "cil"
+    else:
+        stav["navigace_vybirany_bod"] = None
 
 
 def vyhledavaci_panel():
-    """Vyhledávací řádky Odkud/Kam, které se zobrazí přes mapu (volat uvnitř kontejneru 'mapa_obal')."""
+    """Vyhledávací řádky Odkud/Kam s našeptávačem (volat uvnitř kontejneru 'mapa_obal')."""
     if not st.session_state.get("navigace_aktivni"):
         return
 
     with st.container(key="hledani_trasy"):
         st.markdown(VYHLEDAVANI_CSS, unsafe_allow_html=True)
 
-        nadpis, zavrit = st.columns([5, 1], vertical_alignment="center")
+        nadpis, prohodit, zavrit = st.columns([4, 1, 1], vertical_alignment="center")
         nadpis.markdown("**🧭 Naplánovat trasu**")
+        if prohodit.button("⇅", key="prohodit_body", help="Prohodit start a cíl"):
+            _prohod_start_a_cil()
+            st.rerun()
         if zavrit.button("✕", key="zavrit_hledani", help="Skrýt vyhledávání (trasa zůstane)"):
             st.session_state["navigace_aktivni"] = False
             st.rerun()
 
-        zmena = _hledaci_radek("start", "Odkud", "🟢 Odkud – adresa nebo místo")
-        zmena = _hledaci_radek("cil", "Kam", "🏁 Kam – adresa nebo místo") or zmena
+        zmena = _hledaci_radek("start", "🟢", "Odkud – adresa nebo místo")
+        zmena = _hledaci_radek("cil", "🏁", "Kam – adresa nebo místo") or zmena
 
     if zmena:
         st.rerun()
@@ -500,7 +517,7 @@ def ovladani_navigace(nebezpecna_mista):
     radius_metres = st.number_input(
         "Odstup od nebezpečných míst (m)",
         min_value=1,
-        value=15,
+        value=20,
         step=1,
         help="Trasa se bude snažit držet alespoň tuto vzdálenost od míst.",
     )

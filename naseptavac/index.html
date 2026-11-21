@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<!--
+  Našeptávač míst ve stylu mapy.com (komponenta pro Streamlit).
+  Návrhy se hledají přímo v prohlížeči (Photon nad OpenStreetMap), takže psaní
+  nespouští Streamlit znovu. Do Pythonu se pošle až vybrané místo.
+-->
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    font-family: "Source Sans Pro", "Segoe UI", system-ui, sans-serif;
+    color: #fff;
+    overflow: hidden;
+  }
+  .pole {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 8px 0 10px;
+    background: #14111c;
+    border: 1px solid #3b2a5c;
+    border-radius: 8px;
+    transition: border-color .15s;
+  }
+  .pole:focus-within { border-color: #7157a2; }
+  .ikona { font-size: 15px; width: 18px; text-align: center; flex: none; }
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    font-size: 15px;
+  }
+  input::placeholder { color: #8f88a3; }
+  .smazat {
+    flex: none;
+    width: 26px; height: 26px;
+    border: 0; border-radius: 50%;
+    background: transparent;
+    color: #9a93ab;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  .smazat:hover { background: #2a2338; color: #fff; }
+  .pole.ma-text .smazat { display: block; }
+  .nacitani {
+    flex: none; width: 14px; height: 14px;
+    border: 2px solid #3b2a5c; border-top-color: #b49be0;
+    border-radius: 50%;
+    animation: toc .7s linear infinite;
+    display: none;
+  }
+  .pole.nacita .nacitani { display: block; }
+  @keyframes toc { to { transform: rotate(360deg); } }
+
+  ul {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 4px;
+    background: #1b1726;
+    border: 1px solid #3b2a5c;
+    border-radius: 8px;
+  }
+  ul:empty { display: none; }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  li.aktivni { background: #3b2a5c; }
+  li .ik { font-size: 17px; width: 22px; text-align: center; flex: none; }
+  li .texty { min-width: 0; }
+  li .nazev {
+    font-size: 14px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  li .nazev b { color: #d6c6ff; }
+  li .podtitul {
+    font-size: 12px; color: #9a93ab;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  li.info { cursor: default; color: #9a93ab; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="pole" id="pole">
+  <span class="ikona" id="ikona"></span>
+  <input id="vstup" type="text" autocomplete="off" spellcheck="false">
+  <span class="nacitani"></span>
+  <button class="smazat" id="smazat" title="Smazat" tabindex="-1">✕</button>
+</div>
+<ul id="seznam"></ul>
+
+<script>
+// ---------- Streamlit komunikace (bez knihoven) ----------
+function posli(typ, data) {
+  window.parent.postMessage(Object.assign({ isStreamlitMessage: true, type: typ }, data), "*");
+}
+function nastavHodnotu(hodnota) {
+  posli("streamlit:setComponentValue", { value: hodnota, dataType: "json" });
+}
+let posledniVyska = 0;
+function upravVysku() {
+  const vyska = Math.ceil(document.body.scrollHeight) + 2;
+  if (vyska !== posledniVyska) {
+    posledniVyska = vyska;
+    posli("streamlit:setFrameHeight", { height: vyska });
+  }
+}
+
+// ---------- Druhy míst ----------
+const DRUHY = {
+  "highway:bus_stop": ["🚏", "Zastávka MHD"],
+  "railway:tram_stop": ["🚋", "Zastávka tramvaje"],
+  "public_transport:*": ["🚏", "Zastávka MHD"],
+  "railway:station": ["🚆", "Nádraží"],
+  "railway:halt": ["🚆", "Železniční zastávka"],
+  "amenity:school": ["🏫", "Škola"],
+  "amenity:university": ["🎓", "Vysoká škola"],
+  "amenity:college": ["🎓", "Škola"],
+  "amenity:kindergarten": ["🧸", "Mateřská škola"],
+  "amenity:hospital": ["🏥", "Nemocnice"],
+  "amenity:clinic": ["🏥", "Poliklinika"],
+  "amenity:doctors": ["🩺", "Lékař"],
+  "amenity:pharmacy": ["💊", "Lékárna"],
+  "amenity:restaurant": ["🍽️", "Restaurace"],
+  "amenity:fast_food": ["🍔", "Rychlé občerstvení"],
+  "amenity:cafe": ["☕", "Kavárna"],
+  "amenity:pub": ["🍺", "Hospoda"],
+  "amenity:bar": ["🍸", "Bar"],
+  "amenity:bank": ["🏦", "Banka"],
+  "amenity:atm": ["🏧", "Bankomat"],
+  "amenity:police": ["👮", "Policie"],
+  "amenity:post_office": ["📮", "Pošta"],
+  "amenity:parking": ["🅿️", "Parkoviště"],
+  "amenity:place_of_worship": ["⛪", "Kostel"],
+  "amenity:theatre": ["🎭", "Divadlo"],
+  "amenity:cinema": ["🎬", "Kino"],
+  "amenity:library": ["📚", "Knihovna"],
+  "amenity:townhall": ["🏛️", "Radnice"],
+  "amenity:*": ["📍", "Služba"],
+  "shop:supermarket": ["🛒", "Supermarket"],
+  "shop:mall": ["🛍️", "Obchodní centrum"],
+  "shop:*": ["🛍️", "Obchod"],
+  "leisure:park": ["🌳", "Park"],
+  "leisure:playground": ["🛝", "Dětské hřiště"],
+  "leisure:sports_centre": ["🏟️", "Sportoviště"],
+  "leisure:stadium": ["🏟️", "Stadion"],
+  "leisure:pitch": ["⚽", "Hřiště"],
+  "leisure:*": ["🌳", "Volný čas"],
+  "tourism:hotel": ["🏨", "Hotel"],
+  "tourism:museum": ["🏛️", "Muzeum"],
+  "tourism:*": ["📸", "Turistický cíl"],
+  "historic:*": ["🏰", "Památka"],
+  "natural:*": ["🌲", "Příroda"],
+  "waterway:*": ["🌊", "Vodní tok"],
+  "landuse:*": ["🗺️", "Oblast"],
+  "building:*": ["🏢", "Budova"],
+  "highway:pedestrian": ["🚶", "Pěší zóna"],
+  "highway:*": ["🛣️", "Ulice"],
+  "place:city": ["🏙️", "Město"],
+  "place:town": ["🏙️", "Město"],
+  "place:village": ["🏘️", "Obec"],
+  "place:hamlet": ["🏘️", "Osada"],
+  "place:suburb": ["🏘️", "Městská část"],
+  "place:quarter": ["🏘️", "Čtvrť"],
+  "place:neighbourhood": ["🏘️", "Čtvrť"],
+  "place:locality": ["📍", "Lokalita"],
+  "place:square": ["🏛️", "Náměstí"],
+  "place:house": ["🏠", "Adresa"],
+};
+
+function druhMista(p) {
+  if (p.housenumber && !p.name) return ["🏠", "Adresa"];
+  return DRUHY[p.osm_key + ":" + p.osm_value] || DRUHY[p.osm_key + ":*"] || ["📍", "Místo"];
+}
+
+function bezDiakritiky(t) {
+  return (t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+function vzdalenostM(a, b) {
+  return Math.hypot((a[0] - b[0]) * 72000, (a[1] - b[1]) * 111000);
+}
+
+function prevedNavrh(f) {
+  const p = f.properties || {};
+  const s = (f.geometry || {}).coordinates || [];
+  if (s.length < 2) return null;
+  const [ikona, druh] = druhMista(p);
+  const adresa = [p.street, p.housenumber].filter(Boolean).join(" ");
+  const obec = p.city || p.town || p.village || p.county;
+  const cast = p.district || p.locality;
+  const nazev = p.name || adresa || obec;
+  if (!nazev) return null;
+
+  const misto = [];
+  if (adresa && adresa !== nazev) misto.push(adresa);
+  if (cast && cast !== nazev && cast !== obec) misto.push(cast);
+  if (obec && obec !== nazev) misto.push(obec);
+  const podtitul = [druh, ...new Set(misto)].join(", ");
+  return { ikona, druh, nazev, podtitul, souradnice: [s[0], s[1]] };
+}
+
+// ---------- Stav ----------
+const vstup = document.getElementById("vstup");
+const pole = document.getElementById("pole");
+const seznam = document.getElementById("seznam");
+const smazat = document.getElementById("smazat");
+const ikona = document.getElementById("ikona");
+
+let args = {};
+let posledniVerze = null;
+let navrhy = [];
+let aktivni = -1;
+let casovac = null;
+let rizeni = null;      // AbortController běžícího dotazu
+let cekamNaZalohu = null;
+const mezipamet = new Map();
+
+function oznacShodu(nazev, dotaz) {
+  const n = bezDiakritiky(nazev);
+  const slova = bezDiakritiky(dotaz).split(/\s+/).filter(w => w.length > 0);
+  // označí úseky názvu, které odpovídají začátkům napsaných slov
+  const znacky = new Array(nazev.length).fill(false);
+  for (const w of slova) {
+    let i = n.indexOf(w);
+    while (i !== -1) {
+      if (i === 0 || /[^a-z0-9]/.test(n[i - 1])) {
+        for (let k = i; k < i + w.length; k++) znacky[k] = true;
+        break;
+      }
+      i = n.indexOf(w, i + 1);
+    }
+  }
+  let html = "", otevreno = false;
+  for (let i = 0; i < nazev.length; i++) {
+    if (znacky[i] && !otevreno) { html += "<b>"; otevreno = true; }
+    if (!znacky[i] && otevreno) { html += "</b>"; otevreno = false; }
+    html += escapuj(nazev[i]);
+  }
+  return html + (otevreno ? "</b>" : "");
+}
+
+function escapuj(t) {
+  return t.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function vykresli(info) {
+  seznam.innerHTML = "";
+  if (info) {
+    const li = document.createElement("li");
+    li.className = "info";
+    li.textContent = info;
+    seznam.appendChild(li);
+  }
+  navrhy.forEach((n, i) => {
+    const li = document.createElement("li");
+    if (i === aktivni) li.className = "aktivni";
+    li.innerHTML =
+      `<span class="ik">${n.ikona}</span>` +
+      `<div class="texty"><div class="nazev">${oznacShodu(n.nazev, vstup.value)}</div>` +
+      `<div class="podtitul">${escapuj(n.podtitul)}</div></div>`;
+    li.addEventListener("mousedown", e => { e.preventDefault(); vyber(i); });
+    li.addEventListener("mouseenter", () => { aktivni = i; zvyrazni(); });
+    seznam.appendChild(li);
+  });
+  upravVysku();
+}
+
+function zvyrazni() {
+  [...seznam.children].forEach((li, i) => li.classList.toggle("aktivni", i === aktivni));
+}
+
+function zavri() {
+  navrhy = [];
+  aktivni = -1;
+  vykresli();
+}
+
+function vyber(i) {
+  const n = navrhy[i];
+  if (!n) return;
+  vstup.value = n.nazev;
+  pole.classList.add("ma-text");
+  zavri();
+  vstup.blur();
+  nastavHodnotu({
+    souradnice: n.souradnice,
+    popis: `${n.ikona} ${n.nazev}`,
+    nonce: Date.now() + "-" + Math.random(),
+  });
+}
+
+async function hledej(dotaz) {
+  const klic = bezDiakritiky(dotaz).trim();
+  if (mezipamet.has(klic)) return mezipamet.get(klic);
+
+  if (rizeni) rizeni.abort();
+  rizeni = new AbortController();
+  const url = "https://photon.komoot.io/api/?" + new URLSearchParams({
+    q: dotaz,
+    lat: 49.5938, lon: 17.2509,
+    location_bias_scale: 0.3,
+    bbox: "16.8,49.3,17.7,49.9",
+    limit: 12,
+  });
+  const odpoved = await fetch(url, { signal: rizeni.signal });
+  if (!odpoved.ok) throw new Error("HTTP " + odpoved.status);
+  const data = await odpoved.json();
+
+  const vysledek = [];
+  for (const f of data.features || []) {
+    const n = prevedNavrh(f);
+    if (!n) continue;
+    const duplicita = vysledek.some(m =>
+      m.nazev === n.nazev &&
+      (m.druh === n.druh || (m.druh.startsWith("Zastávka") && n.druh.startsWith("Zastávka"))) &&
+      vzdalenostM(m.souradnice, n.souradnice) < 300
+    );
+    if (!duplicita) vysledek.push(n);
+    if (vysledek.length === 7) break;
+  }
+  mezipamet.set(klic, vysledek);
+  return vysledek;
+}
+
+async function priPsani() {
+  const dotaz = vstup.value;
+  pole.classList.toggle("ma-text", dotaz.length > 0);
+  if (dotaz.trim().length < 2) {
+    pole.classList.remove("nacita");
+    if (rizeni) rizeni.abort();
+    zavri();
+    return;
+  }
+  pole.classList.add("nacita");
+  try {
+    const vysledek = await hledej(dotaz);
+    if (vstup.value !== dotaz) return;          // mezitím se psalo dál
+    pole.classList.remove("nacita");
+    navrhy = vysledek;
+    aktivni = navrhy.length ? 0 : -1;
+    vykresli(navrhy.length ? null : "Nic jsme nenašli, zkuste to napsat jinak.");
+  } catch (chyba) {
+    if (chyba.name === "AbortError") return;
+    if (vstup.value !== dotaz) return;
+    // Photon nejede -> požádáme Python o záložní vyhledávání
+    cekamNaZalohu = dotaz;
+    nastavHodnotu({ zaloha: dotaz, nonce: Date.now() + "-" + Math.random() });
+  }
+}
+
+function zpracujZalohu() {
+  const z = args.zaloha;
+  if (!z || z.dotaz !== cekamNaZalohu || vstup.value !== cekamNaZalohu) return;
+  cekamNaZalohu = null;
+  pole.classList.remove("nacita");
+  navrhy = (z.vysledky || []).map(v => ({
+    ikona: "📍", druh: "", nazev: v.popis, podtitul: "", souradnice: v.souradnice,
+  }));
+  aktivni = navrhy.length ? 0 : -1;
+  vykresli(z.chyba ? "Vyhledávání teď nefunguje, klikněte místo toho do mapy."
+    : navrhy.length ? null : "Nic jsme nenašli, zkuste to napsat jinak.");
+}
+
+vstup.addEventListener("input", () => {
+  clearTimeout(casovac);
+  casovac = setTimeout(priPsani, 120);
+});
+
+vstup.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown" && navrhy.length) {
+    e.preventDefault(); aktivni = (aktivni + 1) % navrhy.length; zvyrazni();
+  } else if (e.key === "ArrowUp" && navrhy.length) {
+    e.preventDefault(); aktivni = (aktivni - 1 + navrhy.length) % navrhy.length; zvyrazni();
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    if (navrhy.length) vyber(Math.max(aktivni, 0));
+    else { clearTimeout(casovac); priPsani(); }
+  } else if (e.key === "Escape") {
+    zavri();
+  }
+});
+
+// Kliknutím do políčka se celý text označí, takže jde hned přepsat
+vstup.addEventListener("focus", () => {
+  vstup.select();
+  if (vstup.value.trim().length >= 2 && !navrhy.length && document.hasFocus()) priPsani();
+});
+vstup.addEventListener("blur", () => setTimeout(zavri, 100));
+
+smazat.addEventListener("mousedown", e => {
+  e.preventDefault();
+  vstup.value = "";
+  pole.classList.remove("ma-text", "nacita");
+  zavri();
+  vstup.focus();
+});
+
+window.addEventListener("message", e => {
+  const d = e.data || {};
+  if (d.type !== "streamlit:render") return;
+  args = d.args || {};
+  vstup.placeholder = args.placeholder || "";
+  ikona.textContent = args.ikona || "";
+  // Text z Pythonu (klik do mapy, prohození) se vepíše jen když se změnila verze
+  if (args.verze !== posledniVerze) {
+    posledniVerze = args.verze;
+    vstup.value = args.text || "";
+    pole.classList.toggle("ma-text", vstup.value.length > 0);
+    zavri();
+  }
+  zpracujZalohu();
+  upravVysku();
+});
+
+posli("streamlit:componentReady", { apiVersion: 1 });
+upravVysku();
+</script>
+</body>
+</html>

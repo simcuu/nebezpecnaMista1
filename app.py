@@ -55,6 +55,18 @@ st.markdown(
         border: 2px solid rgba(255, 255, 255, 0.8);
         flex-shrink: 0;
     }
+    .legenda-osvetleni {
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(90deg, #e3261b, #f47a20, #f9b233, #ffd84a, #fff200);
+    }
+    .legenda-osvetleni-popis {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        opacity: 0.8;
+        margin-top: 4px;
+    }
     .statistiky {
         display: flex;
         flex-wrap: wrap;
@@ -124,6 +136,7 @@ kategorie_slov = {
         "přechod", "chodník", "tramvaj", "vlak", "cykl"
     ),
     "Tma a osvětlení": ("tma", "tmav", "svět", "sviet", "osvět"),
+    "Krádeže a majetek": ("krad", "krád", "zlod", "vloup", "podvod"),
 }
 
 
@@ -188,6 +201,148 @@ def nacti_data():
 df = nacti_data()
 
 
+# Načtení Voronoiových oblastí (data kriminality) – polygony, také jen jednou
+@st.cache_data
+def nacti_voronoi():
+    with open(
+        "voronoi_olomouc.geojson",
+        encoding="utf-8"
+    ) as f:
+        return json.load(f)
+
+
+voronoi_geojson = nacti_voronoi()
+
+
+# Osvětlení ulic – čáry po ulicích obarvené podle počtu lamp v okolí.
+# Soubor vytváří skript priprav_osvetleni_ulic.py (z dat stažených stahni_arcgis_geojson.py).
+@st.cache_data
+def nacti_osvetleni():
+    try:
+        with open("osvetleni_ulic.geojson", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+# Barvy čar: 0 = žádná lampa (červená) … 4 = hodně lamp (zářivě žlutá)
+barvy_osvetleni = {
+    0: "#e3261b",
+    1: "#f47a20",
+    2: "#f9b233",
+    3: "#ffd84a",
+    4: "#fff200",
+}
+
+osvetleni = nacti_osvetleni()
+
+
+# Data kriminality Policie ČR (kriminalita_olomouc.csv vytváří priprav_kriminalitu.py).
+# Každý typ činu patří do skupiny (Násilná, Krádeže, PŘ – BESIP…) a skupina
+# do stejných kategorií, jaké používá filtr pocitu nebezpečí.
+kategorie_skupin = {
+    "Lidé a chování": (
+        1,    # Násilná
+        80,   # Toxikománie
+        84,   # Zbraně
+        96,   # Extremismus
+        75,   # PŘ – alkohol a toxi
+        76,   # PŘ – veřejný pořádek a občanské soužití
+    ),
+    "Doprava a provoz": (
+        79,   # Dopravní nehody
+        74,   # PŘ – BESIP
+    ),
+    "Krádeže a majetek": (
+        18,   # Krádeže vloupáním
+        35,   # Krádeže
+        54,   # Podvody
+        55,   # Jiná majetková
+        77,   # PŘ – majetek
+    ),
+}
+
+# Noc = 20:00–5:59, den = 6:00–19:59
+NOC_OD = 20
+NOC_DO = 6
+
+
+def _kod_z_iri(iri):
+    return int(iri.rsplit("/", 1)[1]) if iri else 0
+
+
+@st.cache_data
+def nacti_typy_cinu():
+    """Vrátí {kód typu: (název skupiny, kategorie)}."""
+    with open("types.json", encoding="utf-8") as f:
+        polozky = json.load(f)["polozky"]
+
+    nazvy = {p["kod"]: p["nazev"]["cs"] for p in polozky}
+    typy = {}
+
+    for p in polozky:
+        rodic1 = _kod_z_iri(p["iri_1"])
+        rodic2 = _kod_z_iri(p["iri_2"])
+
+        if rodic1 == 0:
+            skupina = p["kod"]
+        elif rodic1 == 97:
+            # Přestupky se dělí ještě o úroveň níž (BESIP, alkohol, majetek…)
+            skupina = rodic2 or p["kod"]
+        else:
+            skupina = rodic1
+
+        kategorie = next(
+            (k for k, skupiny in kategorie_skupin.items() if skupina in skupiny),
+            "Ostatní"
+        )
+        typy[p["kod"]] = (nazvy[skupina], kategorie)
+
+    return typy
+
+
+@st.cache_data
+def nacti_kriminalitu():
+    """Jeden řádek = jedna událost se seznamem kategorií a skupin."""
+    try:
+        radky = pd.read_csv("kriminalita_olomouc.csv")
+    except FileNotFoundError:
+        return pd.DataFrame(
+            columns=["id", "oblast", "typ_ident", "kategorie_duvodu", "skupiny"]
+        )
+
+    typy = nacti_typy_cinu()
+    radky["skupina"] = radky["types"].map(lambda t: typy.get(t, ("Ostatní",))[0])
+    radky["kategorie"] = radky["types"].map(
+        lambda t: typy.get(t, (None, "Ostatní"))[1]
+    )
+
+    def bez_obecneho(hodnoty, obecna):
+        # „Ostatní“ / „Přestupky“ jen tehdy, když událost nemá nic konkrétnějšího
+        konkretni = sorted(set(hodnoty) - {obecna})
+        return konkretni or [obecna]
+
+    udalosti = radky.groupby("id").agg(
+        oblast=("oblast", "first"),
+        date=("date", "first"),
+        kategorie_duvodu=("kategorie", lambda k: bez_obecneho(k, "Ostatní")),
+        skupiny=("skupina", lambda s: bez_obecneho(s, "Přestupky")),
+    ).reset_index()
+
+    # Čas události je místní (+01:00/+02:00), stačí vzít hodinu z textu
+    hodina = pd.to_datetime(udalosti["date"].str[:19]).dt.hour
+    noc = (hodina >= NOC_OD) | (hodina < NOC_DO)
+    udalosti["typ_ident"] = noc.map({True: "a", False: "b"})
+    return udalosti
+
+
+df_krim = nacti_kriminalitu()
+
+ZDROJ_POCIT = "Pocit nebezpečí"
+ZDROJ_VORONOI = "Oblasti kriminality (Voronoi)"
+ZDROJ_OBA = "Obojí"
+
+
 # Boční panel – nastavení mapy
 st.sidebar.title("Nastavení mapy")
 
@@ -210,7 +365,17 @@ else:
         st.rerun()
 
 
-# Boční panel – filtrování
+# Boční panel – výběr zdroje dat
+zdroj_dat = st.sidebar.radio(
+    "Zdroj dat v mapě:",
+    [ZDROJ_POCIT, ZDROJ_VORONOI, ZDROJ_OBA]
+)
+
+zobrazit_pocit = zdroj_dat in (ZDROJ_POCIT, ZDROJ_OBA)
+zobrazit_voronoi = zdroj_dat in (ZDROJ_VORONOI, ZDROJ_OBA)
+
+
+# Boční panel – filtrování (platí pro pocit nebezpečí i pro kriminalitu)
 vyber = st.sidebar.selectbox(
     "Zobrazit místa:",
     ["Vše", "Noc", "Den"]
@@ -221,23 +386,53 @@ vybrane_kategorie = st.sidebar.multiselect(
     [*kategorie_slov, "Ostatní"]
 )
 
+# Osvětlení ulic jde zapnout jen při filtru "Noc"
+if vyber == "Noc":
+    zobrazit_osvetleni = st.sidebar.checkbox(
+        "💡 Osvětlení ulic",
+        value=True,
+        disabled=osvetleni is None,
+        help=(
+            "Ulice obarvené podle počtu lamp v okolí."
+            if osvetleni is not None
+            else "Chybí soubor osvetleni_ulic.geojson – spusťte priprav_osvetleni_ulic.py."
+        ),
+    )
+else:
+    zobrazit_osvetleni = False
+
+# Pozor: HTML bez odsazení a prázdných řádků, jinak ho Streamlit ukáže jako kód
+legenda_osvetleni = (
+    '<div class="legenda-nadpis" style="margin-top:12px;">Osvětlení ulic</div>'
+    '<div class="legenda-osvetleni"></div>'
+    '<div class="legenda-osvetleni-popis">'
+    "<span>neosvětlené</span><span>osvětlené</span>"
+    "</div>"
+    if zobrazit_osvetleni
+    else ""
+)
+
 
 # Boční panel – legenda
 st.sidebar.markdown(
-    """
-    <div class="legenda">
-        <div class="legenda-nadpis">Legenda</div>
-        <div class="legenda-polozka">
-            <span class="legenda-tecka" style="background:#7B61A8;"></span> Noc
-        </div>
-        <div class="legenda-polozka">
-            <span class="legenda-tecka" style="background:#E5A000;"></span> Den
-        </div>
-        <div class="legenda-polozka">
-            <span class="legenda-tecka" style="background:green;"></span> Vlastní body
-        </div>
-    </div>
-    """,
+    '<div class="legenda">'
+    '<div class="legenda-nadpis">Legenda</div>'
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:#7B61A8;"></span> Noc'
+    "</div>"
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:#E5A000;"></span> Den'
+    "</div>"
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:green;"></span> Vlastní body'
+    "</div>"
+    '<div class="legenda-polozka">'
+    '<span class="legenda-tecka" style="background:rgba(214,69,65,0.35); '
+    'border-color:#D64541; border-radius:3px;"></span> '
+    "Oblasti kriminality (tmavší = více činů)"
+    "</div>"
+    + legenda_osvetleni
+    + "</div>",
     unsafe_allow_html=True
 )
 
@@ -261,6 +456,68 @@ if vybrane_kategorie:
             )
         )
     ]
+
+# Pokud jsou zvolena jen Voronoiova data, body pocitu nebezpečí se nezobrazí
+if not zobrazit_pocit:
+    df_mapa = df.iloc[0:0]
+
+
+# Stejné filtry pro události kriminality
+df_krim_mapa = df_krim
+
+if vyber == "Noc":
+    df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "a"]
+
+elif vyber == "Den":
+    df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "b"]
+
+if vybrane_kategorie:
+    df_krim_mapa = df_krim_mapa[
+        df_krim_mapa["kategorie_duvodu"].apply(
+            lambda kategorie: any(
+                vybrana in kategorie
+                for vybrana in vybrane_kategorie
+            )
+        )
+    ]
+
+
+# Počet činů a nejčastější skupiny v každé oblasti
+pocty_oblasti = df_krim_mapa["oblast"].value_counts().to_dict()
+skupiny_oblasti = (
+    df_krim_mapa.explode("skupiny")
+    .groupby("oblast")["skupiny"]
+    .value_counts()
+)
+max_pocet = max(pocty_oblasti.values(), default=0)
+
+oblasti_geojson = {
+    "type": "FeatureCollection",
+    "features": [],
+}
+
+for feature in voronoi_geojson["features"]:
+    oblast = feature["properties"]["id"]
+    pocet = int(pocty_oblasti.get(oblast, 0))
+
+    if pocet:
+        nejcastejsi = skupiny_oblasti[oblast].head(5)
+        prehled = "<br>".join(
+            f"{skupina}: {kolik}" for skupina, kolik in nejcastejsi.items()
+        )
+    else:
+        prehled = "žádné činy pro zvolený filtr"
+
+    oblasti_geojson["features"].append({
+        "type": "Feature",
+        "geometry": feature["geometry"],
+        "properties": {
+            "oblast": oblast,
+            "pocet": pocet,
+            "podil": pocet / max_pocet if max_pocet else 0,
+            "prehled": prehled,
+        },
+    })
 
 
 # Boční panel – navigace (pracuje přímo v hlavní mapě)
@@ -325,8 +582,61 @@ st.markdown(
 
 mapa = folium.Map(
     location=[49.5938, 17.2509],
-    zoom_start=12
+    zoom_start=12,
+    tiles=None
 )
+
+# Podklad mapy (OpenStreetMap): při filtru "Noc" tmavý režim, při "Den" / "Vše" světlý režim.
+# Tmavý režim vznikne převrácením barev dlaždic, body a čáry na mapě zůstanou ve svých barvách.
+folium.TileLayer(
+    "OpenStreetMap",
+    class_name="tmava-mapa" if vyber == "Noc" else "svetla-mapa"
+).add_to(mapa)
+
+mapa.get_root().header.add_child(folium.Element(
+    "<style>"
+    ".tmava-mapa {"
+    " filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);"
+    "}"
+    "</style>"
+))
+
+
+# Voronoiovy oblasti (kriminalita) – vykreslují se jako první, aby body ležely nad nimi
+if zobrazit_voronoi:
+    # Čím víc činů (po filtrech), tím sytější červená
+    folium.GeoJson(
+        oblasti_geojson,
+        name="Oblasti kriminality",
+        style_function=lambda oblast: {
+            "color": "#D64541",
+            "weight": 1,
+            "fillColor": "#D64541",
+            "fillOpacity": 0.03 + 0.6 * oblast["properties"]["podil"],
+        },
+        highlight_function=lambda _: {
+            "weight": 3,
+        },
+        tooltip=folium.GeoJsonTooltip(
+            fields=["pocet", "prehled"],
+            aliases=["Počet činů:", "Nejčastější:"]
+        ),
+    ).add_to(mapa)
+
+
+# Osvětlení ulic (nad oblastmi kriminality, pod body, aby body šly dál kliknout)
+if zobrazit_osvetleni and osvetleni is not None:
+    folium.GeoJson(
+        osvetleni,
+        name="Osvětlení ulic",
+        interactive=False,  # čáry nezachytávají kliknutí, takže přidávání bodů funguje dál
+        style_function=lambda cara: {
+            "color": barvy_osvetleni[cara["properties"]["uroven"]],
+            "weight": 4 if cara["properties"]["uroven"] == 4 else 3,
+            "opacity": 0.9,
+            "lineCap": "round",
+        },
+    ).add_to(mapa)
 
 
 # Vykreslení nebezpečných míst jako JEDNÉ GeoJSON vrstvy.
@@ -351,17 +661,18 @@ body_geojson = {
     ],
 }
 
-folium.GeoJson(
-    body_geojson,
-    name="Nebezpečná místa",
-    marker=folium.CircleMarker(radius=5, fill=True, fill_opacity=0.8),
-    style_function=lambda bod: {
-        "color": bod["properties"]["barva"],
-        "fillColor": bod["properties"]["barva"],
-    },
-    tooltip=folium.GeoJsonTooltip(fields=["duvod"], labels=False),
-    popup=folium.GeoJsonPopup(fields=["duvod"], labels=False),
-).add_to(mapa)
+if zobrazit_pocit and body_geojson["features"]:
+    folium.GeoJson(
+        body_geojson,
+        name="Nebezpečná místa",
+        marker=folium.CircleMarker(radius=5, fill=True, fill_opacity=0.8),
+        style_function=lambda bod: {
+            "color": bod["properties"]["barva"],
+            "fillColor": bod["properties"]["barva"],
+        },
+        tooltip=folium.GeoJsonTooltip(fields=["duvod"], labels=False),
+        popup=folium.GeoJsonPopup(fields=["duvod"], labels=False),
+    ).add_to(mapa)
 
 
 # Skupina pro vlastní body uživatelů
@@ -488,6 +799,11 @@ statistiky = [
     f"Vlastní body: <b>{len(st.session_state.moje_body)}</b>",
 ]
 
+if zobrazit_voronoi:
+    statistiky.append(
+        f"Činy (kriminalita): <b>{len(df_krim_mapa)}</b> z {len(df_krim)}"
+    )
+
 if route is not None:
     souhrn = route["routes"][0]["summary"]
     statistiky.append(f"Délka trasy: <b>{souhrn['distance'] / 1000:.2f} km</b>")
@@ -538,5 +854,5 @@ if st.session_state.cekajici_bod is not None:
 
     # Vynulujeme hned, aby se okno znovu neotevřelo po zavření křížkem
     st.session_state.cekajici_bod = None
-
+    
     okno_pro_bod(lat_bodu, lon_bodu)
