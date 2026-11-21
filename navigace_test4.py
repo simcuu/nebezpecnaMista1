@@ -17,31 +17,44 @@ ORS_KLIC = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUw
 
 
 def najdi_trasu(client, start, end, avoid_polygons):
-    if not avoid_polygons["coordinates"]:
-        return client.directions([start, end], profile="foot-walking")
+    """Najde pěší trasu, která se vyhne zónám v `avoid_polygons`.
 
-    try:
-        return client.directions(
-            [start, end],
-            profile="foot-walking",
-            options={"avoid_polygons": avoid_polygons},
-        )
-    except exceptions.ApiError as error:
-        payload = error.message if isinstance(error.message, dict) else {}
-        detail = payload.get("error", {})
-        code = detail.get("code") if isinstance(detail, dict) else None
-        if code not in {2009, 2010}:
-            raise
+    `avoid_polygons` může být i seznam sad zón od nejpřísnější: když s jednou sadou
+    trasa neexistuje (např. všechny cesty z místa vedou přes zónu), zkusí se další.
+    Teprve když nevyjde žádná, vrátí se trasa bez vyhýbání (s upozorněním)."""
+    sady = avoid_polygons if isinstance(avoid_polygons, list) else [avoid_polygons]
 
-        st.warning(
-            "S vyhýbacími zónami se trasu nepodařilo najít. "
-            "Zobrazuji trasu bez vyhýbání; nebezpečná místa jsou vyznačena na mapě."
-        )
-        return client.directions([start, end], profile="foot-walking")
+    for zony in sady:
+        if not zony["coordinates"]:
+            return client.directions([start, end], profile="foot-walking")
+        try:
+            return client.directions(
+                [start, end],
+                profile="foot-walking",
+                options={"avoid_polygons": zony},
+            )
+        except exceptions.ApiError as error:
+            payload = error.message if isinstance(error.message, dict) else {}
+            detail = payload.get("error", {})
+            code = detail.get("code") if isinstance(detail, dict) else None
+            if code not in {2009, 2010}:
+                raise
+
+    zprava = (
+        "S vyhýbacími zónami se trasu nepodařilo najít. "
+        "Zobrazuji trasu bez vyhýbání; nebezpečná místa jsou vyznačena na mapě."
+    )
+    st.warning(zprava)
+    # Upozornění i mimo panel navigace (ten může být zavřený)
+    st.toast(zprava)
+    return client.directions([start, end], profile="foot-walking")
 
 
-def vytvor_avoid_polygony(mista, koncove_body, radius_metres=80):
-    """Vytvoří zóny kolem nebezpečných bodů, aby si trasa od nich udržela odstup."""
+def vytvor_avoid_polygony(mista, koncove_body, radius_metres=80, vynechat_do_m=500):
+    """Vytvoří zóny kolem nebezpečných bodů, aby si trasa od nich udržela odstup.
+
+    Body blíž než `vynechat_do_m` ke startu nebo cíli se vynechají – kdyby start/cíl
+    ležel v zóně, trasa by nešla najít."""
     polygons = []
 
     for bod in mista:
@@ -58,7 +71,7 @@ def vytvor_avoid_polygony(mista, koncove_body, radius_metres=80):
                     * math.sin(math.radians(lon - konec[0]) / 2) ** 2
                 )
             )
-            <= 500
+            <= vynechat_do_m
             for konec in koncove_body
         ):
             continue
@@ -499,8 +512,11 @@ def posun_bocni_listu_dolu():
     )
 
 
-def ovladani_navigace(nebezpecna_mista):
-    """Vykreslí ovládání navigace do aktuálního kontejneru a vrátí nalezenou trasu (nebo None)."""
+def ovladani_navigace(nebezpecna_mista, posun_listy=True):
+    """Vykreslí ovládání navigace do aktuálního kontejneru a vrátí nalezenou trasu (nebo None).
+
+    `posun_listy=False` vypne posunutí boční lišty dolů po kliknutí na „Zvolit start a cíl“
+    (když je navigace ve vlastním vysouvacím panelu, není kam posouvat)."""
     inicializuj_stav()
 
     posunout_listu = False
@@ -517,8 +533,6 @@ def ovladani_navigace(nebezpecna_mista):
         st.info("Napište start do vyhledávání nad mapou, nebo klikněte do mapy.")
     elif st.session_state["navigace_vybirany_bod"] == "cil":
         st.info("Start je vybrán. Napište cíl do vyhledávání, nebo klikněte do mapy.")
-    elif start is not None and end is not None and "route" not in st.session_state:
-        st.info("Start i cíl jsou vybrané, hledám trasu.")
 
     st.caption(
         "Start: "
@@ -526,18 +540,18 @@ def ovladani_navigace(nebezpecna_mista):
         + "  \nCíl: "
         + (f"{end[1]:.5f}, {end[0]:.5f}" if end else "nevybrán")
     )
-    # Odstup se ukáže až po kliknutí na „Zvolit start a cíl";
-    # hodnota se pamatuje i když je políčko skryté
-    radius_metres = st.session_state.get("navigace_odstup_m", 20)
-    if st.session_state.get("navigace_aktivni"):
-        radius_metres = st.number_input(
-            "Odstup od nebezpečných míst (m)",
-            min_value=1,
-            value=radius_metres,
-            step=1,
-            help="Trasa se bude snažit držet alespoň tuto vzdálenost od míst.",
-        )
-        st.session_state["navigace_odstup_m"] = radius_metres
+    # Odstup je vidět pořád (i po zavření vyhledávání); po změně se trasa přepočítá
+    if "navigace_odstup_m" not in st.session_state:
+        st.session_state["navigace_odstup_m"] = 20
+    radius_metres = st.number_input(
+        "Odstup od nebezpečných míst (m)",
+        min_value=1,
+        max_value=300,
+        step=5,
+        key="navigace_odstup_m",
+        help="Trasa se vyhne všem zobrazeným nebezpečným místům alespoň o tuto "
+             "vzdálenost (kromě míst přímo u startu a cíle).",
+    )
 
     # Při změně filtru se trasa přepočítá s novými nebezpečnými místy
     podpis_filtru = tuple(
@@ -552,12 +566,19 @@ def ovladani_navigace(nebezpecna_mista):
 
     def prepocitej_trasu():
         client = openrouteservice.Client(key=ORS_KLIC)
-        avoid_polygons = vytvor_avoid_polygony(
-            nebezpecna_mista,
-            [start, end],
-            radius_metres=radius_metres,
-        )
-        st.session_state["route"] = najdi_trasu(client, start, end, avoid_polygons)
+        # Nejdřív se trasa vyhne všem bodům kromě těch přímo u startu/cíle (jejich zóna
+        # by start/cíl zakryla). Kdyby taková trasa neexistovala, zkusí se vynechat
+        # body do 500 m od startu/cíle a až pak trasa bez vyhýbání.
+        sady_zon = [
+            vytvor_avoid_polygony(
+                nebezpecna_mista,
+                [start, end],
+                radius_metres=radius_metres,
+                vynechat_do_m=vynechat,
+            )
+            for vynechat in (radius_metres * 1.5 + 30, 500)
+        ]
+        st.session_state["route"] = najdi_trasu(client, start, end, sady_zon)
         st.session_state["navigace_parametry_trasy"] = parametry_trasy
         return st.session_state["route"]
 
@@ -573,7 +594,7 @@ def ovladani_navigace(nebezpecna_mista):
         zrus_navigaci()
         st.rerun()
 
-    if posunout_listu:
+    if posunout_listu and posun_listy:
         posun_bocni_listu_dolu()
 
     if start is not None and end is not None and (
