@@ -13,6 +13,14 @@ from navigace_test4 import (
     zpracuj_klik_navigace,
 )
 from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
+from rychle_vrstvy import (
+    GeoJsonZeSouboru,
+    PrepinacMapy,
+    RychlyGeoJson,
+    na_json,
+    uloz_staticky_soubor,
+    zjednodus_osvetleni,
+)
 
 # Nastavení stránky
 st.set_page_config(
@@ -144,12 +152,16 @@ st.markdown(
     }
 
     /* Legenda jako banner v pravém horním rohu mapy */
+    /* gap: 0 – legenda a vyhledávání leží přes mapu (absolute), ale Streamlit by jim
+       jinak nechal mezeru 1rem. Při zapnutí navigace by se tak obal mapy prodloužil
+       a všechno pod mapou by poskočilo dolů. */
     .st-key-mapa_obal {
         position: relative;
+        gap: 0 !important;
     }
     .st-key-legenda_mapy {
         position: absolute !important;
-        top: 24px;
+        top: 8px;
         right: 14px;
         z-index: 1000;
         width: 240px !important;
@@ -332,13 +344,16 @@ voronoi_geojson = nacti_voronoi()
 
 # Osvětlení ulic – čáry po ulicích obarvené podle počtu lamp v okolí.
 # Soubor vytváří skript priprav_osvetleni_ulic.py (z dat stažených stahni_arcgis_geojson.py).
+# Čáry se jednou zjednoduší (cca poloviční velikost) a uloží do složky static,
+# odkud si je prohlížeč stáhne jen jednou. Vrací název souboru pro mapu (nebo None).
 @st.cache_data(show_spinner=False)
 def nacti_osvetleni():
     try:
         with open("osvetleni_ulic.geojson", encoding="utf-8") as f:
-            return json.load(f)
+            data = zjednodus_osvetleni(json.load(f))
     except FileNotFoundError:
         return None
+    return uloz_staticky_soubor("osvetleni_ulic.json", na_json(data))
 
 
 # Barvy čar: 0 = žádná lampa (červená) … 4 = hodně lamp (zářivě žlutá)
@@ -732,42 +747,53 @@ if vybrane_kategorie:
     ]
 
 
-# Počet činů a nejčastější skupiny v každé oblasti
-pocty_oblasti = df_krim_mapa["oblast"].value_counts().to_dict()
-skupiny_oblasti = (
-    df_krim_mapa.explode("skupiny")
-    .groupby("oblast")["skupiny"]
-    .value_counts()
-)
-max_pocet = max(pocty_oblasti.values(), default=0)
+# Tvary oblastí se nemění – uloží se jednou do složky static a prohlížeč si je
+# stáhne jen jednou. S filtry se mění jen čísla v oblastech (viz níže).
+@st.cache_data(show_spinner=False)
+def soubor_tvaru_oblasti():
+    return uloz_staticky_soubor("voronoi_oblasti.json", na_json({
+        "type": "FeatureCollection",
+        "features": [
+            {"type": "Feature", "geometry": f["geometry"], "properties": {}}
+            for f in voronoi_geojson["features"]
+        ],
+    }))
 
-oblasti_geojson = {
-    "type": "FeatureCollection",
-    "features": [],
-}
 
-for feature in voronoi_geojson["features"]:
-    oblast = feature["properties"]["id"]
-    pocet = int(pocty_oblasti.get(oblast, 0))
+# Počet činů a nejčastější skupiny v každé oblasti (ve stejném pořadí jako tvary).
+# Výsledek se pamatuje pro každou kombinaci filtrů, takže se při klikání do mapy
+# nepřepočítává. Tabulka `_df_krim_mapa` je daná filtry (vyber, kategorie),
+# proto ji Streamlit nemusí hashovat (podtržítko).
+@st.cache_data(show_spinner=False)
+def oblasti_kriminality_json(vyber, kategorie, _df_krim_mapa):
+    pocty_oblasti = _df_krim_mapa["oblast"].value_counts().to_dict()
+    skupiny_oblasti = (
+        _df_krim_mapa.explode("skupiny")
+        .groupby("oblast")["skupiny"]
+        .value_counts()
+    )
+    max_pocet = max(pocty_oblasti.values(), default=0)
 
-    if pocet:
-        nejcastejsi = skupiny_oblasti[oblast].head(5)
-        prehled = "<br>".join(
-            f"{skupina}: {kolik}" for skupina, kolik in nejcastejsi.items()
-        )
-    else:
-        prehled = "žádné činy pro zvolený filtr"
+    oblasti = []
+    for feature in voronoi_geojson["features"]:
+        oblast = feature["properties"]["id"]
+        pocet = int(pocty_oblasti.get(oblast, 0))
 
-    oblasti_geojson["features"].append({
-        "type": "Feature",
-        "geometry": feature["geometry"],
-        "properties": {
-            "oblast": oblast,
+        if pocet:
+            nejcastejsi = skupiny_oblasti[oblast].head(5)
+            prehled = "<br>".join(
+                f"{skupina}: {kolik}" for skupina, kolik in nejcastejsi.items()
+            )
+        else:
+            prehled = "žádné činy pro zvolený filtr"
+
+        oblasti.append({
             "pocet": pocet,
             "podil": pocet / max_pocet if max_pocet else 0,
             "prehled": prehled,
-        },
-    })
+        })
+
+    return na_json(oblasti)
 
 
 # Boční panel – navigace (pracuje přímo v hlavní mapě)
@@ -832,116 +858,210 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ---------------------------------------------------------------------------------
+# MAPA
+# Základní mapa je při každém běhu STEJNÁ (podklad, vlastní body, nástroj na úpravy),
+# proto ji streamlit-folium po prvním načtení už nepřekresluje. Vše, co se mění
+# s filtry (body, oblasti, osvětlení, budovy, trasa, tmavý režim), jsou samostatné
+# vrstvy v seznamu `vrstvy`, které se předají do st_folium(feature_group_to_add=...)
+# a v prohlížeči se jen vymění. Mapa tak zůstane na místě i s přiblížením.
+# ---------------------------------------------------------------------------------
+
 mapa = folium.Map(
     location=[49.5938, 17.2509],
     zoom_start=12,
-    tiles=None
+    tiles=None,
+    # Bez ovládání klávesnicí: Leaflet si jinak při kliknutí do mapy vezme fokus
+    # a prohlížeč stránku odscrolluje, aby byla mapa celá vidět – stránka poskočí
+    # a klik (např. výběr startu) dopadne jinam, než uživatel mířil.
+    keyboard=False,
 )
 
-# Podklad mapy (OpenStreetMap): při filtru "Za tmy" tmavý režim, jinak světlý režim.
-# Tmavý režim vznikne převrácením barev dlaždic, body a čáry na mapě zůstanou ve svých barvách.
-folium.TileLayer(
-    "OpenStreetMap",
-    class_name="tmava-mapa" if tmava_mapa else "svetla-mapa"
-).add_to(mapa)
+# Podklad mapy (OpenStreetMap). Tmavý režim ("Za tmy") se zapíná jen CSS třídou
+# na mapě (viz PrepinacMapy níže) – převrátí barvy dlaždic, body a čáry zůstanou.
+folium.TileLayer("OpenStreetMap").add_to(mapa)
 
 mapa.get_root().header.add_child(folium.Element(
     "<style>"
-    ".tmava-mapa {"
+    ".tmava-mapa .leaflet-tile-pane {"
     " filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);"
     "}"
+    # Vlastní body a nástroj na jejich úpravu se skryjí, když nejsou zapnuté
+    ".skryt-vlastni .vlastni-bod, .skryt-vlastni .leaflet-draw { display: none; }"
+    # Modrá záře kolem budov UP, aby byly na tmavé mapě dobře vidět
+    ".budova-up { filter: drop-shadow(0 0 4px #4fb3ff) drop-shadow(0 0 8px #4fb3ff); }"
     "</style>"
 ))
 
 
-# Voronoiovy oblasti (kriminalita) – vykreslují se jako první, aby body ležely nad nimi
+# Skupina pro vlastní body uživatelů – je v základní mapě vždy (nástroj na úpravy
+# potřebuje pevnou skupinu); když se nemají zobrazit, jen se skryjí přes CSS.
+uzivatelske_body = folium.FeatureGroup(
+    name="Vlastní body"
+)
+
+for index, bod in enumerate(st.session_state.moje_body):
+
+    souradnice = bod["geometry"]["coordinates"]
+
+    lon = souradnice[0]
+    lat = souradnice[1]
+
+    vlastnosti = bod.get("properties", {})
+
+    nazev = vlastnosti.get(
+        "nazev",
+        f"Vlastní bod {index + 1}"
+    )
+
+    duvod = vlastnosti.get(
+        "duvod",
+        "Vlastní označené místo"
+    )
+
+    folium.CircleMarker(
+        location=[lat, lon],
+        radius=5,
+        color="green",
+        fill=True,
+        fill_color="green",
+        fill_opacity=0.8,
+        class_name="vlastni-bod",
+        tooltip=nazev,
+        popup=duvod
+    ).add_to(uzivatelske_body)
+
+uzivatelske_body.add_to(mapa)
+
+
+# Nástroj pro přesouvání a mazání vlastních bodů
+Draw(
+    feature_group=uzivatelske_body,
+    export=False,
+    position="topleft",
+    draw_options={
+        "polyline": False,
+        "polygon": False,
+        "rectangle": False,
+        "circle": False,
+        "circlemarker": False,
+        "marker": False
+    },
+    edit_options={
+        "edit": True,
+        "remove": True
+    }
+).add_to(mapa)
+
+
+# --- Vrstvy, které se mění (pořadí = pořadí vykreslení, poslední je nahoře) --------
+vrstvy = []
+
+# Přepínač tmavého režimu a viditelnosti vlastních bodů
+prepinac = folium.FeatureGroup(name="Nastavení mapy")
+PrepinacMapy(
+    tmava_mapa=tmava_mapa,
+    skryt_vlastni=not zobrazit_vlastni_body,
+).add_to(prepinac)
+vrstvy.append(prepinac)
+
+
+# Voronoiovy oblasti (kriminalita) – jako první, aby body ležely nad nimi.
+# Čím víc činů (po filtrech), tím sytější červená.
 if zobrazit_voronoi:
-    # Čím víc činů (po filtrech), tím sytější červená
-    folium.GeoJson(
-        oblasti_geojson,
-        name="Oblasti kriminality",
-        style_function=lambda oblast: {
-            "color": "#D64541",
-            "weight": 1,
-            "fillColor": "#D64541",
-            "fillOpacity": 0.03 + 0.6 * oblast["properties"]["podil"],
-        },
-        highlight_function=lambda _: {
-            "weight": 3,
-        },
-        tooltip=folium.GeoJsonTooltip(
-            fields=["pocet", "prehled"],
-            aliases=["Počet činů:", "Nejčastější:"]
-        ),
-    ).add_to(mapa)
+    vrstva_oblasti = folium.FeatureGroup(name="Oblasti kriminality")
+    GeoJsonZeSouboru(
+        soubor_tvaru_oblasti(),
+        vlastnosti_json=oblasti_kriminality_json(vyber, tuple(vybrane_kategorie), df_krim_mapa),
+        pane="oblasti_kriminality",
+        pane_z=350,  # nejníž – pod osvětlením i body
+        moznosti_js="""{
+            style: function (f) {
+                return {color: "#D64541", weight: 1, fillColor: "#D64541",
+                        fillOpacity: 0.03 + 0.6 * f.properties.podil};
+            },
+            onEachFeature: function (f, vrstva) {
+                vrstva.bindTooltip(
+                    "<b>Počet činů:</b> " + f.properties.pocet +
+                    "<br><b>Nejčastější:</b><br>" + f.properties.prehled,
+                    {sticky: true}
+                );
+                vrstva.on("mouseover", function () { vrstva.setStyle({weight: 3}); });
+                vrstva.on("mouseout", function () { vrstva.setStyle({weight: 1}); });
+            }
+        }""",
+    ).add_to(vrstva_oblasti)
+    vrstvy.append(vrstva_oblasti)
 
 
 # Osvětlení ulic (nad oblastmi kriminality, pod body, aby body šly dál kliknout)
 if zobrazit_osvetleni and osvetleni is not None:
-    folium.GeoJson(
+    vrstva_osvetleni = folium.FeatureGroup(name="Osvětlení ulic")
+    GeoJsonZeSouboru(
         osvetleni,
-        name="Osvětlení ulic",
-        interactive=False,  # čáry nezachytávají kliknutí, takže přidávání bodů funguje dál
-        style_function=lambda cara: {
-            "color": barvy_osvetleni[cara["properties"]["uroven"]],
-            "weight": 4 if cara["properties"]["uroven"] == 4 else 3,
-            "opacity": 0.9,
-            "lineCap": "round",
-        },
-    ).add_to(mapa)
+        pane="osvetleni_ulic",
+        pane_z=360,  # nad oblastmi, pod body a trasou
+        moznosti_js="""{
+            interactive: false,
+            style: function (f) {
+                var u = f.properties.uroven;
+                return {color: %s[u], weight: u === 4 ? 4 : 3, opacity: 0.9, lineCap: "round"};
+            }
+        }""" % na_json(barvy_osvetleni),
+    ).add_to(vrstva_osvetleni)
+    vrstvy.append(vrstva_osvetleni)
 
 
-# Vykreslení nebezpečných míst jako JEDNÉ GeoJSON vrstvy.
-# (Dřív byl každý bod samostatný CircleMarker = ~1000 objektů a překreslení trvalo několik sekund.)
-body_geojson = {
-    "type": "FeatureCollection",
-    "features": [
-        {
-            "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [lon, lat]},
-            "properties": {
-                "duvod": duvod or "(bez popisu)",
-                # Na tmavé mapě jsou fialové body o trochu světlejší
-                "barva": (
-                    BARVA_TMA_TMAVA_MAPA
-                    if tmava_mapa and barva == BARVA_TMA
-                    else barva
-                ),
-            },
-        }
+# Nebezpečná místa jako JEDNA vrstva (dřív ~1000 samostatných značek = pomalé).
+# Body se posílají jen jako [lon, lat, důvod, barva] – méně dat než celý GeoJSON.
+if zobrazit_pocit and len(df_mapa):
+    body = [
+        [
+            round(lon, 6),
+            round(lat, 6),
+            duvod or "(bez popisu)",
+            # Na tmavé mapě jsou fialové body o trochu světlejší
+            BARVA_TMA_TMAVA_MAPA if tmava_mapa and barva == BARVA_TMA else barva,
+        ]
         for lat, lon, duvod, barva in zip(
             df_mapa["latitude"],
             df_mapa["longitude"],
             df_mapa["desc_detail_duvod"],
             df_mapa["barva"],
         )
-    ],
-}
-
-if zobrazit_pocit and body_geojson["features"]:
-    folium.GeoJson(
-        body_geojson,
-        name="Nebezpečná místa",
-        marker=folium.CircleMarker(radius=5, fill=True, fill_opacity=0.8),
-        style_function=lambda bod: {
-            "color": bod["properties"]["barva"],
-            "fillColor": bod["properties"]["barva"],
-        },
-        tooltip=folium.GeoJsonTooltip(fields=["duvod"], labels=False),
-        popup=folium.GeoJsonPopup(fields=["duvod"], labels=False),
-    ).add_to(mapa)
+    ]
+    vrstva_bodu = folium.FeatureGroup(name="Nebezpečná místa")
+    RychlyGeoJson(
+        na_json({
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "geometry": {"type": "Point", "coordinates": [b[0], b[1]]},
+                 "properties": {"d": b[2], "b": b[3]}}
+                for b in body
+            ],
+        }),
+        """{
+            pointToLayer: function (f, poloha) {
+                return L.circleMarker(poloha, {radius: 5, color: f.properties.b,
+                    fillColor: f.properties.b, fill: true, fillOpacity: 0.8});
+            },
+            onEachFeature: function (f, vrstva) {
+                // textContent = text od lidí se nikdy nevykoná jako HTML
+                var popisek = document.createElement("div");
+                popisek.textContent = f.properties.d;
+                vrstva.bindTooltip(popisek);
+                var okno = document.createElement("div");
+                okno.textContent = f.properties.d;
+                vrstva.bindPopup(okno);
+            }
+        }""",
+    ).add_to(vrstva_bodu)
+    vrstvy.append(vrstva_bodu)
 
 
 # Budovy UP (jen ve studentské verzi) – obarvený tvar budovy, po najetí myší jen název
 if studentsky_rezim and budovy:
     vrstva_budov = folium.FeatureGroup(name="Budovy UP")
-
-    # Modrá záře kolem budov, aby byly na tmavé mapě dobře vidět
-    mapa.get_root().header.add_child(folium.Element(
-        "<style>"
-        ".budova-up { filter: drop-shadow(0 0 4px #4fb3ff) drop-shadow(0 0 8px #4fb3ff); }"
-        "</style>"
-    ))
 
     for b in budovy:
         tooltip = folium.Tooltip(f"<b>{b['name']}</b>", sticky=True)
@@ -977,75 +1097,11 @@ if studentsky_rezim and budovy:
                 popup=popup,
             ).add_to(vrstva_budov)
 
-    vrstva_budov.add_to(mapa)
+    vrstvy.append(vrstva_budov)
 
 
-# Skupina pro vlastní body uživatelů
-uzivatelske_body = folium.FeatureGroup(
-    name="Vlastní body"
-)
-
-
-# Vykreslení již vytvořených vlastních bodů (ne při samotných datech PČR)
-for index, bod in enumerate(st.session_state.moje_body if zobrazit_vlastni_body else []):
-
-    souradnice = bod["geometry"]["coordinates"]
-
-    lon = souradnice[0]
-    lat = souradnice[1]
-
-    vlastnosti = bod.get("properties", {})
-
-    nazev = vlastnosti.get(
-        "nazev",
-        f"Vlastní bod {index + 1}"
-    )
-
-    duvod = vlastnosti.get(
-        "duvod",
-        "Vlastní označené místo"
-    )
-
-    folium.CircleMarker(
-        location=[lat, lon],
-        radius=5,
-        color="green",
-        fill=True,
-        fill_color="green",
-        fill_opacity=0.8,
-        tooltip=nazev,
-        popup=duvod
-    ).add_to(uzivatelske_body)
-
-
-if zobrazit_vlastni_body:
-    uzivatelske_body.add_to(mapa)
-
-
-# Start, cíl a trasa navigace – samostatná vrstva, která se do mapy jen vymění
-# (předává se do st_folium níže), takže se mapa po výběru startu/cíle znovu nenačítá
-vrstva_trasy = vrstva_navigace(route)
-
-
-# Nástroj pro přesouvání a mazání bodů (jen když jsou vlastní body vidět)
-if zobrazit_vlastni_body:
-    Draw(
-        feature_group=uzivatelske_body,
-        export=False,
-        position="topleft",
-        draw_options={
-            "polyline": False,
-            "polygon": False,
-            "rectangle": False,
-            "circle": False,
-            "circlemarker": False,
-            "marker": False
-        },
-        edit_options={
-            "edit": True,
-            "remove": True
-        }
-    ).add_to(mapa)
+# Start, cíl a trasa navigace (nahoře nad vším)
+vrstvy.append(vrstva_navigace(route))
 
 
 # Zobrazení mapy a získání kliknutí.
@@ -1060,7 +1116,7 @@ with st.container(key="mapa_obal"):
         width=None,
         height=650,
         use_container_width=True,
-        feature_group_to_add=vrstva_trasy,
+        feature_group_to_add=vrstvy,
         returned_objects=["all_drawings", "last_clicked"],
         key="mapa"
     )

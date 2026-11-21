@@ -6,3 +6,5 @@ venv/
 *.zip
 __pycache__/
 desktop.ini 
+# Data pro mapu, která aplikace sama vytvoří při spuštění (rychle_vrstvy.py)
+static/

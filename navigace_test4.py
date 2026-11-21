@@ -371,6 +371,18 @@ VYHLEDAVANI_CSS = """
 .st-key-hledani_trasy p {
     margin: 0;
 }
+/* Políčka se po zapnutí načítají asi 0,3 s a panel by mezitím měnil velikost.
+   Proto se ukáže až potom (zpoždění 0,35 s) jemným náběhem – rovnou hotový. */
+.st-key-hledani_trasy iframe {
+    min-height: 42px;
+}
+.st-key-hledani_trasy {
+    animation: hledani-objevit 0.2s ease-out 0.35s both;
+}
+@keyframes hledani-objevit {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+}
 </style>
 """
 
@@ -587,11 +599,19 @@ def vrstva_navigace(route):
 
     if route is not None:
         decoded = convert.decode_polyline(route["routes"][0]["geometry"])
+        body_trasy = [[bod[1], bod[0]] for bod in decoded["coordinates"]]
+        # Bílý obrys pod trasou, aby byla vidět i na tmavé mapě přes barevné čáry osvětlení
         folium.PolyLine(
-            locations=[[bod[1], bod[0]] for bod in decoded["coordinates"]],
-            color="blue",
+            locations=body_trasy,
+            color="white",
+            weight=9,
+            opacity=0.9,
+        ).add_to(vrstva)
+        folium.PolyLine(
+            locations=body_trasy,
+            color="#1f5bff",
             weight=5,
-            opacity=0.7,
+            opacity=1,
         ).add_to(vrstva)
 
     if start is not None:

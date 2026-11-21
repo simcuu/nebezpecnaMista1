@@ -5,3 +5,7 @@ backgroundColor = "#0E0E12"
 secondaryBackgroundColor = "#1b1726"
 textColor = "#ECE8F5"
 font = "sans serif"
+
+[server]
+# Složka static (data pro mapu, která si prohlížeč stáhne jen jednou) – viz rychle_vrstvy.py
+enableStaticServing = true
