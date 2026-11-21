@@ -398,27 +398,8 @@ def _hledaci_radek(typ, ikona, placeholder):
         default=None,
     )
 
-<<<<<<< HEAD
-    if text and text != st.session_state.get(f"hledano_{typ}"):
-        st.session_state[f"hledano_{typ}"] = text
-        st.session_state.pop(f"volba_{typ}", None)
-        try:
-            st.session_state[f"vysledky_{typ}"] = hledej_misto(text)
-        except Exception:
-            st.session_state[f"vysledky_{typ}"] = None
-
-    vysledky = st.session_state.get(f"vysledky_{typ}")
-    if text and text == st.session_state.get(f"hledano_{typ}"):
-        if vysledky is None and f"vysledky_{typ}" in st.session_state:
-            st.caption("Vyhledávání teď nefunguje, zkuste to znovu nebo klikněte do mapy.")
-        elif vysledky == []:
-            st.caption("Nic jsme nenašli, zkuste napsat adresu jinak.")
-
-    if not vysledky:
-=======
     # Komponenta vrací pořád poslední hodnotu -> zpracujeme jen novou (podle nonce)
     if not isinstance(hodnota, dict) or hodnota.get("nonce") == st.session_state.get(f"_nonce_{typ}"):
->>>>>>> 9aa41d07f43186787ebc6738bf8103d04fe2fa99
         return False
     st.session_state[f"_nonce_{typ}"] = hodnota.get("nonce")
 
@@ -462,27 +443,17 @@ def vyhledavaci_panel():
     with st.container(key="hledani_trasy"):
         st.markdown(VYHLEDAVANI_CSS, unsafe_allow_html=True)
 
-<<<<<<< HEAD
-        nadpis, zavrit = st.columns([5, 1], vertical_alignment="center")
-        nadpis.markdown("**Naplánovat trasu**")
-=======
         nadpis, prohodit, zavrit = st.columns([4, 1, 1], vertical_alignment="center")
-        nadpis.markdown("**🧭 Naplánovat trasu**")
+        nadpis.markdown("**Naplánovat trasu**")
         if prohodit.button("⇅", key="prohodit_body", help="Prohodit start a cíl"):
             _prohod_start_a_cil()
             st.rerun()
->>>>>>> 9aa41d07f43186787ebc6738bf8103d04fe2fa99
         if zavrit.button("✕", key="zavrit_hledani", help="Skrýt vyhledávání (trasa zůstane)"):
             st.session_state["navigace_aktivni"] = False
             st.rerun()
 
-<<<<<<< HEAD
-        zmena = _hledaci_radek("start", "Odkud", "Odkud – adresa nebo místo")
-        zmena = _hledaci_radek("cil", "Kam", "Kam – adresa nebo místo") or zmena
-=======
-        zmena = _hledaci_radek("start", "🟢", "Odkud – adresa nebo místo")
-        zmena = _hledaci_radek("cil", "🏁", "Kam – adresa nebo místo") or zmena
->>>>>>> 9aa41d07f43186787ebc6738bf8103d04fe2fa99
+        zmena = _hledaci_radek("start", "", "Odkud – adresa nebo místo")
+        zmena = _hledaci_radek("cil", "", "Kam – adresa nebo místo") or zmena
 
     if zmena:
         st.rerun()
