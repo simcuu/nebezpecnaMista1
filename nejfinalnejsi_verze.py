@@ -6,7 +6,6 @@ import html
 import json
 import os
 import pandas as pd
-from folium.plugins import Draw
 from supabase import create_client
 from navigace_test4 import (
     ovladani_navigace,
@@ -17,6 +16,7 @@ from navigace_test4 import (
 )
 from kategorie import zarad_kategorie, NAZVY, V_NABIDCE
 from ai_kategorie import zarad_pomoci_ai
+from srovnani_tras import zobraz_srovnani
 from rychle_vrstvy import (
     GeoJsonZeSouboru,
     PrepinacMapy,
@@ -990,10 +990,8 @@ with panel_navigace:
             or set(vybrane_kategorie) & set(bod.get("properties", {}).get("kategorie", []))
         )
     ]
-    route = ovladani_navigace(
-        priprav_mista(df_mapa.to_dict("records") + vlastni_pro_navigaci),
-        posun_listy=False,
-    )
+    mista_navigace = priprav_mista(df_mapa.to_dict("records") + vlastni_pro_navigaci)
+    route = ovladani_navigace(mista_navigace, posun_listy=False)
 
 # Výběr startu/cíle a přidávání bodu se navzájem vylučují
 if st.session_state.get("navigace_vybirany_bod") and st.session_state.rezim_pridani:
@@ -1101,7 +1099,7 @@ mapa.get_root().header.add_child(folium.Element(
     " filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);"
     "}"
     # Vlastní body a nástroj na jejich úpravu se skryjí, když nejsou zapnuté
-    ".skryt-vlastni .vlastni-bod, .skryt-vlastni .leaflet-draw { display: none !important; }"
+    ".skryt-vlastni .vlastni-bod { display: none !important; }"
     # Při výběru kategorie se zelené body skryjí a ukážou se jen ty z vybrané kategorie
     ".filtr-kategorii .vlastni-bod { display: none; }"
     + "".join(
@@ -1162,25 +1160,6 @@ for index, bod in enumerate(st.session_state.moje_body):
 
 uzivatelske_body.add_to(mapa)
 
-
-# Nástroj pro přesouvání a mazání vlastních bodů
-Draw(
-    feature_group=uzivatelske_body,
-    export=False,
-    position="topleft",
-    draw_options={
-        "polyline": False,
-        "polygon": False,
-        "rectangle": False,
-        "circle": False,
-        "circlemarker": False,
-        "marker": False
-    },
-    edit_options={
-        "edit": True,
-        "remove": True
-    }
-).add_to(mapa)
 
 
 # --- Vrstvy, které se mění (pořadí = pořadí vykreslení, poslední je nahoře) --------
@@ -1429,7 +1408,7 @@ with st.container(key="mapa_obal"):
         height=650,
         use_container_width=True,
         feature_group_to_add=vrstvy,
-        returned_objects=["all_drawings", "last_clicked"],
+        returned_objects=["last_clicked"],
         key="mapa"
     )
 
@@ -1462,37 +1441,6 @@ if kliknuti:
                 kliknuti["lng"]
             ]
 
-
-# Uložení upravených a přesunutých bodů
-nove_body = output.get("all_drawings")
-
-if nove_body is not None and zobrazit_vlastni_body:
-
-    if isinstance(nove_body, dict):
-        nove_body = nove_body.get("features", [])
-
-    # Mapa vrací body bez názvu/popisu a se zaokrouhlenými souřadnicemi. Proto se
-    # porovnávají jen polohy: kdyby se body přepsaly pokaždé, ztratily by názvy
-    # a změnila by se základní mapa -> celá mapa by se znovu načetla.
-    def poloha_bodu(bod):
-        lon, lat = bod["geometry"]["coordinates"][:2]
-        return (round(lat, 6), round(lon, 6))
-
-    puvodni_body = st.session_state.moje_body
-    if sorted(map(poloha_bodu, nove_body)) != sorted(map(poloha_bodu, puvodni_body)):
-        # Bod byl přesunut nebo smazán – názvy a popisy se převezmou z původních bodů
-        podle_polohy = {poloha_bodu(b): b for b in puvodni_body}
-        stejny_pocet = len(nove_body) == len(puvodni_body)
-        sloucene = []
-        for i, novy in enumerate(nove_body):
-            puvodni = podle_polohy.get(poloha_bodu(novy))
-            if puvodni is None and stejny_pocet:
-                puvodni = puvodni_body[i]  # přesunutý bod (pořadí se nemění)
-            sloucene.append({
-                **novy,
-                "properties": (puvodni or {}).get("properties") or novy.get("properties") or {},
-            })
-        st.session_state.moje_body = sloucene
 
 
 # Řádek se statistikami pod mapou
@@ -1534,6 +1482,51 @@ st.markdown(
     + "</div>",
     unsafe_allow_html=True
 )
+
+
+# Srovnání nejkratší a nejbezpečnější cesty (srovnani_tras.py) – když je zvolený start i cíl.
+# Používá stejný start, cíl a nebezpečná místa jako navigace (tedy i filtry a vlastní body).
+start_navigace = st.session_state.get("navigace_start")
+cil_navigace = st.session_state.get("navigace_cil")
+if start_navigace is not None and cil_navigace is not None:
+    if st.toggle(
+        "Porovnat nejkratší a nejbezpečnější cestu",
+        key="srovnani_zapnuto",
+        help="Ukáže vedle sebe nejkratší trasu a trasu, která se nejvíc vyhne "
+             "nebezpečným místům, a o kolik se liší čas a bezpečnost.",
+    ):
+        nastaveni_odstup, nastaveni_zajizdka, nastaveni_svetlo = st.columns(3)
+        srovnani_odstup = nastaveni_odstup.slider(
+            "Odstup od nebezpečných míst (m)", 10, 150, 50, step=10, key="srovnani_odstup",
+            help="Místo se počítá jako ‚u trasy‘, když je od ní blíž než tato vzdálenost.",
+        )
+        srovnani_zajizdka = nastaveni_zajizdka.slider(
+            "Maximální zajížďka (%)", 10, 150, 60, step=10, key="srovnani_zajizdka",
+            help="Bezpečná trasa nesmí být delší než nejkratší o víc než toto procento.",
+        )
+        srovnani_svetlo = nastaveni_svetlo.checkbox(
+            "Obarvit trasy podle osvětlení ulic", value=vyber == "Za tmy",
+            key="srovnani_svetlo",
+        )
+        zobraz_srovnani(
+            tuple(start_navigace),
+            tuple(cil_navigace),
+            [
+                {
+                    "lat": m["souradnice"][0],
+                    "lon": m["souradnice"][1],
+                    "typ": m["nazev mista"],
+                    "duvod": m["problem mista"],
+                }
+                for m in mista_navigace
+            ],
+            za_tmy=vyber != "Za světla",
+            odstup=srovnani_odstup,
+            max_zajizdka=srovnani_zajizdka,
+            podle_svetla=srovnani_svetlo,
+            klic="hlavni_srovnani",
+            tmava=tmava_mapa,
+        )
 
 
 # Seznam vlastních bodů (sbalitelný, aby nezabíral místo)
