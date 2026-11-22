@@ -14,7 +14,9 @@ from openrouteservice import convert, exceptions
 from folium.plugins import FastMarkerCluster
 from streamlit_folium import st_folium
 
-ORS_KLIC = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjlhNTM0MWY0MTQ3YzQzNzM5NmI0NzBmNzI5MjY3N2IwIiwiaCI6Im11cm11cjY0In0="
+# Klíč k OpenRouteService je v .streamlit/secrets.toml (není v gitu).
+# Na Streamlit Cloudu se zadává v nastavení aplikace (Settings → Secrets).
+ORS_KLIC = st.secrets["ORS_KLIC"]
 
 
 def najdi_trasu(client, start, end, avoid_polygons):
