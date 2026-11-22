@@ -722,6 +722,21 @@ st.markdown(
     .st-key-navigace_panel [data-testid="InputInstructions"] {{
         display: none;
     }}
+    /* Místo ní (stejný styl) trvalá informace o maximu; větší číslo se samo
+       sníží na 300 (viz _omez_odstup v navigace_test4.py) */
+    .st-key-navigace_odstup_m [data-testid="stNumberInputContainer"] {{
+        position: relative;
+    }}
+    .st-key-navigace_odstup_m [data-testid="stNumberInputContainer"]::after {{
+        content: "max. 300 m";
+        position: absolute;
+        right: 74px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: rgba(236, 232, 245, 0.6);
+        pointer-events: none;
+    }}
     </style>
     """,
     unsafe_allow_html=True,

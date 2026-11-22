@@ -568,6 +568,15 @@ def posun_bocni_listu_dolu():
     )
 
 
+MAX_ODSTUP_M = 300
+
+
+def _omez_odstup():
+    """Odstup mimo rozsah se upraví: víc než 300 m -> 300 m, méně než 1 m -> 1 m."""
+    hodnota = st.session_state.get("navigace_odstup_m") or 1
+    st.session_state["navigace_odstup_m"] = int(min(MAX_ODSTUP_M, max(1, hodnota)))
+
+
 def ovladani_navigace(nebezpecna_mista, posun_listy=True):
     """Vykreslí ovládání navigace do aktuálního kontejneru a vrátí nalezenou trasu (nebo None).
 
@@ -601,10 +610,11 @@ def ovladani_navigace(nebezpecna_mista, posun_listy=True):
         st.session_state["navigace_odstup_m"] = 20
     radius_metres = st.number_input(
         "Odstup od nebezpečných míst (m)",
-        min_value=1,
-        max_value=300,
         step=5,
         key="navigace_odstup_m",
+        # Bez min/max: Streamlit by u hodnoty mimo rozsah jen ukázal chybu.
+        # Takhle se hodnota po potvrzení sama upraví na 1–300 m.
+        on_change=_omez_odstup,
         help="Trasa se vyhne všem zobrazeným nebezpečným místům alespoň o tuto "
              "vzdálenost (kromě míst přímo u startu a cíle).",
     )
@@ -735,8 +745,10 @@ def zpracuj_klik_navigace(kliknuti):
 
     souradnice = (kliknuti["lng"], kliknuti["lat"])
     nastav_bod(rezim, souradnice)
-    # Do vyhledávacího řádku se vepíše, že bod byl vybrán na mapě
-    st.session_state[f"_text_{rezim}"] = (
+    # Do vyhledávacího řádku se vepíše název místa (ulice, budova…); když ho nejde
+    # zjistit, aspoň souřadnice
+    adresa = adresa_bodu(round(kliknuti["lat"], 5), round(kliknuti["lng"], 5))
+    st.session_state[f"_text_{rezim}"] = adresa or (
         f"Bod na mapě ({kliknuti['lat']:.5f}, {kliknuti['lng']:.5f})"
     )
     return True
