@@ -1108,8 +1108,8 @@ st.markdown(
     '<div class="hlavicka">'
     # Nadpis a popis v jednom bloku – popis je pod nadpisem, ne vedle něj
     '<div class="hlavicka-text">'
-    "<h1>DOJDI V KLIDU</h1>"
-    "<p>Aneb co Vám mapa neřekne.</p>"
+    "<h1>DOJDI V KLIDU,</h1>"
+    "<p>aneb co ti mapa neřekne.</p>"
     "</div>"
     "</div>",
     unsafe_allow_html=True
