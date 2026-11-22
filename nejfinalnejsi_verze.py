@@ -799,8 +799,8 @@ zobrazit_vlastni_body = zobrazit_pocit
 nadpis_sekce("Filtry")
 vyber = st.sidebar.selectbox(
     "Světelné podmínky:",
-    ["Za tmy", "Za světla", "Nerozlišovat"],
-    index=2,
+    ["Za tmy", "Za světla"],
+    index=1,
 )
 
 # Tmavá mapa (dark mode) je při filtru "Za tmy"
@@ -887,11 +887,8 @@ legenda_html = (
 if vyber == "Za tmy":
     df_mapa = df[df["typ_ident"] == "a"]
 
-elif vyber == "Za světla":
-    df_mapa = df[df["typ_ident"] == "b"]
-
 else:
-    df_mapa = df
+    df_mapa = df[df["typ_ident"] == "b"]
 
 if vybrane_kategorie:
     df_mapa = df_mapa[
@@ -914,7 +911,7 @@ df_krim_mapa = df_krim
 if vyber == "Za tmy":
     df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "a"]
 
-elif vyber == "Za světla":
+else:
     df_krim_mapa = df_krim_mapa[df_krim_mapa["typ_ident"] == "b"]
 
 if vybrane_kategorie:
