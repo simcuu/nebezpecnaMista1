@@ -14,7 +14,7 @@ from openrouteservice import convert, exceptions
 from folium.plugins import FastMarkerCluster
 from streamlit_folium import st_folium
 
-ORS_KLIC = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYzZDI0NjZlZmUwZDQzMmU4YzIyMjgwMmY5YjRjZWEzIiwiaCI6Im11cm11cjY0In0="
+ORS_KLIC = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjlhNTM0MWY0MTQ3YzQzNzM5NmI0NzBmNzI5MjY3N2IwIiwiaCI6Im11cm11cjY0In0="
 
 
 def najdi_trasu(client, start, end, avoid_polygons):
