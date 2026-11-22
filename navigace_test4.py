@@ -655,7 +655,20 @@ def ovladani_navigace(nebezpecna_mista, posun_listy=True):
             )
             for vynechat in (radius_metres * 1.5 + 30, 500)
         ] if radius_metres > 0 else [{"type": "MultiPolygon", "coordinates": []}]
-        st.session_state["route"] = najdi_trasu(client, start, end, sady_zon)
+        try:
+            st.session_state["route"] = najdi_trasu(client, start, end, sady_zon)
+        except (exceptions.ApiError, exceptions.Timeout, exceptions.HTTPError) as chyba:
+            # Bez pádu aplikace: mapa zůstane, jen bez trasy
+            text = str(getattr(chyba, "message", "") or chyba)
+            if "Quota" in text or getattr(chyba, "status", None) in (403, 429):
+                st.error(
+                    "Navigační služba (OpenRouteService) teď neodpovídá – vyčerpal se "
+                    "limit dotazů. Zkuste to za chvíli, případně zítra."
+                )
+            else:
+                st.error(f"Trasu se nepodařilo najít: {text}")
+            st.session_state["route"] = None
+            return None
         st.session_state["navigace_parametry_trasy"] = parametry_trasy
         return st.session_state["route"]
 
