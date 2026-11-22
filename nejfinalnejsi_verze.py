@@ -1340,16 +1340,6 @@ if kliknuti:
                 kliknuti["lng"]
             ]
 
-
-if nove_body is not None and zobrazit_vlastni_body:
-
-    if isinstance(nove_body, dict):
-        nove_body = nove_body.get("features", [])
-
-    if nove_body != st.session_state.moje_body:
-        st.session_state.moje_body = nove_body
-
-
 # Řádek se statistikami pod mapou
 statistiky = [
     *(
