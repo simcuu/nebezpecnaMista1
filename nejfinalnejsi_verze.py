@@ -858,20 +858,34 @@ legenda_budovy = (
 
 
 # Legenda – vykreslí se jako banner v pravém horním rohu mapy
-legenda_html = (
-    '<div class="legenda">'
-    '<div class="legenda-nadpis">Legenda</div>'
-    '<div class="legenda-polozka">'
-    '<span class="legenda-tecka" style="background:'
-    + (BARVA_TMA_TMAVA_MAPA if tmava_mapa else BARVA_TMA)
-    + ';"></span> Tma'
-    "</div>"
-    '<div class="legenda-polozka">'
-    '<span class="legenda-tecka" style="background:#E5A000;"></span> Světlo'
-    "</div>"
-    '<div class="legenda-polozka">'
+# Ukazuje jen to, co je v mapě zapnuté; když není zapnuté nic, legenda se schová.
+legenda_pocit = (
+    # Tečky „Tma“ / „Světlo“ jen podle filtru světelných podmínek
+    (
+        '<div class="legenda-polozka">'
+        '<span class="legenda-tecka" style="background:'
+        + (BARVA_TMA_TMAVA_MAPA if tmava_mapa else BARVA_TMA)
+        + ';"></span> Tma'
+        "</div>"
+        if vyber != "Za světla"
+        else ""
+    )
+    + (
+        '<div class="legenda-polozka">'
+        '<span class="legenda-tecka" style="background:#E5A000;"></span> Světlo'
+        "</div>"
+        if vyber != "Za tmy"
+        else ""
+    )
+    + '<div class="legenda-polozka">'
     '<span class="legenda-tecka" style="background:green;"></span> Vlastní body'
     "</div>"
+    if zobrazit_pocit
+    else ""
+)
+
+legenda_polozky = (
+    legenda_pocit
     # Oblasti kriminality jen se zapnutou vrstvou
     + (
         '<div class="legenda-polozka">'
@@ -884,7 +898,17 @@ legenda_html = (
     )
     + legenda_budovy
     + legenda_osvetleni
+)
+
+legenda_html = (
+    '<div class="legenda">'
+    '<div class="legenda-nadpis">Legenda</div>'
+    + legenda_polozky
     + "</div>"
+    if legenda_polozky
+    # Prázdný text místo legendy – prvek zůstane na svém místě, aby se mapa
+    # pod ním kvůli posunu nenačítala znovu
+    else ""
 )
 
 
@@ -1084,7 +1108,7 @@ st.markdown(
     '<div class="hlavicka">'
     # Nadpis a popis v jednom bloku – popis je pod nadpisem, ne vedle něj
     '<div class="hlavicka-text">'
-    "<h1>NEBEZPEČNÁ MÍSTA V OLOMOUCI</h1>"
+    "<h1>DOJDI V KLIDU</h1>"
     "<p>Mapa míst, kde se lidé necítí bezpečně, kriminality a osvětlení ulic"
     " – naplánujte si bezpečnější cestu.</p>"
     "</div>"
