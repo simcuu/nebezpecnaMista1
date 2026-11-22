@@ -468,7 +468,7 @@ def stranka():
 
     with st.sidebar:
         st.header("Nastavení")
-        podminky = st.radio("Kdy jdete?", ["Za tmy", "Za světla", "Nerozlišovat"], index=0)
+        podminky = st.radio("Kdy jdete?", ["Za tmy", "Za světla"], index=0)
         odstup = st.slider(
             "Odstup od nebezpečných míst (m)", 10, 150, 50, step=10,
             help="Místo se počítá jako ‚u trasy‘, když je od ní blíž než tato vzdálenost. "
@@ -484,13 +484,8 @@ def stranka():
         )
 
     vsechna_mista = nacti_mista()
-    if podminky == "Za tmy":
-        mista = [m for m in vsechna_mista if m["za_tmy"]]
-    elif podminky == "Za světla":
-        mista = [m for m in vsechna_mista if not m["za_tmy"]]
-    else:
-        mista = vsechna_mista
-    za_tmy = podminky != "Za světla"
+    za_tmy = podminky == "Za tmy"
+    mista = [m for m in vsechna_mista if m["za_tmy"] == za_tmy]
 
     def vyber_mista(popisek, vychozi, klic):
         """Textové pole + výběr z nalezených míst. Vrací (lon, lat) a popis, nebo (None, None)."""
