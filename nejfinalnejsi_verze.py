@@ -1109,8 +1109,7 @@ st.markdown(
     # Nadpis a popis v jednom bloku – popis je pod nadpisem, ne vedle něj
     '<div class="hlavicka-text">'
     "<h1>DOJDI V KLIDU</h1>"
-    "<p>Mapa míst, kde se lidé necítí bezpečně, kriminality a osvětlení ulic"
-    " – naplánujte si bezpečnější cestu.</p>"
+    "<p>Aneb co Vám mapa neřekne.</p>"
     "</div>"
     "</div>",
     unsafe_allow_html=True
