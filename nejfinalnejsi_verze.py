@@ -872,11 +872,16 @@ legenda_html = (
     '<div class="legenda-polozka">'
     '<span class="legenda-tecka" style="background:green;"></span> Vlastní body'
     "</div>"
-    '<div class="legenda-polozka">'
-    '<span class="legenda-tecka" style="background:rgba(214,69,65,0.35); '
-    'border-color:#D64541; border-radius:3px;"></span> '
-    "Oblasti kriminality (tmavší = více činů)"
-    "</div>"
+    # Oblasti kriminality jen se zapnutou vrstvou
+    + (
+        '<div class="legenda-polozka">'
+        '<span class="legenda-tecka" style="background:rgba(214,69,65,0.35); '
+        'border-color:#D64541; border-radius:3px;"></span> '
+        "Oblasti kriminality (tmavší = více činů)"
+        "</div>"
+        if zobrazit_voronoi
+        else ""
+    )
     + legenda_budovy
     + legenda_osvetleni
     + "</div>"
@@ -1508,22 +1513,11 @@ if start_navigace is not None and cil_navigace is not None:
     if st.toggle(
         "Porovnat nejkratší a nejbezpečnější cestu",
         key="srovnani_zapnuto",
-        help="Ukáže vedle sebe nejkratší trasu a trasu, která se nejvíc vyhne "
-             "nebezpečným místům, a o kolik se liší čas a bezpečnost.",
+        help="Krátké shrnutí: délka, čas a počet nebezpečných míst u nejkratší "
+             "a u nejbezpečnější trasy.",
     ):
-        nastaveni_odstup, nastaveni_zajizdka, nastaveni_svetlo = st.columns(3)
-        srovnani_odstup = nastaveni_odstup.slider(
-            "Odstup od nebezpečných míst (m)", 10, 150, 50, step=10, key="srovnani_odstup",
-            help="Místo se počítá jako ‚u trasy‘, když je od ní blíž než tato vzdálenost.",
-        )
-        srovnani_zajizdka = nastaveni_zajizdka.slider(
-            "Maximální zajížďka (%)", 10, 150, 60, step=10, key="srovnani_zajizdka",
-            help="Bezpečná trasa nesmí být delší než nejkratší o víc než toto procento.",
-        )
-        srovnani_svetlo = nastaveni_svetlo.checkbox(
-            "Obarvit trasy podle osvětlení ulic", value=vyber == "Za tmy",
-            key="srovnani_svetlo",
-        )
+        # Jen stručné shrnutí bez map a nastavení. Odstup se bere z navigace
+        # (při vypnutém vyhýbání = 0 se počítá s výchozími 30 m).
         zobraz_srovnani(
             tuple(start_navigace),
             tuple(cil_navigace),
@@ -1537,11 +1531,9 @@ if start_navigace is not None and cil_navigace is not None:
                 for m in mista_navigace
             ],
             za_tmy=vyber != "Za světla",
-            odstup=srovnani_odstup,
-            max_zajizdka=srovnani_zajizdka,
-            podle_svetla=srovnani_svetlo,
+            odstup=st.session_state.get("navigace_odstup_m") or 30,
             klic="hlavni_srovnani",
-            tmava=tmava_mapa,
+            strucne=True,
         )
 
 

@@ -305,11 +305,12 @@ def mapa_trasy(trasa, barva, mista, zvyraznena, vyhnuta, start, cil, podle_svetl
 # --- Srovnání (dá se použít i v jiné stránce) -------------------------------
 
 def zobraz_srovnani(start, cil, mista, za_tmy, odstup=50, max_zajizdka=60,
-                    podle_svetla=False, klic="srovnani", tmava=False):
+                    podle_svetla=False, klic="srovnani", tmava=False, strucne=False):
     """Vykreslí srovnání nejkratší a nejbezpečnější trasy do aktuálního místa stránky.
 
     start, cil: (lon, lat); mista: seznam {"lat", "lon", "typ", "duvod"}.
-    Používá ho tato stránka i hlavní aplikace (nejfinalnejsi_verze.py)."""
+    Používá ho tato stránka i hlavní aplikace (nejfinalnejsi_verze.py).
+    `strucne=True` ukáže jen krátké shrnutí (bez map, tabulek a seznamů)."""
     with st.spinner("Hledám a porovnávám trasy…"):
         try:
             kandidati_kratke = trasy_bez_vyhybani(start, cil)
@@ -337,10 +338,24 @@ def zobraz_srovnani(start, cil, mista, za_tmy, odstup=50, max_zajizdka=60,
     povolene = [t for t in hodnocene if t["delka"] <= nejkratsi["delka"] * (1 + max_zajizdka / 100)]
     bezpecna = min(povolene, key=lambda t: (round(t["riziko"], 2), t["delka"]))
 
+    stejne = bezpecna is nejkratsi or bezpecna["body"] == nejkratsi["body"]
+
+    if strucne:
+        def radek(nazev, t):
+            pocet = len(t["blizka"])
+            mist = "místo" if pocet == 1 else "místa" if 2 <= pocet <= 4 else "míst"
+            km = f"{t['delka'] / 1000:.1f}".replace(".", ",")
+            return (f"**{nazev}:** {km} km · {t['cas'] / 60:.0f} min · "
+                    f"{pocet} nebezpečn{'é' if pocet == 1 else 'á' if 2 <= pocet <= 4 else 'ých'} {mist}")
+        if stejne:
+            st.markdown(radek("Nejkratší = nejbezpečnější", nejkratsi))
+        else:
+            st.markdown(radek("Nejkratší", nejkratsi) + "  \n" + radek("Nejbezpečnější", bezpecna))
+        return
+
     if poznamka:
         st.caption(f"ℹ️ {poznamka}")
 
-    stejne = bezpecna is nejkratsi or bezpecna["body"] == nejkratsi["body"]
     if stejne:
         st.success("Nejkratší trasa je zároveň nejbezpečnější – nemusíte nic obcházet.")
 

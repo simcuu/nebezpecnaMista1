@@ -572,9 +572,9 @@ MAX_ODSTUP_M = 300
 
 
 def _omez_odstup():
-    """Odstup mimo rozsah se upraví: víc než 300 m -> 300 m, méně než 1 m -> 1 m."""
-    hodnota = st.session_state.get("navigace_odstup_m") or 1
-    st.session_state["navigace_odstup_m"] = int(min(MAX_ODSTUP_M, max(1, hodnota)))
+    """Odstup mimo rozsah se upraví: víc než 300 m -> 300 m, záporný -> 0 (0 = bez vyhýbání)."""
+    hodnota = st.session_state.get("navigace_odstup_m") or 0
+    st.session_state["navigace_odstup_m"] = int(min(MAX_ODSTUP_M, max(0, hodnota)))
 
 
 def ovladani_navigace(nebezpecna_mista, posun_listy=True):
@@ -599,25 +599,35 @@ def ovladani_navigace(nebezpecna_mista, posun_listy=True):
     elif st.session_state["navigace_vybirany_bod"] == "cil":
         st.info("Start je vybrán. Napište cíl do vyhledávání, nebo klikněte do mapy.")
 
+    def popis_bodu(typ, bod):
+        """Název místa jako ve vyhledávání (adresa, budova…); jinak souřadnice."""
+        if bod is None:
+            return "nevybrán"
+        # „_text_“ = čerstvě vybráno kliknutím (do políčka se propíše až níž ve skriptu),
+        # „_popisek_“ = text, který už v políčku vyhledávání je
+        nazev = st.session_state.get(f"_text_{typ}") or st.session_state.get(f"_popisek_{typ}")
+        return nazev or f"{bod[1]:.5f}, {bod[0]:.5f}"
+
     st.caption(
-        "Start: "
-        + (f"{start[1]:.5f}, {start[0]:.5f}" if start else "nevybrán")
-        + "  \nCíl: "
-        + (f"{end[1]:.5f}, {end[0]:.5f}" if end else "nevybrán")
+        "Start: " + popis_bodu("start", start)
+        + "  \nCíl: " + popis_bodu("cil", end)
     )
     # Odstup je vidět pořád (i po zavření vyhledávání); po změně se trasa přepočítá
     if "navigace_odstup_m" not in st.session_state:
-        st.session_state["navigace_odstup_m"] = 20
+        st.session_state["navigace_odstup_m"] = 30
     radius_metres = st.number_input(
         "Odstup od nebezpečných míst (m)",
         step=5,
         key="navigace_odstup_m",
         # Bez min/max: Streamlit by u hodnoty mimo rozsah jen ukázal chybu.
-        # Takhle se hodnota po potvrzení sama upraví na 1–300 m.
+        # Takhle se hodnota po potvrzení sama upraví na 0–300 m.
         on_change=_omez_odstup,
         help="Trasa se vyhne všem zobrazeným nebezpečným místům alespoň o tuto "
-             "vzdálenost (kromě míst přímo u startu a cíle).",
+             "vzdálenost (kromě míst přímo u startu a cíle). 0 = bez vyhýbání, "
+             "nejkratší trasa.",
     )
+    if radius_metres == 0:
+        st.caption("Vyhýbání je vypnuté – zobrazuje se nejkratší trasa.")
 
     # Při změně filtru se trasa přepočítá s novými nebezpečnými místy
     podpis_filtru = tuple(
@@ -635,6 +645,7 @@ def ovladani_navigace(nebezpecna_mista, posun_listy=True):
         # Nejdřív se trasa vyhne všem bodům kromě těch přímo u startu/cíle (jejich zóna
         # by start/cíl zakryla). Kdyby taková trasa neexistovala, zkusí se vynechat
         # body do 500 m od startu/cíle a až pak trasa bez vyhýbání.
+        # Odstup 0 = vyhýbání vypnuté (prázdná sada zón -> nejkratší trasa).
         sady_zon = [
             vytvor_avoid_polygony(
                 nebezpecna_mista,
@@ -643,7 +654,7 @@ def ovladani_navigace(nebezpecna_mista, posun_listy=True):
                 vynechat_do_m=vynechat,
             )
             for vynechat in (radius_metres * 1.5 + 30, 500)
-        ]
+        ] if radius_metres > 0 else [{"type": "MultiPolygon", "coordinates": []}]
         st.session_state["route"] = najdi_trasu(client, start, end, sady_zon)
         st.session_state["navigace_parametry_trasy"] = parametry_trasy
         return st.session_state["route"]
