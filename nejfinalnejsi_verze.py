@@ -817,7 +817,7 @@ vybrane_kategorie = st.sidebar.multiselect(
 if vyber == "Za tmy":
     zobrazit_osvetleni = st.sidebar.checkbox(
         "Osvětlení ulic",
-        value=True,
+        value=False,
         disabled=osvetleni is None,
         help=(
             "Ulice obarvené podle počtu lamp v okolí."
