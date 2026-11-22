@@ -1,5 +1,6 @@
 import streamlit as st
 import folium
+import base64
 from streamlit_folium import st_folium
 import html
 import json
@@ -646,8 +647,96 @@ BARVA_TMA = "#7B61A8"
 BARVA_TMA_TMAVA_MAPA = "#A48BDA"
 
 
-# Boční panel – nastavení mapy
+# Navigace – rozbaluje se tlačítkem s ikonou v bočním panelu
+if "navigace_panel_otevreny" not in st.session_state:
+    st.session_state.navigace_panel_otevreny = False
+
+
+def prepni_panel_navigace():
+    st.session_state.navigace_panel_otevreny = not st.session_state.navigace_panel_otevreny
+
+
+@st.cache_data(show_spinner=False)
+def ikona_jako_url(soubor):
+    """Obrázek jako data: URL, aby šel použít v CSS (bez servírování souborů)."""
+    with open(soubor, "rb") as f:
+        return "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
+
+
+st.markdown(
+    f"""
+    <style>
+    /* Tlačítko navigace v bočním panelu: ikona + nápis + šipka */
+    .st-key-navigace_tlacitko button {{
+        height: 52px;
+        justify-content: flex-start;
+        padding: 0 14px 0 52px;
+        background: url("{ikona_jako_url("Ikony/NavigaceMain.png")}") 12px center / 30px no-repeat,
+                    linear-gradient(135deg, rgba(155, 127, 212, 0.22), rgba(155, 127, 212, 0.08));
+        border-color: #5a4387;
+    }}
+    .st-key-navigace_tlacitko button {{
+        position: relative;
+    }}
+    .st-key-navigace_tlacitko button > div {{
+        justify-content: flex-start;
+    }}
+    .st-key-navigace_tlacitko button p {{
+        font-size: 1rem;
+        font-weight: 700;
+    }}
+    .st-key-navigace_tlacitko button::after {{
+        content: "›";
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-55%);
+        font-size: 1.6rem;
+        opacity: 0.7;
+    }}
+
+    .st-key-navigace_tlacitko button::after {{
+        transition: transform 0.15s ease;
+    }}
+
+    /* Navigace se rozbalí přímo pod tlačítkem v bočním panelu – nezakrývá mapu,
+       vyhledávání ani filtry (ty jsou dál pod ní) */
+    .st-key-navigace_panel {{
+        margin-top: -1rem;
+        padding: 12px 14px 14px 14px;
+        background: rgba(155, 127, 212, 0.06);
+        border: 1px solid #3b2a5c;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        animation: navigace-rozbalit 0.15s ease-out;
+    }}
+    @keyframes navigace-rozbalit {{
+        from {{ opacity: 0; transform: translateY(-6px); }}
+        to {{ opacity: 1; transform: none; }}
+    }}
+    .st-key-navigace_panel .stButton > button {{
+        white-space: nowrap;
+    }}
+    /* Bez nápovědy „Press Enter to apply" u políčka s odstupem */
+    .st-key-navigace_panel [data-testid="InputInstructions"] {{
+        display: none;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Boční panel – nastavení mapy, hned pod nadpisem tlačítko navigace
 st.sidebar.title("Nastavení mapy")
+st.sidebar.button(
+    "Navigace",
+    key="navigace_tlacitko",
+    on_click=prepni_panel_navigace,
+    use_container_width=True,
+)
+# Místo pro rozbalenou navigaci hned pod tlačítkem. Obsah se do něj vykreslí až
+# později (potřebuje body vybrané filtry níž), na obrazovce je ale tady.
+panel_navigace = st.sidebar.container(key="navigace_panel")
 
 
 def nadpis_sekce(text):
@@ -872,9 +961,25 @@ def oblasti_kriminality_json(vyber, kategorie, _df_krim_mapa):
     return na_json(oblasti)
 
 
-# Boční panel – navigace (pracuje přímo v hlavní mapě)
-with st.sidebar:
-    nadpis_sekce("Navigace")
+# Navigace (pracuje přímo v hlavní mapě) v rozbalovací sekci pod tlačítkem „Navigace".
+# Vykresluje se vždy, i když je sekce sbalená (jen se skryje CSS) – trasa se tak
+# dál počítá a zobrazuje v mapě. Vyhýbá se přesně bodům, které jsou podle filtrů
+# vidět v mapě; po změně filtrů nebo odstupu se trasa sama přepočítá.
+with panel_navigace:
+    if st.session_state.navigace_panel_otevreny:
+        # Šipka na tlačítku míří dolů, když je navigace rozbalená
+        st.markdown(
+            "<style>.st-key-navigace_tlacitko button::after "
+            "{ transform: translateY(-55%) rotate(90deg) !important; }"
+            ".st-key-navigace_tlacitko button { border-radius: 10px 10px 0 0 !important; }</style>",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            "<style>.st-key-navigace_panel { display: none !important; }</style>",
+            unsafe_allow_html=True,
+        )
+    st.caption("Trasa se vyhýbá nebezpečným místům, která jsou podle filtrů vidět v mapě.")
     # Vlastní body se pro navigaci převedou do stejné podoby jako body z ankety
     vlastni_pro_navigaci = [
         {
@@ -890,7 +995,7 @@ with st.sidebar:
         )
     ]
     mista_navigace = priprav_mista(df_mapa.to_dict("records") + vlastni_pro_navigaci)
-    route = ovladani_navigace(mista_navigace)
+    route = ovladani_navigace(mista_navigace, posun_listy=False)
 
 # Výběr startu/cíle a přidávání bodu se navzájem vylučují
 if st.session_state.get("navigace_vybirany_bod") and st.session_state.rezim_pridani:
@@ -1339,6 +1444,7 @@ if kliknuti:
                 kliknuti["lat"],
                 kliknuti["lng"]
             ]
+
 
 # Řádek se statistikami pod mapou
 statistiky = [
