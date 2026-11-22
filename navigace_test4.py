@@ -1,6 +1,7 @@
 import json
 import math
 import re
+import time
 import unicodedata
 import folium
 import openrouteservice
@@ -233,6 +234,61 @@ def _hledej_nominatim(dotaz):
             "zdroj": "osm",
         })
     return vysledky
+
+
+_posledni_nominatim = [0.0]
+
+
+@st.cache_data(ttl=7 * 24 * 3600, show_spinner=False)
+def adresa_bodu(lat, lon):
+    """Srozumitelný popis místa pro souřadnice, např. „Jeremenkova 40, Nové Hodolany“.
+    Nejdřív OpenStreetMap (Nominatim), pak OpenRouteService; když nic, vrátí None.
+    Souřadnice zaokrouhlete (např. na 5 míst), ať se adresa pamatuje i po malém posunu."""
+    try:
+        # Nominatim dovoluje nejvýš 1 dotaz za sekundu
+        cekat = 1.0 - (time.monotonic() - _posledni_nominatim[0])
+        if cekat > 0:
+            time.sleep(cekat)
+        _posledni_nominatim[0] = time.monotonic()
+        odpoved = requests.get(
+            "https://nominatim.openstreetmap.org/reverse",
+            params={
+                "lat": lat, "lon": lon, "format": "jsonv2", "zoom": 18,
+                "addressdetails": 1, "accept-language": "cs",
+            },
+            headers={"User-Agent": "nebezpecna-mista-navigace/1.0"},
+            timeout=10,
+        )
+        odpoved.raise_for_status()
+        data = odpoved.json()
+        adresa = data.get("address") or {}
+        ulice = (
+            adresa.get("road") or adresa.get("pedestrian") or adresa.get("footway")
+            or adresa.get("path") or adresa.get("square")
+        )
+        ulice_cislo = " ".join(filter(None, [ulice, adresa.get("house_number")]))
+        cast = adresa.get("quarter") or adresa.get("suburb") or adresa.get("neighbourhood")
+        obec = adresa.get("city") or adresa.get("town") or adresa.get("village")
+        casti = [
+            data.get("name") if data.get("name") != ulice else None,
+            ulice_cislo,
+            cast,
+            obec if obec and obec != "Olomouc" else None,
+        ]
+        popis = ", ".join(dict.fromkeys(c for c in casti if c))
+        if popis:
+            return popis
+    except Exception:
+        pass
+
+    try:
+        odpoved = openrouteservice.Client(key=ORS_KLIC).pelias_reverse(
+            [lon, lat], size=1, layers=["address", "street", "venue"]
+        )
+        vlastnosti = odpoved["features"][0]["properties"]
+        return vlastnosti.get("name") or vlastnosti.get("label")
+    except Exception:
+        return None
 
 
 def _hledej_ors(dotaz):

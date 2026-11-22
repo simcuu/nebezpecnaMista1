@@ -8,6 +8,7 @@ import os
 import pandas as pd
 from supabase import create_client
 from navigace_test4 import (
+    adresa_bodu,
     ovladani_navigace,
     priprav_mista,
     vrstva_navigace,
@@ -1550,10 +1551,9 @@ with st.expander(f"Seznam vlastních bodů ({len(st.session_state.moje_body)})")
 
         st.write(f"**{nazev}** – {duvod}")
 
-        st.caption(
-            f"Zeměpisná šířka: {souradnice[1]:.6f}, "
-            f"zeměpisná délka: {souradnice[0]:.6f}"
-        )
+        # Místo souřadnic adresa / ulice (zaokrouhleno, ať se pamatuje i po malém posunu bodu)
+        adresa = adresa_bodu(round(souradnice[1], 5), round(souradnice[0], 5))
+        st.caption(f"📍 {adresa}" if adresa else "📍 Adresu se nepodařilo zjistit")
 
     if len(st.session_state.moje_body) == 0:
         st.info("Zatím nebyl vytvořen žádný vlastní bod.")
